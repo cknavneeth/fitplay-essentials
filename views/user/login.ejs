@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Login Page</title>
+    <style>
+      /* General Styles */
+      * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    background: url('/img/champions-2.jpg') no-repeat center center/cover; /* Ensuring the background covers the entire viewport */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative; /* Absolute positioning for overlay */
+    overflow: hidden; /* Prevent overflow on small screens */
+}
+
+/* Background Overlay */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay for better contrast */
+    z-index: 1; /* Make sure the overlay is on top of the background */
+    backdrop-filter: blur(5px); /* Blurring background for more focus on form */
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    z-index: 2; /* Above overlay */
+    position: relative; /* For proper layering */
+    font-size: 24px;
+    letter-spacing: 1px; /* Modern letter spacing */
+    animation: fadeIn 1s ease-in-out; /* Smooth fade-in animation */
+}
+
+/* Form Container */
+.form-wrapper {
+    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for modern look */
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    z-index: 2;
+    animation: scaleIn 0.5s ease-out; /* Scale-in animation */
+}
+
+.form-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); /* Lift and stronger shadow on hover */
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+.input-group input:focus {
+    border-color: #28a745;
+    outline: none;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.3); /* Subtle glow on focus */
+}
+
+/* Button Styling */
+button {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+/* Fade-in Animation for Paragraph */
+p {
+    text-align: center;
+    margin-top: 1rem;
+    color: #ffffff;
+    z-index: 2;
+    position: relative;
+    animation: fadeIn 2s ease-in-out;
+}
+
+/* Pointer Link Styling */
+.pointer {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.pointer:hover {
+    text-decoration: underline;
+}
+
+/* Eye icon styles (unchanged) */
+.bi.bi-eye {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.bi.bi-eye.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-wrapper {
+        width: 90%;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0.8);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+
+    </style>
+  </head>
+  <body>
+    <div id="container" class="container">
+      <div class="form-wrapper align-items-center">
+        <div class="form sign-in">
+          <h2>Welcome Back</h2>
+          <form action="/login" method="post" onsubmit="return userLogin(event)">
+            <div class="input-group">
+              <i class="bx bxs-user"></i>
+              <input
+                type="text"
+                placeholder="Username"
+                name="username"
+                id="username"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                placeholder="Password"
+                name="password"
+                id="password"
+                required
+              />
+              <i class="bi bi-eye toggle-password" id="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);"></i>
+            </div>
+            <% if (typeof error !== 'undefined') { %>
+            <p style="color: red"><%= error %></p>
+            <% } %>
+            <button type="submit">Login</button>
+          </form>
+          <p>
+            <b>Forgot password?</b>
+          </p>
+          <p>
+            <span>Don't have an account?</span>
+            <!-- <b onclick="togglePage('/signup class="pointer">Sign up here</b> -->
+            <a href="/signup"class="pointer">Sign up here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <script src="/js/script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <!-- Include SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+      function userLogin(event){
+        event.preventDefault();
+        const username = document.getElementById('username').value.trim(); 
+        const password = document.getElementById('password').value.trim();
+        $.ajax({
+          method:"POST",
+          url:'/login',
+          data:{
+            username:username,
+            password:password
+          },
+          success:function(response){
+            if(response.success){
+              Swal.fire({
+                icon:"success",
+                title:"Login Success",
+                text:"Login Successfull!",
+                timer:5000
+              }).then(()=>{
+                window.location.href='/index'
+              })
+            }else{
+              Swal.fire({
+                icon:"error",
+                title:"Login Failed",
+                text:response.error,
+              })
+            }
+          },
+          error: function(response) {
+            Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: response.statusText,
+      })
+        },
+      })
+
+      }
+
+
+
+
+
+      const passwordInput = document.getElementById('password');
+const togglePasswordButton = document.getElementById('toggle-password');
+
+togglePasswordButton.addEventListener('click', () => {
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text'; 
+    togglePasswordButton.classList.add('bi-eye-slash'); 
+    togglePasswordButton.classList.remove('bi-eye'); 
+  } else {
+    passwordInput.type = 'password'; 
+    togglePasswordButton.classList.add('bi-eye'); 
+    togglePasswordButton.classList.remove('bi-eye-slash'); 
+  }
+});
+    </script>
+
+
+
+
+
+
+  </body>
+</html>

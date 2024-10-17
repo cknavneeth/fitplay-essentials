@@ -1,0 +1,268 @@
+<%- include('../../views/layout/admin/header')%>
+
+    <style>
+        /* General Styling */
+/* General Styling */
+body {
+    font-family: 'Georgia', serif; /* Classic serif font for a more traditional feel */
+    background-color: #f0f0f0; /* Softer off-white background */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.content-header {
+    background-color: #899db7; /* Subdued, darker color */
+    padding: 15px;
+    color: white;
+    border-bottom: 3px solid #293241; /* Sharper border for a classic separation */
+    text-align: center;
+}
+
+.content-title {
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Georgia', serif; /* Maintain serif font for titles */
+    margin: 0;
+}
+
+/* Search Bar */
+.input-group {
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.input-group input {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 0; /* No rounded corners for a sharper look */
+    outline: none;
+    width: 80%;
+}
+
+.input-group button {
+    padding: 8px 15px;
+    background-color: #6c757d; /* Neutral gray for buttons */
+    border: none;
+    border-left: 1px solid #ccc; /* Subtle border between input and button */
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.input-group button:hover {
+    background-color: #5a6268; /* Slightly darker gray on hover */
+}
+
+/* Table Styling */
+.table {
+    margin: 0 auto;
+    width: 90%;
+    background-color: white;
+    border-collapse: collapse; /* Classic borderless look */
+    border: 1px solid #ccc;
+}
+
+.table thead th {
+    background-color: #495057; /* Darker, more muted header */
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 2px solid #ccc; /* Subtle border */
+}
+
+.table tbody td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Light border between rows */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+/* Button Styles */
+.btn {
+    padding: 6px 10px;
+    border-radius: 0; /* No rounded corners */
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+    display: inline-block;
+    margin: 5px 0;
+    border: 1px solid transparent;
+    text-transform: uppercase;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #b02a37;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #218838;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.btn a:hover {
+    text-decoration: none;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-item {
+    margin: 0 3px;
+}
+
+.page-link {
+    padding: 6px 10px;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    border-radius: 0;
+}
+
+.page-link:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+.page-item.active .page-link {
+    background-color: #495057;
+    color: white;
+    border-color: #495057;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-header h2 {
+        font-size: 20px;
+    }
+
+    .input-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .input-group input,
+    .input-group button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .pagination {
+        margin-right: 0;
+    }
+}
+
+
+    </style>
+
+
+
+
+         <div class="content-header row">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="content-title card-title">Customers</h2>
+            </div>
+        </div>  
+        
+        <header class="card-header mb-20">
+            <form action="/users" method="get" class="d-inline text-center">
+                <div class="input-group input-group-sm border border-1 border-grey rounded-pill" style="width: 500px; margin-left: 230px;">
+                    <input type="text" class="form-control border-0 rounded-pill" placeholder="Search customers..." name="search" value="<%= searchQuery %>"> <!-- Pre-fill with search query -->
+                    <button class="btn border-0" type="submit">Search</button>
+                </div>
+            </form>
+        </header>
+        
+        <div class="right mt-5 mx-5">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" ><b>Name</b></th>
+                        <th scope="col"><b>Email</b></th>
+                        <th scope="col"><b>Action</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.email %></td>
+                        <td> 
+                            <% if (!user.isBlocked) { %> <!-- Check if user is not blocked -->
+                                <button class="btn btn-danger" style="width: 80px;">
+                                    <a href="/block?id=<%= user._id %>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to block this user?');">Block</a>
+                                </button>
+                            <% } else { %>
+                                <button class="btn btn-success" style="width: 80px;">
+                                    <a href="/unblock?id=<%= user._id %>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to unblock this user?');">Unblock</a>
+                                </button>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination Controls -->
+        <div class="container mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-20" style="margin-right: 200px;">
+                    <% if (currentPage > 1) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>&search=<%= searchQuery %>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    <% } %>
+        
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&search=<%= searchQuery %>"><%= i %></a>
+                        </li>
+                    <% } %>
+        
+                    <% if (currentPage < totalPages) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>&search=<%= searchQuery %>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    <% } %>
+                </ul>
+            </nav>
+        </div>
+
+
+
+
+<%- include('../../views/layout/admin/footer') %>

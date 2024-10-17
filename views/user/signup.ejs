@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <title>Signup Page</title>
+    <style>
+      /* General Styles */
+
+      * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Arial", sans-serif;
+            background: url('/img/champions-1.jpg') no-repeat center center fixed; /* Background image */
+            background-size: cover; /* Cover the entire viewport */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #fff;
+            animation: fadeIn 1s ease-in; /* Fade-in animation */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .form-wrapper {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            position: relative;
+            backdrop-filter: blur(15px);
+            animation: slideIn 0.5s ease-out; /* Slide-in animation */
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            border-color: #ff5722; /* Sports theme color */
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            background-color: #ff5722; /* Sports theme color */
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #e64a19; /* Darker shade on hover */
+        }
+
+        .social-btns {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            background-color: #db4437;
+            color: rgb(255, 255, 255);
+            border-radius: 5px;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s; /* Added transform transition */
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .google-btn img {
+            margin-right: 10px;
+        }
+
+        .google-btn:hover {
+            background-color: #c1351d;
+            transform: scale(1.05); /* Scale up the button slightly */
+        }
+
+        p {
+            text-align: center;
+            margin-top: 1rem;
+            color: #555;
+        }
+
+        .pointer {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-wrapper {
+                width: 90%;
+            }
+        }
+     
+    </style>
+  </head>
+  <body>
+    <div id="container" class="container">
+      <div class="form-wrapper align-items-center">
+        <div class="form sign-up">
+          <h2>Join with us</h2>
+          <form
+            id="signupForm"
+            action="/signup"
+            method="post"
+            
+          >
+            <div class="input-group">
+              <i class="bx bxs-user"></i>
+              <input
+                type="text"
+                placeholder="Username"
+                name="username"
+                id="username"
+              />
+             
+              <span class="error-message" id="usernameError" style="color: red"></span>
+            </div>
+            <div class="input-group">
+              <i class="bx bx-mail-send"></i>
+              <input type="email" placeholder="Email" name="email" id="email" />
+              
+              <span class="error-message" id="emailError" style="color: red"></span>
+            </div>
+            <div class="input-group">
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                placeholder="Password"
+                name="password"
+                id="password"
+              />
+             
+              <span class="error-message" id="passwordError" style="color: red"></span>
+            </div>
+            <div class="input-group">
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                placeholder="Confirm password"
+                name="password2"
+                id="password2"
+              />
+              
+              <span class="error-message" id="password2Error" style="color: red"></span>
+            </div>
+            <% if (typeof error !== 'undefined') { %>
+            <p style="color: red" id="error"><%= error %></p>
+            <% } %>
+            <!-- <p id="error" style="color: red"></p> -->
+            <button type="submit">Sign up</button>
+            <div class="social-btns">
+              <a
+                href="/auth/google"
+                type="button"
+                class="btn btn-outline-danger"
+              >
+                <img
+                  src="/img/google-logo.png"
+                  alt="Google Logo"
+                  style="width: 24px; height: 24px"
+                />
+                Continue With Google
+              </a>
+                        
+            </div>
+          </form>
+          <p>
+            <span>Already have an account?</span>
+            <!-- <b onclick="togglePage('/login')" class="pointer">Sign in here</b> -->
+            <a href="/login" class="pointer"> Sign in here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      // Get the signup form element
+      const signupForm = document.getElementById("signupForm");
+
+      // Add event listener to handle form submission
+      signupForm.addEventListener("submit", (event) => {
+        // Retrieve and trim user inputs
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const password2 = document.getElementById("password2").value.trim();
+
+        // Clear previous error messages
+        document
+          .querySelectorAll(".error-message")
+          .forEach((el) => (el.textContent = ""));
+
+        // Initialize error flag
+        let hasError = false;
+
+        // Username validation
+        if (!username) {
+          showError("usernameError", "Username is required.");
+          hasError = true;
+        } else if (username.length < 3) {
+          showError("usernameError", "Username must be at least 3 characters.");
+          hasError = true;
+        } else if (/\s/.test(username)) {
+          showError("usernameError", "Username cannot contain spaces.");
+          hasError = true;
+        }
+
+        // Email validation
+        if (!email) {
+          showError("emailError", "Email is required.");
+          hasError = true;
+        } else if (!isValidEmail(email)) {
+          showError("emailError", "Please enter a valid email address.");
+          hasError = true;
+        }
+
+        // Password validation
+        if (!password) {
+          showError("passwordError", "Password is required.");
+          hasError = true;
+        } else if (password.length < 6) {
+          showError("passwordError", "Password must be at least 6 characters.");
+          hasError = true;
+        } else if (!/[A-Z]/.test(password)) {
+          showError(
+            "passwordError",
+            "Password must contain at least one uppercase letter."
+          );
+          hasError = true;
+        } else if (!/[0-9]/.test(password)) {
+          showError(
+            "passwordError",
+            "Password must contain at least one number."
+          );
+          hasError = true;
+        }
+
+        // Confirm password validation
+        if (!password2) {
+          showError("password2Error", "Please confirm your password.");
+          hasError = true;
+        } else if (password !== password2) {
+          showError("password2Error", "Passwords do not match.");
+          hasError = true;
+        }
+
+        // Prevent form submission if there are errors
+        if (hasError) {
+          event.preventDefault();
+        } else {
+          emailCheck(event);
+        }
+      });
+
+      // Helper function to show error messages
+      function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        if (errorElement) {
+          errorElement.textContent = message;
+        }
+      }
+
+      // Helper function to validate email format using regex
+      function isValidEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+      }
+
+//       function emailCheck(event) {
+//         Swal.fire("Test Alert", "If you see this, SweetAlert is working.");
+
+//         event.preventDefault()
+//         const username = document.getElementById("username").value.trim();
+//         const email = document.getElementById("email").value.trim();
+//         const password = document.getElementById("password").value.trim();
+//         const password2 = document.getElementById("password2").value.trim();
+
+//   $.ajax({
+//     method: "POST",
+//     url:  "/signup", 
+//     data: { email,username,password,password2 },
+//     success: function (response) {
+//       // Log the response to see exactly what you're getting
+//       console.log("Success Callback Triggered"); 
+//       console.log("Raw Response: ", response);
+
+     
+//         if (response.success===false) {
+//           Swal.fire({
+//             icon: "error",
+//             title: "Email Error",
+//             text: "email already exists", // Shows "Email already exists"
+//           });
+//         } else if (response.success === true) {
+//           Swal.fire({
+//             icon: "success",
+//             title: "Email is valid!",
+//             text: "You can proceed with signup.",
+//           });
+//         }
+//       } ,
+//     error: function (xhr, status, error) {
+//       Swal.fire({
+//         icon: "error",
+//         title: "Server Error",
+//         text: "Something went wrong, please try again later!",
+//       });
+//     },
+//   });
+// }
+
+
+    </script>
+
+    <script></script>
+  </body>
+</html>

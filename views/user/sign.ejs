@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/css/style.css">
+	<title>Signup Page</title>
+	<style>
+		/* General Styles */
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f4;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+}
+
+h2 {
+	text-align: center;
+	margin-bottom: 1.5rem;
+}
+
+/* Form Container */
+.form-wrapper {
+	background-color: white;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	width: 100%;
+	max-width: 400px;
+	padding: 2rem;
+}
+
+.input-group {
+	margin-bottom: 1rem;
+}
+
+.input-group input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+button {
+	width: 100%;
+	background-color: #28a745;
+	color: white;
+	border: none;
+	padding: 10px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #218838;
+}
+
+p {
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.pointer {
+	cursor: pointer;
+	color: #007bff;
+}
+
+.pointer:hover {
+	text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.form-wrapper {
+		width: 90%;
+	}
+}
+
+	</style>
+</head>
+<body>
+	<div id="container" class="container">
+		<div class="form-wrapper align-items-center">
+			<div class="form sign-up">
+				<h2>Join with us</h2>
+				<form action="/signup" method="post">
+					<div class="input-group">
+						<i class='bx bxs-user'></i>
+						<input type="text" placeholder="Username" name="username" required>
+					</div>
+					<div class="input-group">
+						<i class='bx bx-mail-send'></i>
+						<input type="email" placeholder="Email" name="email" required>
+					</div>
+					<div class="input-group">
+						<i class='bx bxs-lock-alt'></i>
+						<input type="password" placeholder="Password" name="password" required>
+					</div>
+					<div class="input-group">
+						<i class='bx bxs-lock-alt'></i>
+						<input type="password" placeholder="Confirm password" name="password2" required>
+					</div>
+					<% if (typeof error !== 'undefined') { %>
+						<div style="color: red;"><%= error %></div>
+					<% } %>
+					<button type="submit">Sign up</button>
+				</form>
+				<p>
+					<span>Already have an account?</span>
+					<b onclick="togglePage('/login')" class="pointer">Sign in here</b>
+				</p>
+			</div>
+		</div>
+	</div>
+	<script src="/js/script.js"></script>
+</body>
+</html>
