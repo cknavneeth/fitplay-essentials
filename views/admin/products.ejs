@@ -252,12 +252,12 @@ body {
                     <%if(data[i].isBlocked===false){%>
 
                     <button class="btn btn-danger" style="width: 80px;">
-                        <a href="/blockProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to block this product?');">Block</a>
+                        <a href="/blockProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to list this product?');">List</a>
                     </button>
                     <%}else{%>
                     
                     <button class="btn btn-success" style="width: 80px;">
-                        <a href="/unBlockProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to unblock this product?');">Unblock</a>
+                        <a href="/unBlockProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to unlist this product?');">Unlist</a>
                     </button>
                     <%}%>
             

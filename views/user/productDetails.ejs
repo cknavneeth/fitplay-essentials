@@ -91,8 +91,8 @@
           </div>
           <div>
             <h4>Available Quantity</h4>
-            <%if(products.quantity===0){%>
-                OUT OF STOCK
+            <%if(products.quantity==="0"){%>
+              <span class="text-danger">OUT OF STOCK </span>  
             <%}else{%>
               <%=products.quantity%>
               <%}%>
@@ -137,7 +137,7 @@
     </div>
     
    <hr>
-    <p>hello my dear</p>
+    
     </div>
   </div>
 

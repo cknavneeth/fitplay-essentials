@@ -48,7 +48,7 @@ exports.loginRedirect = async (req, res) => {
       if (isMatch) {
           console.log("Login successful");
 
-
+ 
           const adminToken=jwt.sign({id:admin._id},process.env.ADMIN_SECRET_KEY,{expiresIn:"12d"})
 
           res.cookie("adminToken",adminToken,{
@@ -62,12 +62,12 @@ exports.loginRedirect = async (req, res) => {
       } else {
           return res.render('admin/adminLogin', { error: 'Invalid login credentials' });
       }
-  } catch (error) {
+  } catch (error) { 
       console.error(error);
       return res.status(500).render('admin/adminLogin', { error: 'Something went wrong. Please try again.' });
   }
 };
-
+ 
 exports.adminLogout=async (req,res)=>{
       res.cookie('adminToken', '',{httpOnly:true,expires:new Date(0)})
       res.redirect('/admin')

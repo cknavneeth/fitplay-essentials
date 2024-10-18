@@ -6,7 +6,7 @@ const {userLoggedIn}=require('../middleware/authMiddlware')
 const passport=require('passport')
 
 console.log("hello")
-router.get("/", (req, res) => {
+router.get("/",(req, res) => {
   // res.render("user/signup", { error: null });
   res.redirect("/index");
 });

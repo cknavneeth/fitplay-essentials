@@ -284,6 +284,7 @@ input[type="file"] {
                                     <input type="text" name="sizes[xl]" value="<%= product.sizes.find(sizeObj => sizeObj.size === 'XL') ? product.sizes.find(sizeObj => sizeObj.size === 'XL').stock : '' %>" id="size_xl" min="0" maxlength="2" class="tiny-box">
                                 </div>
                             </div>
+                            <div id="size-error" class="error-message"></div>
                         </div>
 
 
@@ -426,9 +427,28 @@ input[type="file"] {
             //    const color = document.getElementsByName('color')[0].value;
                const category = document.getElementsByName('category')[0].value;
                const images = document.getElementById('input1')
-               const quantity=document.getElementsByName('quantity')
+               const quantity=document.getElementsByName('quantity')[0].value
     imageDatas = document.getElementById("imageDatas")?.value;
                let isValid = true;    
+
+
+
+               const size_s = document.getElementById("size_s").value
+              const size_m = document.getElementById("size_m").value
+              const size_l = document.getElementById("size_l").value
+              const size_xl = document.getElementById("size_xl").value
+              
+              if(size_s.trim() === "" && size_m.trim()==="" && size_l.trim()=="" && size_xl.trim() === "" ){
+                displayErrorMessage('size-error', 'please enter atleast one size');
+                isValid = false;
+              }
+             else if( parseInt(size_s) <0 || parseInt(size_m)<0 || parseInt(size_l)<0 || parseInt(size_xl)<0 ){
+                displayErrorMessage('size-error', 'You cant enter a negetive size');
+                isValid = false;
+              }
+
+
+
                if (name.trim() === "") {
        displayErrorMessage('productName-error', 'Please enter a product name.');
        isValid = false;
@@ -445,15 +465,19 @@ input[type="file"] {
                    isValid = false;
                }
     
-    
+               if(quantity.trim()===""){
+                displayErrorMessage('quantity-error', 'Please enter a quantity.');
+                  isValid = false;
+            }
+              
     
     
                if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
-                   displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
+                   displayErrorMessage('regularPrice-error', 'Please enter a valid positive price.');
                    isValid = false;
                }
-              if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) < 0) {
-                   displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
+              if (parseFloat(saleprice) < 0) {
+                   displayErrorMessage('salePrice-error', 'Please enter a valid positive price.');
                    isValid = false;
                }
               

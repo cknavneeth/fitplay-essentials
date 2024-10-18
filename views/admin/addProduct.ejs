@@ -129,9 +129,8 @@ h2.content-title {
            <div class="col-lg-6">
                <div class="card mb-4">
                    <div class="card-body">
-                       <form method="post" action="/addProducts" enctype="multipart/form-data"
-                           onsubmit="return validateForm()
-">
+                       <form method="post" action="/addProducts" enctype="multipart/form-data"id="formAddproduct">
+                           <!-- onsubmit="return validateForm()" -->
                            <div class="mb-4">
                                <label for="product_name" class="form-label">Product Name</label>
                                <input type="text" placeholder="Type here" name="productName"
@@ -202,11 +201,14 @@ h2.content-title {
                                     <div>
                                         <label class="mr-5" for="size_s"> S </label>
                                         <input type="text" name="sizes[s]" id="size_s" min="0" maxlength="2" class="tiny-box">
+                                        <!-- <div id="size-error" class="error-message"></div> -->
                                     </div>
                                     <div>
                                         <label class="mr-5" for="size_m"> M </label>
                                         <input type="text" name="sizes[m]" id="size_m" min="0" maxlength="2" class="tiny-box">
+                                        
                                     </div>
+                                    
                                     <div>
                                         <label class="mr-5" for="size_l"> L </label>
                                         <input type="text" name="sizes[l]" id="size_l" min="0" maxlength="2" class="tiny-box">
@@ -216,6 +218,7 @@ h2.content-title {
                                         <input type="text" name="sizes[xl]" id="size_xl" min="0" maxlength="2" class="tiny-box">
                                     </div>
                                 </div>
+                                <div id="size-error" class="error-message"></div>
                             </div>
                             
 
@@ -335,12 +338,10 @@ h2.content-title {
 
 
 <script>
-
-function validateAndSubmit() {
-    if (validateForm()) {
-        document.forms[0].submit();
-    }
-}
+// function validateAndSubmit() {
+//     document.getElementById("formAddproduct").submit();
+    
+// }
 
 function viewImage1(event) {
     document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0]);
@@ -453,81 +454,178 @@ function handleFileSelect(event) {
 
 
 
-
-
-
-
-
-
-function validateForm() {
-              clearErrorMessages();
-              const name = document.getElementsByName('productName')[0].value;
-              const description = document.getElementById('descriptionid').value;
+document.getElementById("formAddproduct").addEventListener("submit",(e)=>{
+    // e.preventDefault();
+    clearErrorMessages();
+       
+    const name = document.getElementsByName('productName')[0].value;
+    const description = document.getElementById('descriptionid').value;
             //   const brand = document.getElementsByName('brand')[0].value;
               const price = document.getElementsByName('regularPrice')[0].value;
               const saleprice = document.getElementsByName('salePrice')[0].value;
             //   const color = document.getElementsByName('color')[0].value;
               const category = document.getElementsByName('category')[0].value;
               const images = document.getElementById('input1')
-              const quantity=document.getElementsByName('quantity')
-              let isValid = true
+              const quantity=document.getElementsByName('quantity')[0].value;
+              const sizes=document.getElementById('size_s')
+              const size_s = document.getElementById("size_s").value
+              const size_m = document.getElementById("size_m").value
+              const size_l = document.getElementById("size_l").value
+              const size_xl = document.getElementById("size_xl").value
+              isValid =true;
+              
+              if(size_s.trim() === "" && size_m.trim()==="" && size_l.trim()=="" && size_xl.trim() === "" ){
+                displayErrorMessage('size-error', 'please enter atleast one size');
+                isValid = false;
+              }
+             else if( parseInt(size_s) <0 || parseInt(size_m)<0 || parseInt(size_l)<0 || parseInt(size_xl)<0 ){
+                displayErrorMessage('size-error', 'You cant enter a negetive size');
+                isValid = false;
+              }
+            //   else if(!/^\d+(\.\d{1,2})?$/.test(size_s) ||!/^\d+(\.\d{1,2})?$/.test(size_m) ||!/^\d+(\.\d{1,2})?$/.test(size_l)||!/^\d+(\.\d{1,2})?$/.test(size_xl)){
+            //     displayErrorMessage('size-error', 'Enter a digit');
+            //     isValid = false;
+            //   }
+
               if (name.trim() === "") {
-      displayErrorMessage('productName-error', 'Please enter a product name.');
-      isValid = false;
-   } else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-      displayErrorMessage('productName-error', 'Product name should contain only alphabetic characters.');
-      isValid = false;
-   }
+                 displayErrorMessage('productName-error', 'Please enter a product name.');
+                 isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+                 displayErrorMessage('productName-error', 'Product name should contain only alphabetic characters.');
+                 isValid = false;
+            }
             
-   if (description.trim() === "") {
-      displayErrorMessage('description-error', 'Please enter a product description.');
-      isValid = false;
-   } else if (!/^[a-zA-Z\s]+$/.test(description.trim())) {
-      displayErrorMessage('description-error', 'Product description should contain only alphabetic characters.');
-      isValid = false;
-   }
+            if (description.trim() === "") {
+                 displayErrorMessage('description-error', 'Please enter a product description.');
+                 isValid = false;
+
+            } else if (!/^[a-zA-Z\s]+$/.test(description.trim())) {
+                 displayErrorMessage('description-error', 'Product description should contain only alphabetic characters.');
+                 isValid = false;
+            }
   
-  
-           
-  
-  
+            if(quantity.trim()===""){
+                displayErrorMessage('quantity-error', 'Please enter a quantity.');
+                  isValid = false;
+            }
               if ( parseInt(quantity) < 0) {
                   displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
                   isValid = false;
               }
-  
-  
-  
-  
+              
               if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
-                  displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
+                  displayErrorMessage('regularPrice-error', 'Please enter a valid positive price.');
                   isValid = false;
               }
-  
-  
-  
-  
               if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) < 0) {
-                  displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
+                  displayErrorMessage('salePrice-error', 'Please enter a valid positive price.');
                   isValid = false;
+
               }
               if (parseFloat(price) <= parseFloat(saleprice)) {
-      displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
-      isValid = false;
-   }
-  
-  
-            //   if (color.trim() === "") {
-            //       displayErrorMessage('color-error', 'Please enter a color.');
-            //       isValid = false;
-            //   }
-  
-  
+                displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
+                isValid = false;
+            }
+
               if (images.files.length === 0) {
                   displayErrorMessage("images-error",'Please select an image.');
                   isValid = false;
-              }
-              return isValid;
+                }
+
+                if(isValid===false)
+                e.preventDefault()
+           
+            })
+
+
+
+
+
+function validateForm() {
+    // e.preventDefault();
+//               clearErrorMessages();
+//               const name = document.getElementsByName('productName')[0].value;
+//               const description = document.getElementById('descriptionid').value;
+//             //   const brand = document.getElementsByName('brand')[0].value;
+//               const price = document.getElementsByName('regularPrice')[0].value;
+//               const saleprice = document.getElementsByName('salePrice')[0].value;
+//             //   const color = document.getElementsByName('color')[0].value;
+//               const category = document.getElementsByName('category')[0].value;
+//               const images = document.getElementById('input1')
+//               const quantity=document.getElementsByName('quantity')[0].value;
+//               const sizes=document.getElementById('size_s')
+//               let isValid = true
+//             //   if(sizes.trim()===""){
+//             //     displayErrorMessage('sizes-error', 'Please enter a size');
+//             //     isValid=false;
+//             //   }
+
+
+
+
+//               if (name.trim() === "") {
+//       displayErrorMessage('productName-error', 'Please enter a product name.');
+//       isValid = false;
+//    } else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+//       displayErrorMessage('productName-error', 'Product name should contain only alphabetic characters.');
+//       isValid = false;
+//    }
+            
+//    if (description.trim() === "") {
+//       displayErrorMessage('description-error', 'Please enter a product description.');
+//       isValid = false;
+//    } else if (!/^[a-zA-Z\s]+$/.test(description.trim())) {
+//       displayErrorMessage('description-error', 'Product description should contain only alphabetic characters.');
+//       isValid = false;
+//    }
+  
+  
+  
+//               if ( parseInt(quantity) < 0) {
+//                   displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
+//                   isValid = false;
+//               }
+//               if (quantity.value.trim() =="") {
+//                   displayErrorMessage('quantity-error', 'Please enter a valid  quantity.');
+//                   isValid = false;
+//               }
+  
+  
+  
+  
+//               if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
+//                   displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
+//                   isValid = false;
+//               }
+  
+  
+//     // if(saleprice.trim()===""){
+//     //             displayErrorMessage('salePrice-error', 'Please enter a price');
+//     //             isValid=false;
+//     //           }
+
+  
+//               if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) < 0) {
+//                   displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
+//                   isValid = false;
+//               }
+//               if (parseFloat(price) <= parseFloat(saleprice)) {
+//       displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
+//       isValid = false;
+//    }
+  
+  
+//             //   if (color.trim() === "") {
+//             //       displayErrorMessage('color-error', 'Please enter a color.');
+//             //       isValid = false;
+//             //   }
+  
+  
+//               if (images.files.length === 0) {
+//                   displayErrorMessage("images-error",'Please select an image.');
+//                   isValid = false;
+//               }
+//               return isValid;
           }
 
 

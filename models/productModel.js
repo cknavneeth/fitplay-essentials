@@ -22,28 +22,35 @@ const productSchema = new Schema({
     },
     regularPrice:{
         type:Number,
+        // type:String,
+
         required:true,
     },
     salePrice:{
         type:Number,
-        required:true
+        // type:String,
+
+        required:true 
     },
     productOffer : {
         type:Number,
+        // type:String,
+
         default:0,
     },
-    quantity:{
-        type:Number,
-        default:true
+    quantity:{ 
+        type:String
+        // type:Number, 
+        // default:true
     },
     color: {
         type:String,
-        required:true
+        required:false
     },
-    productImage:{
+    productImage:{  
         type:[String],
         required:true
-    },
+    }, 
     isBlocked:{
         type:Boolean,
         default:false
@@ -62,8 +69,9 @@ const productSchema = new Schema({
                 required : true,
             },
             stock : {
-                type : Number,
-                required : true,
+                // type : Number,
+                type:String,
+                // required : true,
                 min : 0,
             }
               }
