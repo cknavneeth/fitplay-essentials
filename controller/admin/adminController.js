@@ -2,33 +2,8 @@ const Admin = require('../../models/adminModel.js');
 
 const mongoose=require("mongoose")
 const jwt=require('jsonwebtoken')
+const statusCodes=require('../../config/keys.js')
 
-// exports.loginRedirect = async (req, res) => {
-//     const { email, password } = req.body;
-//   console.log(email,password)
-//     try {
-//       const admin = await Admin.findOne({ email });
-//   console.log("lalu:",email)
-//       if (admin && await admin.matchPassword(password)) {
-
-//         // if (admin.role === 'admin') {
-//         console.log(email)
-//         console.log("gerbil",password)
-          
-//           return res.redirect('admin/dashboard');
-//         //  else {
-//         //   // If the user is not an admin
-//         //   return res.render('admin/adminLogin', { error: 'Unauthorized access' });
-//         // }
-//       } else {
-//         return res.render('admin/adminLogin', { error: 'Invalid login credentials' });
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       return res.status(500).render('admin/adminLogin', { error: 'Something went wrong. Please try again.' });
-//     }
-//   };
-  
 
 exports.loginRedirect = async (req, res) => {
   const { email, password } = req.body;
@@ -64,7 +39,7 @@ exports.loginRedirect = async (req, res) => {
       }
   } catch (error) { 
       console.error(error);
-      return res.status(500).render('admin/adminLogin', { error: 'Something went wrong. Please try again.' });
+      return res.status(statusCodes.INTERNAL_SERVER_ERROR).render('admin/adminLogin', { error: 'Something went wrong. Please try again.' });
   }
 };
  

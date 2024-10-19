@@ -15,7 +15,7 @@ router.get("/login",userLoggedIn,(req, res) => {
 });
 router.get('/signup',(req,res)=>{
   res.render("user/signup", { error: null });
-})
+})  
 
 router.post("/signup", userController.signupRedirect);
 

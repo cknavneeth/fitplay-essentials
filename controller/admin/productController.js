@@ -39,21 +39,10 @@ exports.addProducts=async(req,res)=>{
         }
        
        const category=await Category.findOne({name:products.category })
-    //    console.log(categoryId)
-    //    if(!categoryId){
-    //     return res.status(400).json("invalid category ")
-    //    }
 
-    // const sizes = products.sizes; // Access the sizes object
-    // const sizeData = {
-    //     S: sizes['s'] || 0, // Set to 0 if not provided
-    //     M: sizes['m'] || 0,
-    //     L: sizes['l'] || 0,
-    //     XL: sizes['xl'] || 0
-    // };
     const sizeData = Object.entries(products.sizes).map(([size, stock]) => ({
         size:size.toUpperCase(),
-        stock: parseInt(stock, 10), // Convert stock to a number
+        stock: parseInt(stock, 10), 
         }));
 
        const newProduct=new Product({

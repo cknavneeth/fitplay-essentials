@@ -232,7 +232,8 @@ h2.content-title {
                                        <div class="col-sm-6 mb-3">
                                            <label class="form-label">Category</label>
                                            <select class="form-select border" style="width: 150px;" name="category">
-                                               
+
+                                            <option value="" selected disabled>Select a Category</option>
                                                 <%for (let i=0;i<cat.length;i++){%>
                                                     
 
@@ -482,10 +483,7 @@ document.getElementById("formAddproduct").addEventListener("submit",(e)=>{
                 displayErrorMessage('size-error', 'You cant enter a negetive size');
                 isValid = false;
               }
-            //   else if(!/^\d+(\.\d{1,2})?$/.test(size_s) ||!/^\d+(\.\d{1,2})?$/.test(size_m) ||!/^\d+(\.\d{1,2})?$/.test(size_l)||!/^\d+(\.\d{1,2})?$/.test(size_xl)){
-            //     displayErrorMessage('size-error', 'Enter a digit');
-            //     isValid = false;
-            //   }
+          
 
               if (name.trim() === "") {
                  displayErrorMessage('productName-error', 'Please enter a product name.');
@@ -542,90 +540,7 @@ document.getElementById("formAddproduct").addEventListener("submit",(e)=>{
 
 
 function validateForm() {
-    // e.preventDefault();
-//               clearErrorMessages();
-//               const name = document.getElementsByName('productName')[0].value;
-//               const description = document.getElementById('descriptionid').value;
-//             //   const brand = document.getElementsByName('brand')[0].value;
-//               const price = document.getElementsByName('regularPrice')[0].value;
-//               const saleprice = document.getElementsByName('salePrice')[0].value;
-//             //   const color = document.getElementsByName('color')[0].value;
-//               const category = document.getElementsByName('category')[0].value;
-//               const images = document.getElementById('input1')
-//               const quantity=document.getElementsByName('quantity')[0].value;
-//               const sizes=document.getElementById('size_s')
-//               let isValid = true
-//             //   if(sizes.trim()===""){
-//             //     displayErrorMessage('sizes-error', 'Please enter a size');
-//             //     isValid=false;
-//             //   }
-
-
-
-
-//               if (name.trim() === "") {
-//       displayErrorMessage('productName-error', 'Please enter a product name.');
-//       isValid = false;
-//    } else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-//       displayErrorMessage('productName-error', 'Product name should contain only alphabetic characters.');
-//       isValid = false;
-//    }
-            
-//    if (description.trim() === "") {
-//       displayErrorMessage('description-error', 'Please enter a product description.');
-//       isValid = false;
-//    } else if (!/^[a-zA-Z\s]+$/.test(description.trim())) {
-//       displayErrorMessage('description-error', 'Product description should contain only alphabetic characters.');
-//       isValid = false;
-//    }
   
-  
-  
-//               if ( parseInt(quantity) < 0) {
-//                   displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
-//                   isValid = false;
-//               }
-//               if (quantity.value.trim() =="") {
-//                   displayErrorMessage('quantity-error', 'Please enter a valid  quantity.');
-//                   isValid = false;
-//               }
-  
-  
-  
-  
-//               if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
-//                   displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
-//                   isValid = false;
-//               }
-  
-  
-//     // if(saleprice.trim()===""){
-//     //             displayErrorMessage('salePrice-error', 'Please enter a price');
-//     //             isValid=false;
-//     //           }
-
-  
-//               if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) < 0) {
-//                   displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
-//                   isValid = false;
-//               }
-//               if (parseFloat(price) <= parseFloat(saleprice)) {
-//       displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
-//       isValid = false;
-//    }
-  
-  
-//             //   if (color.trim() === "") {
-//             //       displayErrorMessage('color-error', 'Please enter a color.');
-//             //       isValid = false;
-//             //   }
-  
-  
-//               if (images.files.length === 0) {
-//                   displayErrorMessage("images-error",'Please select an image.');
-//                   isValid = false;
-//               }
-//               return isValid;
           }
 
 

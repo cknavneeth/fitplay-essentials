@@ -1,4 +1,6 @@
+const StatusCodes = require('../../config/keys.js');
 const Category = require('../../models/categoryModel.js');
+const statusCodes=require('../../config/keys.js')
 const mongoose=require('mongoose')
 
 
@@ -32,43 +34,19 @@ exports.categoryInfo=async (req,res)=>{
 
 
 
-//add category
-// exports.addCategory=async(req,res)=>{
-//     const {name,description}=req.body
 
-//     try{
-//         const existingUser=await Category.find({name})
-//         if(existingUser){
-//             return res.status(400).json({error:"category already exists"})
-//         }
-    
-//         const newCategory=new Category({
-//             name,
-//             description,
-//         })
-//         await newCategory.save();
-//         return res.json({message:"category added successfully"})
-//     }catch(error){
-//         console.error(error)
-//         res.status(500).json({error:"internal server error"})
-       
-//     }
-
-   
-// }
-// add category
 exports.addCategory = async (req, res) => {
     const { name, description } = req.body
   
     if (!name || !description) {
-      return res.status(400).json({ error: "name and description are required" })
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: "name and description are required" })
     }
   
     try {
       const existingCategory = await Category.findOne({ name: { $regex: `^${name}$`, $options: 'i' } })
       
       if (existingCategory) {
-        return res.status(400).json({ error: "category already exists" })
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: "category already exists" })
       }
   
       const newCategory = new Category({
@@ -79,7 +57,7 @@ exports.addCategory = async (req, res) => {
       return res.json({ error: "category added successfully" })
     } catch (error) {
       console.error(error)
-      return res.status(500).json({ error: "internal server error" })
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "internal server error" })
     }
   }
 
@@ -107,8 +85,8 @@ exports.addCategory = async (req, res) => {
         const {categoryName,description}=req.body
         const exitingCategory=await Category.findOne({ name: categoryName });
         if(exitingCategory){
-            // res.status(400).json({error:"this is already exists,please give another"})
-            const category = await Category.findById(id); // Fetch the current category data
+            
+            const category = await Category.findById(id); 
             return res.render('admin/editCategory', {
               category: category,
               error: "This category name already exists, please use another."

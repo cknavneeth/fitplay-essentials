@@ -3,7 +3,9 @@ const env = require("dotenv").config();
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
 const Product = require("../../models/productModel.js");
+const Category=require('../../models/categoryModel.js')
 const jwt = require("jsonwebtoken");
+const statusCodes=require('../../config/keys.js')
 
 // exports.signupRedirect=async (req,res)=>{
 //      const {username,email,password,password2}=req.body
@@ -243,7 +245,7 @@ exports.loginRedirect = async (req, res) => {
     }
   } catch (error) {
     console.error(error); // Log the error
-    return res.status(500).render("user/signup", {
+    return res.status(statusCodes.INTERNAL_SERVER_ERROR).render("user/signup", {
       error: "Something went wrong. Please try again.",
     });
   }
@@ -266,14 +268,68 @@ exports.indexPage = async (req, res) => {
 };
 exports.shopPage = async (req, res) => {
   try {
-    const products = await Product.find({ isBlocked: false });
+    // const products = await Product.find({ isBlocked: false });
     const user = req.session.user || null;
-    // console.log(products);
-    // const breadcrumbs = [
-    //   { name: 'Home', url: '/' },
-    //   { name: 'Shop', url: '/shop' }
-    // ];
-    res.render("user/shop", { products ,user});
+
+    //additional for filtering 
+    const categories=await Category.find({})
+
+    let filter={isBlocked:false}
+
+    if(req.query.category){
+      filter.category=req.query.category
+    }
+
+    if(req.query.minPrice&&req.query.maxPrice){
+      filter.salePrice={
+        $gte: Number(req.query.minPrice), 
+        $lte: Number(req.query.maxPrice) 
+      }
+    }
+
+
+    if(req.query.rating){
+      filter.rating={
+        $gte:Number(req.query.rating)
+      }
+    }
+
+    let products=await Product.find(filter)
+
+    const sortOptions=req.query.sort|| 'popularity';
+   switch(sortOptions){
+    case 'priceLowToHigh':
+    products.sort((a,b)=>a.salePrice-b.salePrice)
+    break;
+
+    case 'priceHighToLow':
+    products.sort((a,b)=>b.salePrice-a.salePrice)
+    break;
+
+    case 'averageRating':
+    products.sort((a,b)=>b.rating-a.rating)  
+    break;
+
+    case 'newArrivals':
+    products.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))
+    break;
+
+    case 'nameAsc':
+      products.sort((a,b)=>a.productName.localeCompare(b.productName))
+      break;
+   
+   case 'nameDesc':
+    products.sort((a,b)=>b.productName.localeCompare(a.productName))
+    break;
+   
+   default:
+    products = products.sort((a, b) => b.popularity - a.popularity);
+
+   }
+
+    //closing of additional filtering
+ 
+    res.render("user/shop", { products ,user,categories});
   } catch (error) {
     console.error(error);
   }
