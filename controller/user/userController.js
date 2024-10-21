@@ -231,7 +231,7 @@ exports.loginRedirect = async (req, res) => {
         res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate');
         res.header('Expires', '-1');
         res.header('Pragma', 'no-cache');
-        // return res.redirect("/index"); // Render index page if login is successful               <<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>
+                    
         return res.json({ success: true, error: "Login successful" });
       } else {
         console.log("Invalid login credentials.");

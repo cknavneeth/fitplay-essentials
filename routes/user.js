@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controller/user/userController");
+const profileController = require("../controller/user/profileController");
 const {verifyUser}=require('../middleware/authMiddlware')
 const {userLoggedIn}=require('../middleware/authMiddlware')
 const passport=require('passport')
@@ -46,6 +47,12 @@ router.get('/auth/google/callback',
         res.redirect('/index');
     }
 );
+
+router.get('/contact',verifyUser,profileController.contact)
+
+router.post('/contact',verifyUser,profileController.profileUpdate)
+
+router.get('/address',verifyUser,profileController.address)
 
 module.exports = router;
 

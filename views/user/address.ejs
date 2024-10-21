@@ -1,0 +1,254 @@
+<%- include("../../views/layout/user/header",{user:user}) %>
+
+<html>
+<head>
+    <title>Manage Address</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar and header styles */
+.container2 {
+    display: flex;
+    padding: 20px;
+}
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-right: 20px;
+}
+.sidebar-header {
+    background-color: #3f51b5;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+}
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+.sidebar-header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar-menu li {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.sidebar-menu li:hover, .sidebar-menu li.active {
+    background-color: #e0e0e0;
+    border-radius: 8px;
+}
+.sidebar-menu li i {
+    margin-right: 10px;
+}
+
+/* Specific styles for address-section */
+.address-section .content {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.address-section .address-container {
+    display: flex;
+    gap: 20px;
+}
+
+.address-section .add-address, .address-section .address-card {
+    flex: 1;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.address-section .add-address:hover {
+    background-color: #f0f0f0;
+}
+
+.address-section .address-card {
+    border: none;
+    background-color: #e0e7ff;
+    text-align: left;
+}
+
+.address-section .address-card p {
+    margin: 5px 0;
+}
+
+.address-section .address-card .buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.address-section .address-card .buttons button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.address-section .address-card .buttons .default {
+    background-color: #4caf50;
+    color: #ffffff;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+.modal-content {
+    background-color: #ffffff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+    border-radius: 8px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container2">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Navaneeth Ck</h2>
+                <p>+919495493670</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><i class="fas fa-box"></i> Orders & Returns</li>
+                <li><i class="fas fa-user"></i> My Profile</li>
+                <li><i class="fas fa-wallet"></i> Wallet <span style="margin-left:auto;">₹ 0</span></li>
+                <li><i class="fas fa-trophy"></i> Sporty Rewards</li>
+                <li class="active"><i class="fas fa-map-marker-alt"></i> Address</li>
+                <li><i class="fas fa-power-off"></i> Logout</li>
+            </ul>
+        </div>
+        <div class="content  address-section">
+            <h2>Your Address</h2>
+            <div class="address-container">
+                <div class="add-address" onclick="openModal()">
+                    <i class="fas fa-plus" style="font-size: 24px;"></i>
+                    <p>Add New Address</p>
+                </div>
+                <div class="address-card">
+                    <p><strong>Office</strong></p>
+                    <p>navaneeth ck rono</p>
+                    <p>House no345,kodungallur,lokamaleswaram , thrissur,kodungallur, , Thrissur, KERALA, 680664</p>
+                    <p>Phone: <strong>9495493670</strong></p>
+                    <div class="buttons">
+                        <button>Edit</button>
+                        <button>Delete</button>
+                        <button class="default">Default Address</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<div id="addressModal" class="modal">
+    <div class="modal-content">
+        <h2>Add New Address</h2>
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" placeholder="Enter your address">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" placeholder="Enter your phone number">
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" placeholder="Enter your city">
+        </div>
+        <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" placeholder="Enter your state">
+        </div>
+        <div class="form-group">
+            <label for="zipcode">Zipcode</label>
+            <input type="text" id="zipcode" placeholder="Enter your zipcode">
+        </div>
+        <div class="buttons">
+            <button class="save-btn" onclick="saveAddress()">Save</button>
+            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function openModal(){
+        document.getElementById("addressModal").style.display="block"
+    }
+    function closeModal(){
+        document.getElementById("addressModal").style.display="none"
+    }
+
+    function saveAddress() {
+        
+        const name = document.getElementById('name').value;
+        const address = document.getElementById('address').value;
+        const phone = document.getElementById('phone').value;
+        const city = document.getElementById('city').value;
+        const state = document.getElementById('state').value;
+        const zipcode = document.getElementById('zipcode').value;
+
+        console.log("Name:", name);
+        console.log("Address:", address);
+        console.log("Phone:", phone);
+        console.log("City:", city);
+        console.log("State:", state);
+        console.log("Zipcode:", zipcode);
+
+        closeModal();
+    }
+
+</script>
+
+
+
+
+
+
+</html>
+<%- include("../../views/layout/user/footer") %>

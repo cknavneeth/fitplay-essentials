@@ -1,0 +1,302 @@
+<%- include("../../views/layout/user/header",{user:user}) %>
+
+		
+<head>
+	<title>
+	 Profile Page
+	</title>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+	<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-page {
+    display: flex;
+    padding: 20px;
+}
+
+.profile-page .sidebar {
+    width: 250px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+    padding: 20px;
+}
+
+.profile-page .sidebar .profile-header {
+    background-color: #3b5998;
+    color: white;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+}
+
+.profile-page .sidebar .profile-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.profile-page .sidebar .profile-header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+.profile-page .sidebar .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-page .sidebar .menu li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-page .sidebar .menu li a {
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.profile-page .sidebar .menu li a i {
+    margin-right: 10px;
+}
+
+.profile-page .content {
+    flex-grow: 1;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.profile-page .content h2 {
+    margin-top: 0;
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.profile-page .content .form-group {
+    margin-bottom: 20px;
+}
+
+.profile-page .content .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.profile-page .content .form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.profile-page .content .form-group .update-link {
+    color: #3b5998;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.profile-page .content .form-group .gender-options {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-page .content .form-group .gender-options button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.profile-page .content .form-group .gender-options button.active {
+    background-color: #3b5998;
+    color: white;
+}
+
+.profile-page .content .form-group .newsletter-options {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-page .content .form-group .newsletter-options button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.profile-page .content .form-group .newsletter-options button.active {
+    background-color: #3b5998;
+    color: white;
+}
+
+.profile-page .content .form-group .update-button {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+.profile-page {
+    display: flex;
+    justify-content: center; /* Centers the profile page horizontally */
+    padding: 20px;
+}
+
+.container1 {
+    display: flex;
+    flex-direction: row; /* Ensures the sidebar and content remain side-by-side */
+    margin-left: 0; /* Reset the previous left margin */
+}
+
+	</style>
+   </head>
+   <body>
+	<div class="profile-page">
+	<div class="container1">
+	 <div class="sidebar">
+	  <div class="profile-header">
+	   <h2>
+		
+		 <%=user.username%>
+	   </h2>
+	   <p>
+		  <%=user.email%>
+	   </p>
+	  </div>
+	  <ul class="menu">
+	   <li>
+		<a href="#">
+		 <i class="fas fa-box">
+		 </i>
+		 Orders &amp; Returns
+		</a>
+	   </li>
+	   <li>
+		<a href="#">
+		 <i class="fas fa-user">
+		 </i>
+		 My Profile
+		</a>
+	   </li>
+	   <li>
+		<a href="#">
+		 <i class="fas fa-wallet">
+		 </i>
+		 Wallet
+		 <span>
+		  ₹ 0
+		 </span>
+		</a>
+	   </li>
+	   <li>
+		<a href="#">
+		 <i class="fas fa-trophy">
+		 </i>
+		 Sporty Rewards
+		</a>
+	   </li>
+	   <li>
+		<a href="/address">
+		 <i class="fas fa-map-marker-alt">
+		 </i>
+		  Manage Address
+		</a>
+	   </li>
+	   <li>
+		<a href="#">
+		 <i class="fas fa-sign-out-alt">
+		 </i>
+		 Logout
+		</a>
+	   </li>
+	  </ul>
+	 </div>
+	 <div class="content">
+	  <h2>
+	   Personal Information
+	  </h2>
+	  <form action="/contact" method="POST">
+	  <div class="form-group">
+	   <label for="first-name" >
+		First Name
+	   </label>
+	   <input id="first-name" name="name" readonly="" type="text" value="<%=user.username%>" />
+	  </div>
+	  <div class="form-group">
+	   <label for="last-name">
+		Email
+	   </label>
+	   <input id="last-name" name="email" readonly=""  type="email" value="<%=user.email%>"/>
+	  </div>
+	  <div class="form-group">
+	   <label for="mobile-number">
+		Current Password
+	   </label>
+	   <input id="mobile-number" name="password"  type="text" />
+	   <a class="update-link" href="#">
+		Update password and email
+	   </a>
+	  </div>
+	  <div class="form-group">
+	   <label for="email">
+		New password
+	   </label>
+	   <input id="email" name="newPassword"  type="text" />
+	  </div>
+	  <div class="form-group">
+	   <label for="email">
+		Confirm password
+	   </label>
+	   <input id="email" name="confirmPassword" type="text" />
+	  </div>
+	  <div class="form-group">
+	   <label>
+		Gender
+	   </label>
+	   <div class="gender-options">
+		<button class="active">
+		 Male
+		</button>
+		<button>
+		 Female
+		</button>
+	   </div>
+	  </div>
+	  <div class="form-group">
+	   <label>
+		Fill some sporty stuff in your inbox
+	   </label>
+	   <div class="newsletter-options">
+		<button class="active">
+		 Yes
+		</button>
+		<button>
+		 No
+		</button>
+	   </div>
+	  </div>
+	  <div class="form-group">
+	   <button class="update-button">
+		Update
+	   </button>
+	  </div>
+	</form>
+	 </div>
+	</div>
+</div>
+   </body>
+
+		<%- include("../../views/layout/user/footer") %>
