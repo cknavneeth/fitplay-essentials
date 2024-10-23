@@ -60,5 +60,7 @@ router.post('/addressSave',verifyUser,profileController.savingAddress)
 
 router.get('/editaddress/:addressId',verifyUser ,profileController.editAddress)
 
+router.post('/editAddress/:id',verifyUser,profileController.saveafterEdit)
+
 module.exports = router;
 

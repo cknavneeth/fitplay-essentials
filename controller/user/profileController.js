@@ -128,3 +128,46 @@ exports.editAddress=async(req,res)=>{
     }
  
 }
+
+
+exports.saveafterEdit=async(req,res)=>{
+    try {
+        const {id}=req.params;
+        const{name,mobile,pincode,locality,address,state,city,landmark,alternate_phone,address_type}=req.body
+
+        const user=await User.findOne({'addresses._id':id})      
+
+
+        console.log('Address ID:', id); 
+        console.log('User Found:', user); 
+        if(user&& user.addresses.length > 0){
+            const addressToUpdate=user.addresses.id(id)
+
+            if(addressToUpdate){
+                addressToUpdate.name = name;
+                addressToUpdate.mobile = mobile;
+                addressToUpdate.pincode = pincode;
+                addressToUpdate.locality = locality;
+                addressToUpdate.address = address;
+                addressToUpdate.city = city;
+                addressToUpdate.state = state;
+                addressToUpdate.landmark = landmark;
+                addressToUpdate.alternate_phone = alternate_phone;
+                addressToUpdate.address_type = address_type;
+            
+            await user.save();
+            res.redirect('/address')
+            }
+            else{
+                return res.status(statusCodes.BAD_REQUEST).json({error:'address not found'})
+            }
+           
+
+        }else{
+           return res.status(statusCodes.BAD_REQUEST).json({error:'user not found'})
+        }
+
+    } catch (error) {
+        console.error(err)
+    }
+}

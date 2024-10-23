@@ -7,21 +7,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Address</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
+        .edit-address body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            width: 50%;
-            margin: 50px auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+.edit-address .container {
+    width: 50%;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+    
 
         h1 {
             font-size: 24px;
@@ -134,9 +136,9 @@
     </style>
 </head>
 <body >
-    <div class="container">
+    <div class="container edit-address">
         <h1>Edit Address</h1>
-        <form action="/editAddress/<%= address.id %>" method="POST">
+        <form action="/editAddress/<%= address._id %>" method="POST">
             <div class="form-group">
                 <input type="text" name="name" placeholder="Name" value="<%= address.name %>" required>
                 <input type="tel" name="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" value="<%= address.mobile %>" required>
