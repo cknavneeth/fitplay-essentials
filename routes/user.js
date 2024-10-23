@@ -54,5 +54,11 @@ router.post('/contact',verifyUser,profileController.profileUpdate)
 
 router.get('/address',verifyUser,profileController.address)
 
+router.get('/addressSave',verifyUser,profileController.addressSave)
+
+router.post('/addressSave',verifyUser,profileController.savingAddress)
+
+router.get('/editaddress/:addressId',verifyUser ,profileController.editAddress)
+
 module.exports = router;
 

@@ -12,20 +12,45 @@ body {
     margin: 0;
     padding: 0;
 }
+.content {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the content horizontally */
+    justify-content: center; /* Centers the content vertically */
+    text-align: center;
+}
+.address-section .address-card {
+    width: 100%; /* Take full width inside the container */
+    max-width: 400px; /* Optional: set a max width */
+    background-color: #e0e7ff;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: left;
+}
 
 /* Sidebar and header styles */
 .container2 {
     display: flex;
     padding: 20px;
 }
+
 .sidebar {
-    width: 250px;
+    width: 250px; /* Fixed width */
+    height:500px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-right: 20px;
+    overflow: hidden; /* Prevents content overflow */
+    box-sizing: border-box; /* Ensures padding doesn’t affect width */
 }
+
 .sidebar-header {
     background-color: #3f51b5;
     color: #ffffff;
@@ -33,32 +58,33 @@ body {
     border-radius: 8px 8px 0 0;
     text-align: center;
 }
-.sidebar-header h2 {
-    margin: 0;
-    font-size: 18px;
-}
-.sidebar-header p {
-    margin: 5px 0 0;
-    font-size: 14px;
-}
+
 .sidebar-menu {
     list-style: none;
     padding: 0;
     margin: 0;
 }
+
 .sidebar-menu li {
     padding: 15px 20px;
     display: flex;
     align-items: center;
     cursor: pointer;
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds ellipsis (...) if text is too long */
 }
-.sidebar-menu li:hover, .sidebar-menu li.active {
+
+.sidebar-menu li:hover,
+.sidebar-menu li.active {
     background-color: #e0e0e0;
     border-radius: 8px;
 }
+
 .sidebar-menu li i {
     margin-right: 10px;
 }
+
 
 /* Specific styles for address-section */
 .address-section .content {
@@ -69,9 +95,18 @@ body {
     padding: 20px;
 }
 
-.address-section .address-container {
+/* .address-section .address-container {
     display: flex;
     gap: 20px;
+    flex-direction: column;
+} */
+.address-section .address-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the address cards */
+    justify-content: center;
+    gap: 20px;
+    width: 100%; /* Adjust width if necessary */
 }
 
 .address-section .add-address, .address-section .address-card {
@@ -139,6 +174,10 @@ body {
     border-radius: 8px;
 }
 
+
+
+
+
     </style>
 </head>
 <body>
@@ -160,11 +199,15 @@ body {
         <div class="content  address-section">
             <h2>Your Address</h2>
             <div class="address-container">
-                <div class="add-address" onclick="openModal()">
+                <!-- <div class="add-address" >
                     <i class="fas fa-plus" style="font-size: 24px;"></i>
                     <p>Add New Address</p>
-                </div>
-                <div class="address-card">
+                </div> -->
+                <a href="/addressSave" class="add-address">
+                    <i class="fas fa-plus" style="font-size: 24px;"></i>
+                    <p>Add New Address</p>
+                </a>
+                <!-- <div class="address-card">
                     <p><strong>Office</strong></p>
                     <p>navaneeth ck rono</p>
                     <p>House no345,kodungallur,lokamaleswaram , thrissur,kodungallur, , Thrissur, KERALA, 680664</p>
@@ -174,7 +217,42 @@ body {
                         <button>Delete</button>
                         <button class="default">Default Address</button>
                     </div>
-                </div>
+                </div> -->
+                  
+
+            <!--address card-->
+
+            <% if (user.addresses && user.addresses.length > 0) { %>
+                <% user.addresses.forEach(function(address, index) { %>
+                  <div class="address-card">
+                      <p><strong><%= address.address_type %></strong></p> <!-- Address type: Home/Work -->
+                      <p><%= address.name %></p>
+                      <p><%= address.address %>, <%= address.locality %>, <%= address.city %>, <%= address.state %>, <%= address.pincode %></p>
+                      <p>Phone: <strong><%= address.mobile %></strong></p>
+                      <div class="buttons">
+                        <a href="/editaddress/<%= address._id %>">
+                            <button>Edit</button>
+                        </a>
+                          <button>Delete</button>
+                          <button class="default">
+                            <% if (user.defaultAddress === index) { %>
+                              Default Address
+                            <% } else { %>
+                              Set as Default
+                            <% } %>
+                          </button>
+                      </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                  <p>No addresses found.</p>
+              <% } %>
+              
+
+            <!--address card end-->
+
+
+
             </div>
         </div>
     </div>

@@ -1,0 +1,167 @@
+<%- include("../../views/layout/user/header",{user:user}) %>
+
+<html>
+<head>
+    <title>Manage Addresses</title>
+    <style>
+.address-management body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.address-management .container {
+    width: 50%;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.address-management h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.address-management .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.address-management .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.address-management .form-group input,
+.address-management .form-group select,
+.address-management .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.address-management .form-group input[type="text"],
+.address-management .form-group input[type="tel"],
+.address-management .form-group select {
+    width: calc(50% - 10px);
+}
+
+.address-management .form-group textarea {
+    width: 100%;
+    resize: none;
+}
+
+.address-management .form-group.address-type {
+    display: flex;
+    align-items: center;
+}
+
+.address-management .form-group.address-type input {
+    margin-right: 5px;
+}
+
+.address-management .form-group.address-type label {
+    margin-right: 20px;
+}
+
+.address-management .form-group .buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.address-management .form-group .buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.address-management .form-group .buttons .save-btn {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.address-management .form-group .buttons .cancel-btn {
+    background-color: transparent;
+    color: #007bff;
+}
+
+.address-management .use-location-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container address-management">
+        <h1>Manage Addresses</h1>
+        <form action="/addressSave" method="POST">
+            <button type="button" class="use-location-btn">Use my current location</button>
+            <div class="form-group">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="tel" name="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+            </div>
+            <div class="form-group">
+                <input type="text" name="pincode" placeholder="Pincode" required>
+                <input type="text" name="locality" placeholder="Locality" required>
+            </div>
+            <div class="form-group">
+                <textarea name="address" rows="3" placeholder="Address (Area and Street)" required></textarea>
+            </div>
+            <div class="form-group">
+                <input type="text" name="city" placeholder="City/District/Town" required>
+                <select name="state" required>
+                    <option value="">--Select State--</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" name="landmark" placeholder="Landmark (Optional)">
+                <input type="tel" name="alternate_phone" placeholder="Alternate Phone (Optional)" pattern="[0-9]{10}">
+            </div>
+           
+            <div class="form-group address-type">
+                <label>Address Type</label>
+                <div class="radio-option">
+                    <input type="radio" name="address_type" value="home" required> Home
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="address_type" value="work" required> Work
+                </div>
+            </div>
+            
+            <div class="form-group buttons">
+                <button type="submit" class="save-btn">SAVE</button>
+                <button type="reset" class="cancel-btn">CANCEL</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+
+<%- include("../../views/layout/user/footer") %>

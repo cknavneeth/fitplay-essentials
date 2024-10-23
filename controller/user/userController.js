@@ -163,7 +163,7 @@ exports.otppage = async (req, res) => {
   }
 };
 
-//controller for handling resend otp
+
 
 exports.resendOtp = async (req, res) => {
   try {
@@ -195,7 +195,7 @@ exports.loginRedirect = async (req, res) => {
 
   try {
     const user = await User.findOne({ username: username });
-   // Log the user object
+   
     const trimmedPassword = password.trim();
 
     if(user && user.isBlocked===true){
@@ -235,29 +235,29 @@ exports.loginRedirect = async (req, res) => {
         return res.json({ success: true, error: "Login successful" });
       } else {
         console.log("Invalid login credentials.");
-        // return res.render("user/login", { error: "Invalid login credentials" });
+        
         return res.json({ success: false, error: "Invalid login credentials" });
       }
     } else {
       console.log("User not found.");
-      // return res.render("user/login", { error: "Invalid login credentials" });
+      
       return res.json({ success: false, error: "Invalid login credentials" });
     }
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error); 
     return res.status(statusCodes.INTERNAL_SERVER_ERROR).render("user/signup", {
       error: "Something went wrong. Please try again.",
     });
   }
 };
 
-//getting indexpage
+
 exports.indexPage = async (req, res) => {
   try {
     const products = await Product.find({ isBlocked: false });
     const user = req.session.user || null;
    
-    // console.log(products);
+    
     const breadcrumbs = [
       { name: 'Home', url: '/' }
     ];
@@ -268,7 +268,7 @@ exports.indexPage = async (req, res) => {
 };
 exports.shopPage = async (req, res) => {
   try {
-    // const products = await Product.find({ isBlocked: false });
+    
     const user = req.session.user || null;
 
     //additional for filtering 
