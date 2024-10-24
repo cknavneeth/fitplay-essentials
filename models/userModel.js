@@ -1,17 +1,30 @@
 const mongoose=require("mongoose")
 const bcrypt=require("bcryptjs")
 
+// const addressSchema = new mongoose.Schema({
+//   name: { type: String, required: true },
+//   mobile: { type: String, required: true },
+//   pincode: { type: String, required: true },
+//   locality: { type: String, required: true },
+//   address: { type: String, required: true },
+//   city: { type: String, required: true },
+//   state: { type: String, required: true },
+//   landmark: { type: String },
+//   alternate_phone: { type: String },
+//   address_type: { type: String, enum: ['home', 'work'], required: true }
+// });
+
 const addressSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  mobile: { type: String, required: true },
-  pincode: { type: String, required: true },
-  locality: { type: String, required: true },
-  address: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
+  name: { type: String, required: false },
+  mobile: { type: String, required: false },
+  pincode: { type: String, required: false },
+  locality: { type: String, required:  false },
+  address: { type: String, required:  false },
+  city: { type: String, required:  false },
+  state: { type: String, required:  false },
   landmark: { type: String },
   alternate_phone: { type: String },
-  address_type: { type: String, enum: ['home', 'work'], required: true }
+  address_type: { type: String, enum: ['home', 'work'], required:  false }
 });
 
 const userSchema=new mongoose.Schema({

@@ -117,41 +117,49 @@
 <body>
     <div class="container address-management">
         <h1>Manage Addresses</h1>
-        <form action="/addressSave" method="POST">
+        <form id="addressForm" action="/addressSave" method="POST">
             <button type="button" class="use-location-btn">Use my current location</button>
             <div class="form-group">
-                <input type="text" name="name" placeholder="Name" required>
-                <input type="tel" name="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                <input type="text" name="name" placeholder="Name" >
+                <span class="error-message" id="name-error"></span>
+                <input type="tel" name="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" >
+                <span class="error-message" id="mobile-error"></span>
             </div>
             <div class="form-group">
-                <input type="text" name="pincode" placeholder="Pincode" required>
-                <input type="text" name="locality" placeholder="Locality" required>
+                <input type="text" name="pincode" placeholder="Pincode" >
+                <span class="error-message" id="pincode-error"></span>
+                <input type="text" name="locality" placeholder="Locality" >
+                <span class="error-message" id="locality-error"></span>
             </div>
             <div class="form-group">
-                <textarea name="address" rows="3" placeholder="Address (Area and Street)" required></textarea>
+                <textarea name="address" rows="3" placeholder="Address (Area and Street)" ></textarea>
+                <span class="error-message" id="address-error"></span>
             </div>
             <div class="form-group">
-                <input type="text" name="city" placeholder="City/District/Town" required>
-                <select name="state" required>
+                <input type="text" name="city" placeholder="City/District/Town" >
+                <select name="state" >
                     <option value="">--Select State--</option>
                     <option value="Kerala">Kerala</option>
                     <option value="Tamil Nadu">Tamil Nadu</option>
                     
                 </select>
+                <span class="error-message" id="state-error"></span>
             </div>
             <div class="form-group">
                 <input type="text" name="landmark" placeholder="Landmark (Optional)">
                 <input type="tel" name="alternate_phone" placeholder="Alternate Phone (Optional)" pattern="[0-9]{10}">
+                <span class="error-message" id="alternate-phone-error"></span>
             </div>
            
             <div class="form-group address-type">
                 <label>Address Type</label>
                 <div class="radio-option">
-                    <input type="radio" name="address_type" value="home" required> Home
+                    <input type="radio" name="address_type" value="home" > Home
                 </div>
                 <div class="radio-option">
-                    <input type="radio" name="address_type" value="work" required> Work
+                    <input type="radio" name="address_type" value="work" > Work
                 </div>
+                <span class="error-message" id="address-type-error"></span>
             </div>
             
             <div class="form-group buttons">
@@ -160,6 +168,75 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.getElementById('addressForm').addEventListener('submit',(e)=>{
+            // e.preventDefault();
+            clearErrorMessages()
+
+            let isValid=true
+            const name = document.getElementById('name').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+            const pincode = document.getElementById('pincode').value.trim();
+            const locality = document.getElementById('locality').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value;
+            const addressType = document.querySelector('input[name="address_type"]:checked');
+
+
+            if(name==''){
+                document.getElementById('name-error').innerText="name is required"
+                isValid =false
+            }
+
+            if (!mobile.match(/^\d{10}$/)) {
+                document.getElementById('mobile-error').innerText = 'Mobile number must be 10 digits';
+                isValid = false;
+            }
+
+            if (pincode === '') {
+                document.getElementById('pincode-error').innerText = 'Pincode is required';
+                isValid = false;
+            }
+
+            if (locality === '') {
+                document.getElementById('locality-error').innerText = 'Locality is required';
+                isValid = false;
+            }
+
+            if (address === '') {
+                document.getElementById('address-error').innerText = 'Address is required';
+                isValid = false;
+            }
+
+            if (city === '') {
+                document.getElementById('city-error').innerText = 'City is required';
+                isValid = false;
+            }
+
+            if (state === '') {
+                document.getElementById('state-error').innerText = 'State is required';
+                isValid = false;
+            }
+
+            if (!addressType) {
+                document.getElementById('address-type-error').innerText = 'Please select an address type';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault()
+            }
+
+            function clearErrorMessages(){
+                const errorElement=document.getElementsByClassName('error-message')
+                Array.from(errorElement).forEach((element)=>{
+                    element.innerText=''
+                })
+            }
+        })
+    </script>
 </body>
 
 </html>

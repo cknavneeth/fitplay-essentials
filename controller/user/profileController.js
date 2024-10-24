@@ -36,18 +36,30 @@ exports.profileUpdate=async(req,res)=>{
         if(newPassword!==confirmPassword){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:"password is not equal  "})
         }
+
+        if(email&&email!==user.email){
+            const emailExist=await User.findOne({email})
+            if(emailExist){
+                return res.status(statusCodes.BAD_REQUEST).json({success:false,error:"Email already exist"})
+            }
+        }
+        if (newPassword) {
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            user.password = hashedPassword;
+        }
     
-        const hashedPassword=await bcrypt.hash(newPassword,10)
+       
 
         user.username=name||user.username
 
         user.email=email||user.email
 
-        user.password=hashedPassword
+        
     
         await user.save()
 
-        res.redirect('/contact') 
+        // res.redirect('/contact') 
+        return res.status(200).json({ success: true, message: "Profile updated successfully" });
     }catch(err){
         console.error(err)
         return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({success:false,error:"internal server error"})
