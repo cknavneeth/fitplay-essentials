@@ -112,6 +112,74 @@
 }
 
 
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stack input and error message vertically */
+    margin-bottom: 15px; /* Space between form groups */
+}
+
+.error-message {
+    color: red; /* Color of error messages */
+    font-size: 0.9em; /* Slightly smaller font size */
+    margin-top: 5px; /* Space between input field and error message */
+    /* Optionally, set a fixed height to keep spacing consistent */
+    min-height: 20px; /* Prevent shifts by reserving space for error messages */
+}
+
+
+
+
+/* Style for the address type section */
+.address-type {
+    margin-bottom: 15px; /* Space below the address type section */
+}
+
+.radio-option {
+    display: inline-block; /* Display radio buttons inline */
+    margin-right: 15px; /* Space between radio options */
+}
+
+/* Style for the buttons */
+.buttons {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: flex-start; /* Align buttons to the left */
+}
+
+.save-btn,
+.cancel-btn {
+    padding: 10px 15px; /* Add padding for better spacing */
+    margin-right: 10px; /* Space between buttons */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+/* Style for SAVE button */
+.save-btn {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    width: auto; /* Adjust width to content */
+    margin-bottom: 1rem;
+}
+
+/* Style for CANCEL button */
+.cancel-btn {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
+    width: auto; /* Adjust width to content */
+}
+
+/* Optional: Style on hover */
+.save-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.cancel-btn:hover {
+    background-color: #e53935; 
+}
+
+
+
     </style>
 </head>
 <body>
@@ -137,6 +205,7 @@
             </div>
             <div class="form-group">
                 <input type="text" name="city" placeholder="City/District/Town" >
+                <span id="city-error" class="error-message" style="color:red;"></span>
                 <select name="state" >
                     <option value="">--Select State--</option>
                     <option value="Kerala">Kerala</option>
@@ -171,21 +240,22 @@
 
     <script>
         document.getElementById('addressForm').addEventListener('submit',(e)=>{
-            // e.preventDefault();
+            
             clearErrorMessages()
 
             let isValid=true
-            const name = document.getElementById('name').value.trim();
-            const mobile = document.getElementById('mobile').value.trim();
-            const pincode = document.getElementById('pincode').value.trim();
-            const locality = document.getElementById('locality').value.trim();
-            const address = document.getElementById('address').value.trim();
-            const city = document.getElementById('city').value.trim();
-            const state = document.getElementById('state').value;
-            const addressType = document.querySelector('input[name="address_type"]:checked');
+            
+            const name = document.querySelector('input[name="name"]').value.trim();
+        const mobile = document.querySelector('input[name="mobile"]').value.trim();
+        const pincode = document.querySelector('input[name="pincode"]').value.trim();
+        const locality = document.querySelector('input[name="locality"]').value.trim();
+        const address = document.querySelector('textarea[name="address"]').value.trim();
+        const city = document.querySelector('input[name="city"]').value.trim();
+        const state = document.querySelector('select[name="state"]').value;
+        const addressType = document.querySelector('input[name="address_type"]:checked');
 
 
-            if(name==''){
+            if(name===''){
                 document.getElementById('name-error').innerText="name is required"
                 isValid =false
             }
@@ -224,8 +294,9 @@
                 document.getElementById('address-type-error').innerText = 'Please select an address type';
                 isValid = false;
             }
+            console.log('Form is valid:', isValid);
 
-            if (!isValid) {
+            if (isValid==false) {
                 e.preventDefault()
             }
 

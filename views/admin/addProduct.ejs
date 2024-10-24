@@ -339,10 +339,7 @@ h2.content-title {
 
 
 <script>
-// function validateAndSubmit() {
-//     document.getElementById("formAddproduct").submit();
-    
-// }
+
 
 function viewImage1(event) {
     document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0]);
@@ -360,7 +357,7 @@ function viewImage4(event) {
     document.getElementById('imgView4').src = URL.createObjectURL(event.target.files[0]);
 }
 
-// Corrected function name and image references
+
 function viewImage(event, index) {
     let input = event.target;
     let reader = new FileReader();
@@ -370,7 +367,7 @@ function viewImage(event, index) {
         let image = document.getElementById('imgView' + index);
         image.src = dataURL;
 
-        // Initialize Cropper.js
+        
         let cropper = new Cropper(image, {
             aspectRatio: 1,
             viewMode: 1,
@@ -380,31 +377,31 @@ function viewImage(event, index) {
             zoomable: true
         });
 
-        // Display the cropper container
+        
         let cropperContainer = document.querySelector("#croppedImg" + index).parentNode;
         cropperContainer.style.display = "block";
 
-        // Handle Save button click
+        
         let saveButton = document.querySelector("#saveButton" + index);
         saveButton.addEventListener('click', async function () {
             let croppedCanvas = cropper.getCroppedCanvas();
             let croppedImage = document.getElementById("croppedImg" + index);
-            croppedImage.src = croppedCanvas.toDataURL('image/jpeg', 1.0); // Set cropped image source
+            croppedImage.src = croppedCanvas.toDataURL('image/jpeg', 1.0); 
 
             let timestamp = new Date().getTime();
             let fileName = `cropped-img-${timestamp}-${index}.png`;
 
-            // Create a Blob from cropped canvas
+            
             croppedCanvas.toBlob(async (blob) => {
-                // Create a new File object from the Blob
+                
                 let croppedFile = new File([blob], fileName, { type: 'image/png' });
 
-                // Create a DataTransfer object to replace the original input file with the cropped file
+                
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(croppedFile);
-                document.getElementById('input' + index).files = dataTransfer.files; // Replace input files
+                document.getElementById('input' + index).files = dataTransfer.files; 
 
-                // Hide cropper and destroy instance
+                
                 cropperContainer.style.display = "none";
                 cropper.destroy();
             }, 'image/png');
@@ -413,7 +410,7 @@ function viewImage(event, index) {
     reader.readAsDataURL(input.files[0]);
 }
 
-// Handle file selection for multiple images and thumbnails
+
 let selectedImage = [];
 document.getElementById('input1').addEventListener('change', handleFileSelect);
 
