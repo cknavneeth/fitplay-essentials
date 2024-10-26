@@ -9,9 +9,6 @@ exports.verifyUser = async (req, res, next) => {
       const decode = jwt.verify(token,process.env.USER_SECRET_KEY);
       console.log(decode);
       req.user=decode
-      
-      // const lalu = await User.findById(decode.id).select("-password");
-      // console.log(lalu);
       next();
     } catch (error) {
       console.error(error);
@@ -22,23 +19,7 @@ exports.verifyUser = async (req, res, next) => {
   }
 };
 
-// exports.userLoggedIn = (req,res,next)=> {
-//   const token = req.cookies.token||  req.headers.authorization?.split(' ')[1];
- 
-//   if(!token){
-//     // return next()  
-//     return res.redirect('/login');
-//   }
-//   try {
-//     const decoded = jwt.verify(token,process.env.USER_SECRET_KEY)
-//     if(decoded){
-//       console.log(decoded,"its decoded")
-//       res.redirect('/index')
-//     }
-//   } catch (error) {
-//     return next()
-//   }
-// }
+
 
 
 

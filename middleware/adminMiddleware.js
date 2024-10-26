@@ -41,7 +41,6 @@ exports.AdminLoggedIn = (req,res,next)=> {
     }
   }
 
-// module.exports = verifyAdmin
-    // AdminLoggedIn
+
     
 

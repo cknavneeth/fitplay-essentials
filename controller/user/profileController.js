@@ -135,7 +135,7 @@ exports.editAddress=async(req,res)=>{
         }
         const address = user.addresses.id(addressId);
              if (!address) {
-                 return res.status(404).send('Address not found');
+                 return res.status(statusCodes.BAD_REQUEST).send('Address not found');
              }
         res.render('user/editAddress',{address,user})
     } catch (error) {
@@ -193,11 +193,7 @@ exports.deleteAddress=async(req,res)=>{
     try {
         const addressId=req.params.id
 
-        // await User.updateOne(
-        //     {_id:req.user._id},
-        //     {$pull:{addresses:{_id:addressId}}}
-        // )
-        // return res.status(statusCodes.OK).json({success:true,error:'card Deleted Successfully'})
+        
         const result = await User.updateOne(
             { _id: req.user.id, 'addresses._id': addressId },
             { $set: { 'addresses.$.deleted': true } }

@@ -7,21 +7,7 @@ const Category=require('../../models/categoryModel.js')
 const jwt = require("jsonwebtoken");
 const statusCodes=require('../../config/keys.js')
 
-// exports.signupRedirect=async (req,res)=>{
-//      const {username,email,password,password2}=req.body
-//      console.log(username)
-//      console.log(password)
-//      try{
-//         //   if(password!==password2){
-//         //     return res.render("/signup",{error:"password is not matching"})
-//         //   }
-//           const user=new User({username,email,password})
-//           await user.save()
-//           res.redirect('/otpvalidate')
-//      }catch(err){
-//          console.log(err)
-//      }
-// }
+
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -59,10 +45,9 @@ exports.signupRedirect = async (req, res) => {
     console.log(req.body);
     let { username, email, password, password2 } = req.body;
     console.log("check",username,email,password)
-    // let {  email,  } = req.body;
+    
     username=username.trim()
 
- 
     const findUser = await User.findOne({ email: email });
     if (findUser) {
       return res.render("user/signup", { error: "EMAIL ALREADY EXISTS" });
@@ -94,34 +79,7 @@ const securePassword = async (password) => {
   } catch (error) {}
 };
 
-// exports.otppage = async (req, res) => {
-//     try {
-//         const { otp } = req.body;
-//         if (otp === req.session.otp) {
-//             const user = req.session.userData;
-//             const passwordHash = await securePassword(user.password);
 
-//             const saveUserData = new User({
-//                 username: user.username,
-//                 email: user.email,
-//                 password: passwordHash
-//             });
-
-//             await saveUserData.save();
-//             req.session.user = saveUserData.id;
-//             // res.redirect("/");
-//             return res.status(200).json({
-//                 success: true,
-//                 redirectUrl: "/"
-//             });
-//         } else {
-//            res.status(500).json({success:false,error:"Invalid OTP,please try again"})
-//         }
-//     } catch (error) {
-//         console.error("Error",error)
-//         res.status(500).json({success:false,error:"error occured"})
-//     }
-// };
 exports.otppage = async (req, res) => {
   try {
     const { otp } = req.body;
@@ -203,7 +161,7 @@ exports.loginRedirect = async (req, res) => {
     }
 
     if (user) {
-      // Log the entered password and the hashed password
+      
       console.log("Entered Password:", password);
       console.log("Hashed Password:", user.password);
 
@@ -212,9 +170,7 @@ exports.loginRedirect = async (req, res) => {
 
       if (isMatch) {
         console.log("Password match successful!");
-        //   req.session.userId = user._id; // Store user ID in the session
-        //   req.session.username = user.username; // Optionally store the username
-        //   console.log('Session created:', req.session);
+       
 
         const token = jwt.sign({ id: user._id },process.env.USER_SECRET_KEY, {
           expiresIn: "12d",
@@ -255,7 +211,9 @@ exports.loginRedirect = async (req, res) => {
 exports.indexPage = async (req, res) => {
   try {
     const products = await Product.find({ isBlocked: false });
-    const user = req.session.user || null;
+    // const user = req.session.user || null;
+    const userId=req.user.id
+    const user=await User.findById(userId)
    
     
     const breadcrumbs = [
@@ -269,9 +227,11 @@ exports.indexPage = async (req, res) => {
 exports.shopPage = async (req, res) => {
   try {
     
-    const user = req.session.user || null;
+    // const user = req.session.user || null;
+    const userId=req.user.id
+    const user=await User.findById(userId)
 
-    //additional for filtering 
+    
     const categories=await Category.find({})
 
     let filter={isBlocked:false}
@@ -327,7 +287,7 @@ exports.shopPage = async (req, res) => {
 
    }
 
-    //closing of additional filtering
+    
  
     res.render("user/shop", { products ,user,categories});
   } catch (error) {

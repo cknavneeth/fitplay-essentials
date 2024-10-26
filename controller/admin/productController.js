@@ -4,6 +4,7 @@ const User=require('../../models/userModel.js')
 const fs=require("fs")
 const path=require("path")
 const sharp=require("sharp")
+const statusCodes=require('../../config/keys.js')
 
 
 exports.getProduct=async(req,res)=>{
@@ -62,7 +63,7 @@ exports.addProducts=async(req,res)=>{
        await newProduct.save()
        return res.redirect('/addProducts')
     }else{
-        return res.status(400).json("product already exist,please try with another name!")
+        return res.status(statusCodes.BAD_REQUEST).json("product already exist,please try with another name!")
     }
     } catch (error) {
         console.error("Error occured",error)
@@ -105,12 +106,12 @@ exports.getAllProducts=async(req,res)=>{
 
             })
         }else{
-            res.status(400).json('page 404')
+            res.status(statusCodes.BAD_REQUEST).json('page 404')
         }
         
     } catch (error) {
         console.error(error)
-        res.status(500).json("internal server error")
+        res.status(statusCodes.INTERNAL_SERVER_ERROR).json("internal server error")
     }
 }
 
@@ -125,7 +126,7 @@ exports.addProductOffer=async(req,res)=>{
         res.json({status:true})
     } catch (error) {
         console.error(error)
-        res.status(500).json({success:false,error:"internal server error"})
+        res.status(statusCodes.INTERNAL_SERVER_ERROR).json({success:false,error:"internal server error"})
     }
 }
 
@@ -140,7 +141,7 @@ exports.removeProductOffer=async(req,res)=>{
         res.json({status:true})
 
     } catch (error) {
-        res.status(500).json({success:false,error:"internal server error"})
+        res.status(statusCodes.BAD_REQUEST).json({success:false,error:"internal server error"})
     }
 }
 
@@ -151,7 +152,7 @@ exports.blockProduct=async(req,res)=>{
         await Product.findByIdAndUpdate({_id:id},{$set:{isBlocked:true}})
         res.redirect('/products')
     } catch (error) {
-        res.status(400).json({success:false,error:"An error in blocking"})
+        res.status(statusCodes.BAD_REQUEST).json({success:false,error:"An error in blocking"})
     }
 }
 
@@ -162,7 +163,7 @@ exports.unblockProduct=async(req,res)=>{
         await Product.findByIdAndUpdate({_id:id},{$set:{isBlocked:false}})
         res.redirect('/products')
     } catch (error) {
-        res.status(400).json({success:false,error:"An error in blocking"})
+        res.status(statusCodes.BAD_REQUEST).json({success:false,error:"An error in blocking"})
     }
 }
 
@@ -177,48 +178,11 @@ exports.getEditProduct=async(req,res)=>{
             cat:category
         })
     } catch (error) {
-        res.status(400).json({error:"error while getting page"})
+        res.status(statusCodes.BAD_REQUEST).json({error:"error while getting page"})
     }
 }
 
-// //edit products
-// exports.editProduct=async(req,res)=>{
-//     try {
-//         const id=req.params.id
-//         const product=await Product.findOne({_id:id})
-//         const data=req.body
-//         const existingProduct=await Product.findOne({
-//             productName:data.productName,
-//             _id:{$ne:id}
-//         })
-//         if(existingProduct){
-//             return res.status(400).json({error:"This product is already exist dude!"})
-//         }
-//         const images=[]
-//         if(req.files&&req.files.length>0){
-//             for(let i=0;i<req.files.length;i++){
-//                 images.push(req.files[i].filename)
-//             }
-//         }
-//         const updateFields={
-//             productName:data.productName,
-//             category:data.category,
-//             regularPrice:data.regularPrice,
-//             salePrice:data.salePrice,
-//             quantity:data.quantity,
-//             size:data.size,
-//             color:data.color
-//         }
-//         if(req.files.length>0){
-//             updateFields.$push={productImage:{$each:images}}
-//         }
-//         await Product.findByIdAndUpdate(id,updateFields,{new:true})
-//         res.redirect('/products')
-//     } catch (error) {
-//         console.error(error)
-//         res.status(500).json({error:"error while updating"})
-//     }
-// }
+
 
 
 exports.editProduct = async (req, res) => {
@@ -231,7 +195,7 @@ exports.editProduct = async (req, res) => {
         const category = await Category.findOne({ name: data.category });
         console.log(category)
         if (!category) {
-            return res.status(400).json({ error: "Category not found!" });
+            return res.status(statusCodes.BAD_REQUEST).json({ error: "Category not found!" });
         }
 
         
@@ -280,7 +244,7 @@ exports.editProduct = async (req, res) => {
         res.redirect('/products');
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Error while updating the product" });
+        res.status(statusCodes.INTERNAL_SERVER_ERROR).json({ error: "Error while updating the product" });
     }
 };
 
@@ -291,23 +255,7 @@ exports.editProduct = async (req, res) => {
 
 
 
-//deleteSingleImage
-// exports.deleteSingleImage=async(req,res)=>{
-//     try {
-//         const{imageNameToServer,productIdToServer}=req.body
-//         await Product.findByIdAndUpdate(productIdToServer,{$pull:{productImage:imageNameToServer}}) 
-//         const imagePath=("public","uploads","re-image",imageNameToServer)
-//         if(fs.existsSync(imagePath)){
-//             await fs.unlinkSync(imagePath)
-//             console.log(`image ${imageNameToServer} is deleted succesfully` )
-//         }else{
-//             console.log(`image ${imageNameToServer} not found` )
-//         }
-//         res.send({status:true})
-//     } catch (error) {
-//         res.status(400).json({error:"error occured while deleting"})
-//     }
-// }
+
 exports.deleteSingleImage = async (req, res) => {
     try {
         const { imageNameToServer, productIdToServer } = req.body;
@@ -324,6 +272,6 @@ exports.deleteSingleImage = async (req, res) => {
         
         res.send({ status: true });
     } catch (error) {
-        res.status(400).json({ error: "Error occurred while deleting" });
+        res.status(statusCodes.BAD_REQUEST).json({ error: "Error occurred while deleting" });
     }
 };

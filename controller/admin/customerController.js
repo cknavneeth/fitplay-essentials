@@ -1,3 +1,4 @@
+const StatusCodes = require('../../config/keys.js');
 const User = require('../../models/userModel.js');
 
 exports.listCustomers = async (req, res) => {
@@ -34,7 +35,7 @@ exports.listCustomers = async (req, res) => {
       });
     } catch (error) {
       console.error("Error fetching users:", error);
-      res.status(500).send('Server Error');
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Server Error');
     }
   };
 
@@ -47,7 +48,7 @@ exports.blocking=async (req,res)=>{
         const user = await User.findById(id);
         if (!user) {
             console.log("User not found with ID:", id);
-            return res.status(404).send('User not found'); // Handle user not found
+            return res.status(StatusCodes.BAD_REQUEST).send('User not found'); // Handle user not found
         }
 
 
