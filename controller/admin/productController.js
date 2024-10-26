@@ -68,7 +68,7 @@ exports.addProducts=async(req,res)=>{
         console.error("Error occured",error)
         // return res.redirect('/pageerror')
     }
-}
+} 
 
 
 //listing products
@@ -227,14 +227,14 @@ exports.editProduct = async (req, res) => {
         const data = req.body;
         console.log(data)
 
-        // Find the category ObjectId based on the category name
+        
         const category = await Category.findOne({ name: data.category });
         console.log(category)
         if (!category) {
             return res.status(400).json({ error: "Category not found!" });
         }
 
-        // Check if a product with the same name exists (excluding the current product)
+        
         const existingProduct = await Product.findOne({
             productName: data.productName,
             _id: { $ne: id }
@@ -248,10 +248,10 @@ exports.editProduct = async (req, res) => {
             stock: parseInt(stock, 10), // Convert stock to a number
         }));
 
-        // Prepare the updated fields
+        
         const updateFields = {
             productName: data.productName,
-            category: category._id, // Use the ObjectId of the category
+            category: category._id, 
             regularPrice: data.regularPrice,
             salePrice: data.salePrice,
             quantity: data.quantity,

@@ -74,7 +74,10 @@ exports.address=async(req,res)=>{
         const userId=req.user.id
         console.log(userId)
         const user = await User.findById(userId);
-        res.render('user/address',{user})
+        const activeAddresses = user.addresses.filter(address => !address.deleted);
+
+        res.render('user/address', { user: { ...user.toObject(), addresses: activeAddresses } });
+       
     } catch (error) {
         console.error(error)
     }
@@ -181,5 +184,31 @@ exports.saveafterEdit=async(req,res)=>{
 
     } catch (error) {
         console.error(err)
+    }
+}
+
+
+
+exports.deleteAddress=async(req,res)=>{
+    try {
+        const addressId=req.params.id
+
+        // await User.updateOne(
+        //     {_id:req.user._id},
+        //     {$pull:{addresses:{_id:addressId}}}
+        // )
+        // return res.status(statusCodes.OK).json({success:true,error:'card Deleted Successfully'})
+        const result = await User.updateOne(
+            { _id: req.user.id, 'addresses._id': addressId },
+            { $set: { 'addresses.$.deleted': true } }
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ success: false, error: 'Address not found or not deleted' });
+        }
+        return res.status(200).json({ success: true, message: 'Address soft-deleted successfully' });
+    } catch (error) {
+        console.error(error)
+        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'error occured while deleting'})
     }
 }

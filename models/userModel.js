@@ -24,7 +24,8 @@ const addressSchema = new mongoose.Schema({
   state: { type: String, required:  false },
   landmark: { type: String },
   alternate_phone: { type: String },
-  address_type: { type: String, enum: ['home', 'work'], required:  false }
+  address_type: { type: String, enum: ['home', 'work'], required:  false },
+  deleted: { type: Boolean, default: false } 
 });
 
 const userSchema=new mongoose.Schema({

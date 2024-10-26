@@ -62,5 +62,7 @@ router.get('/editaddress/:addressId',verifyUser ,profileController.editAddress)
 
 router.post('/editAddress/:id',verifyUser,profileController.saveafterEdit)
 
+router.post('/deleteAddress/:id',verifyUser,profileController.deleteAddress)
+
 module.exports = router;
 
