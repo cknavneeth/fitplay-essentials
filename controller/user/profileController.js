@@ -27,12 +27,14 @@ exports.profileUpdate=async(req,res)=>{
         if(!user){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:"user not found"})
         }
-    
-        const isMatch=await bcrypt.compare(password,user.password)
-        if(!isMatch){
-            return res.status(statusCodes.BAD_REQUEST).json({success:false ,error:"current password is incorrect"})
+        const isGoogleUser=!user.password
+        if(!isGoogleUser&&password){
+            const isMatch=await bcrypt.compare(password,user.password)
+            if(!isMatch){
+                return res.status(statusCodes.BAD_REQUEST).json({success:false ,error:"current password is incorrect"})
+            }
         }
-    
+
         if(newPassword!==confirmPassword){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:"password is not equal  "})
         }

@@ -245,6 +245,8 @@ body {
 	   <input id="email" name="email"  type="email" value="<%=user.email%>"/>
 	   <small id="email-error" class="error-message"></small>
 	  </div>
+
+     <%if(!user.isGoogleUser){%>
 	  <div class="form-group">
 	   <label for="mobile-number">
 		Current Password
@@ -255,6 +257,9 @@ body {
 		Update password and email
 	   </a>
 	  </div>
+	  <%}%>
+
+
 	  <div class="form-group">
 	   <label for="email">
 		New password
@@ -311,6 +316,7 @@ body {
    
 
    <script>
+	 
 	document.getElementById('profileUpdateForm').addEventListener('submit',async function(event) {
     event.preventDefault()
     if (!validateForm()) {
@@ -360,12 +366,14 @@ body {
 function validateForm() {
     let isValid = true;
     console.log('asthafarullah')
+	
     
     const name = document.getElementById('first-name').value.trim();
     const email = document.getElementById('email').value.trim();
     const currentPassword = document.getElementById('password').value.trim();
     const newPassword = document.getElementById('newPassword').value.trim();
     const confirmPassword = document.getElementById('confirmPassword').value.trim();
+	
 
 	console.log("Name:", name);
     console.log("Email:", email);

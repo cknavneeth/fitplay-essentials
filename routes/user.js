@@ -5,9 +5,11 @@ const profileController = require("../controller/user/profileController");
 const {verifyUser}=require('../middleware/authMiddlware')
 const {userLoggedIn}=require('../middleware/authMiddlware')
 const passport=require('passport')
+const jwt = require('jsonwebtoken');
+
 
 console.log("hello")
-router.get("/",verifyUser,(req, res) => {
+router.get("/",(req, res) => {
   // res.render("user/signup", { error: null });
   res.redirect("/index");
 });
@@ -33,17 +35,28 @@ router.get('/shop',verifyUser,userController.shopPage)
 router.get('/productDetails/:id',userController.productDetails) 
 
 router.post('/logout',userController.logOut)
-// router.get('/auth/google', (req, res, next) => {
-//   passport.authenticate('google', { scope: ['profile', 'email'] });
-// });
+
 router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']
 }));
-// Callback route that Google redirects to after authentication
+
 router.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/signup' }),
     (req, res) => {
-        // Successful authentication, redirect to index.
+      const user = req.user;
+
+      
+      const token = jwt.sign({ id: user._id }, process.env.USER_SECRET_KEY, {
+        expiresIn: '12d', 
+      });
+  
+      
+      res.cookie('token', token, {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, 
+        secure: process.env.NODE_ENV === 'production', 
+      });
+        
         res.redirect('/index');
     }
 );

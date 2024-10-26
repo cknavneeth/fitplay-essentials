@@ -3,21 +3,41 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 exports.verifyUser = async (req, res, next) => {
-  let token = req.cookies.token;
+  const token = req.cookies.token;
+  
   if (token) {
     try {
-      const decode = jwt.verify(token,process.env.USER_SECRET_KEY);
+      const decode = jwt.verify(token, process.env.USER_SECRET_KEY);
       console.log(decode);
-      req.user=decode
-      next();
+      req.user = decode;  
     } catch (error) {
-      console.error(error);
-      res.status(400).redirect("/login");
+      console.error("Token verification failed:", error);
+      req.user = null;    
     }
   } else {
-    res.status(400);
+    req.user = null;     
   }
+
+  next(); 
 };
+
+
+// exports.verifyUser = async (req, res, next) => {
+//   let token = req.cookies.token;
+//   if (token) {
+//     try {
+//       const decode = jwt.verify(token,process.env.USER_SECRET_KEY);
+//       console.log(decode);
+//       req.user=decode
+//       next();
+//     } catch (error) {
+//       console.error(error);
+//       res.status(400).redirect("/login");
+//     }
+//   } else {
+//     res.status(400);
+//   }
+// };
 
 
 
