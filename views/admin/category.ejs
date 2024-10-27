@@ -299,12 +299,51 @@
 
   </script>
   <script>
+    // $(document).ready(function(){
+    //   $('.delete-category').on('click',function(){
+    //     const categoryId=$(this).data('id')
+
+
+    //     if(confirm("are you want to this user?" )){
+    //       $.ajax({
+    //          url:'/deleteCategory/' +categoryId,
+    //          method:"POST",
+    //          success:function(response){
+    //           if(response.success){
+    //             console.log(response.success)
+    //             $('#category-'+categoryId).remove()
+    //             alert("successfully deleted")
+    //             window.location.href = "/category";
+
+    //           }else{
+    //             alert('error :'+response.error)
+    //           }
+    //          },
+    //          error:function(err){
+    //             alert("an error occured while deleting category")
+    //          }
+    //       })
+    //     }
+    //   })
+    // })
+
+
+
     $(document).ready(function(){
       $('.delete-category').on('click',function(){
         const categoryId=$(this).data('id')
 
 
-        if(confirm("are you want to this user?" )){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to delete this category?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result)=>{
+          if(result.isConfirmed){
           $.ajax({
              url:'/deleteCategory/' +categoryId,
              method:"POST",
@@ -312,8 +351,16 @@
               if(response.success){
                 console.log(response.success)
                 $('#category-'+categoryId).remove()
-                alert("successfully deleted")
-                window.location.href = "/category";
+                // alert("successfully deleted")
+                
+                Swal.fire({
+                  icon:'success',
+                  title:'Category deleted successfully',
+                  text:'Category has been deleted successfully'
+                }).then(()=>{
+                  window.location.href = "/category";
+                })
+                
 
               }else{
                 alert('error :'+response.error)
@@ -324,6 +371,8 @@
              }
           })
         }
+        })
+
        
       })
     })

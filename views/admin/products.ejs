@@ -248,18 +248,25 @@ body {
                 </td>
                 <td><%=data[i].quantity%></td>
                 <td>
-                
-                    <%if(data[i].isBlocked===false){%>
 
-                    <button class="btn btn-danger" style="width: 80px;">
-                        <a href="/blockProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to list this product?');">List</a>
-                    </button>
-                    <%}else{%>
-                    
-                    <button class="btn btn-success" style="width: 80px;">
-                        <a href="/unBlockProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to unlist this product?');">Unlist</a>
-                    </button>
-                    <%}%>
+
+
+
+
+                
+                    <% if (data[i].isBlocked === false) { %>
+                        <button class="btn btn-danger" style="width: 80px;">
+                            <a href="#" class="text-white" onclick="confirmBlock('<%= data[i]._id %>')">Unlist</a>
+                        </button>
+                    <% } else { %>
+                        <button class="btn btn-success" style="width: 80px;">
+                            <a href="#" class="text-white" onclick="confirmUnblock('<%= data[i]._id %>')">List</a>
+                        </button>
+                    <% } %>
+
+
+
+
             
                 </td>
                 <td>
@@ -373,6 +380,40 @@ body {
             }
         })
         
+    }
+</script>
+
+<script>
+    function confirmBlock(productId){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to unlist this product?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, unlist it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/blockProduct?id=' + productId;
+            }
+        });
+    }
+
+    function confirmUnblock(productId){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to list this product?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, list it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/unBlockProduct?id=' + productId;
+            }
+        });
     }
 </script>
 

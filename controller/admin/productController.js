@@ -145,7 +145,7 @@ exports.removeProductOffer=async(req,res)=>{
     }
 }
 
-//block product
+
 exports.blockProduct=async(req,res)=>{
     try {
         let id=req.query.id
@@ -156,7 +156,7 @@ exports.blockProduct=async(req,res)=>{
     }
 }
 
-//unblock product
+
 exports.unblockProduct=async(req,res)=>{
     try {
         let id=req.query.id
@@ -167,7 +167,7 @@ exports.unblockProduct=async(req,res)=>{
     }
 }
 
-// get edit page
+
 exports.getEditProduct=async(req,res)=>{
     try {
         let id=req.query.id
@@ -209,10 +209,8 @@ exports.editProduct = async (req, res) => {
         }
         const size = Object.entries(data.sizes).map(([size, stock]) => ({
             size: size.toUpperCase(),
-            stock: parseInt(stock, 10), // Convert stock to a number
+            stock: parseInt(stock, 10), 
         }));
-
-        
         const updateFields = {
             productName: data.productName,
             category: category._id, 
@@ -223,28 +221,23 @@ exports.editProduct = async (req, res) => {
             color: data.color,
         };
 
-        // Handle file uploads
+        
         const images = [];
         if (req.files && req.files.length > 0) {
             for (let i = 0; i < req.files.length; i++) {
                 images.push(req.files[i].filename);
             }
-
-            // Apply the $push operator for product images
             await Product.findByIdAndUpdate(id, {
                 $set: updateFields,
                 $push: { productImage: { $each: images } }
             }, { new: true });
-        } else {
-            // If no new images are uploaded, just update the fields
+        } else {  
             await Product.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
         }
-
-        // Redirect after successful update
         res.redirect('/products');
     } catch (error) {
         console.error(error);
-        res.status(statusCodes.INTERNAL_SERVER_ERROR).json({ error: "Error while updating the product" });
+        res.status(statusCodes.INTERNAL_SERVER_ERROR).json({ error:"Error while updating the product" });
     }
 };
 
