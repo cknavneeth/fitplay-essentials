@@ -100,10 +100,10 @@ exports.addCategory = async (req, res) => {
         if(updateCategory){
             res.redirect('/category')
         }else{
-            res.status(400).json({error:"category not found"})
+            res.status(statusCodes.BAD_REQUEST).json({error:"category not found"})
         }
     } catch (error) {
-        res.status(500).json({error:"internal server error"})
+        res.status(statusCodes.INTERNAL_SERVER_ERROR).json({error:"internal server error"})
     }
   }
 
@@ -114,10 +114,10 @@ exports.addCategory = async (req, res) => {
       const categoryId=req.params.id
       await Category.findByIdAndUpdate(categoryId,{isDeleted:true})
       // res.redirect('/category')
-      res.status(200).json({ success: true, message: "Category deleted successfully" });
+      res.status(statusCodes.OK).json({ success: true, message: "Category deleted successfully" });
 
     } catch (error) {
       console.log(error)
-      res.status(500).json({error:"error while delete"})
+      res.status(statusCodes.INTERNAL_SERVER_ERROR).json({error:"error while delete"})
     }
   }
