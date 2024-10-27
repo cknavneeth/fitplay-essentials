@@ -186,7 +186,7 @@ body {
 
 
 
-
+<body>
          <div class="content-header row">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="content-title card-title">Customers</h2>
@@ -217,15 +217,23 @@ body {
                         <td><%= user.username %></td>
                         <td><%= user.email %></td>
                         <td> 
-                            <% if (!user.isBlocked) { %> <!-- Check if user is not blocked -->
-                                <button class="btn btn-danger" style="width: 80px;">
-                                    <a href="/block?id=<%= user._id %>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to block this user?');">Block</a>
+
+
+
+
+                            <% if (!user.isBlocked) { %> 
+                                <button class="btn btn-danger" style="width: 80px;" onclick="confirmBlock('<%= user._id %>')">
+                                    Block
                                 </button>
                             <% } else { %>
-                                <button class="btn btn-success" style="width: 80px;">
-                                    <a href="/unblock?id=<%= user._id %>" class="text-white" style="text-decoration: none;" onclick="return confirm('Are you sure you want to unblock this user?');">Unblock</a>
+                                <button class="btn btn-success" style="width: 80px;" onclick="confirmUnblock('<%= user._id %>')">
+                                    Unblock
                                 </button>
                             <% } %>
+                            
+
+
+
                         </td>
                     </tr>
                     <% }) %>
@@ -261,6 +269,47 @@ body {
                 </ul>
             </nav>
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <!-- Include SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+        <script>
+function confirmBlock(userId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to block this user?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, block user'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/block?id='+userId
+        }
+    });
+}
+
+function confirmUnblock(userId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to unblock this user?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, unblock user'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/unblock?id='+ userId;
+        }
+    });
+}
+
+        </script>
+
+    </body>
 
 
 
