@@ -211,7 +211,7 @@ exports.loginRedirect = async (req, res) => {
 exports.indexPage = async (req, res) => {
   try {
     const products = await Product.find({ isBlocked: false });
-    // const user = req.session.user || null;
+  
     const userId=req.user.id
     const user=await User.findById(userId)
    
@@ -227,7 +227,7 @@ exports.indexPage = async (req, res) => {
 exports.shopPage = async (req, res) => {
   try {
     
-    // const user = req.session.user || null;
+   
     const userId=req.user.id
     const user=await User.findById(userId)
 
@@ -305,11 +305,11 @@ exports.productDetails = async (req, res) => {
     const user = req.session.user || null;
     let breadcrumbs;
     if (req.headers.referer && req.headers.referer.includes('/shop')) {
-      // If coming from the shop page
+      
       breadcrumbs = [
         { name: 'Home', url: '/' },
         { name: 'Shop', url: '/shop' },
-        // { name: products.name, url: `/product/${products._id}` }
+        
         { name:'product Details' }
       ];
     } else {

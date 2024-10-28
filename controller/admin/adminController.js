@@ -12,7 +12,7 @@ exports.loginRedirect = async (req, res) => {
   try {
       const admin = await Admin.findOne({ email });
       console.log(admin)
-    //   req.session.admin_Id=admin._id
+   
 
       if (!admin) {
           return res.render('admin/adminLogin', { error: 'Invalid login credentials' });

@@ -1,4 +1,4 @@
-// hashPassword.js
+
 
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
@@ -11,20 +11,8 @@ const hashPassword = async (password) => {
   return hashedPassword;
 };
 
-// Replace 'yourpassword' with the password you want to hash
+
 hashPassword('admin');
 
 
 
-// const storeHashedPassword = async () => {
-//     const hashedPassword = await hashPassword('admin'); // Hash the password
-//     const newAdmin = new Admin({
-//       email: 'admin@gmail.com',
-//       password: hashedPassword,
-//       role: 'admin' // Optional
-//     });
-//     await newAdmin.save(); // Save to MongoDB
-//     console.log('Admin saved with hashed password:', newAdmin);
-//   };
-  
-//   storeHashedPassword();
