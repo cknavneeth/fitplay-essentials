@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controller/user/userController");
 const profileController = require("../controller/user/profileController");
+const cartController=require('../controller/user/cartController')
 const {verifyUser}=require('../middleware/authMiddlware')
 const {userLoggedIn}=require('../middleware/authMiddlware')
 const passport=require('passport')
@@ -41,10 +42,16 @@ router.get('/auth/google', passport.authenticate('google', {
 }));
 
 router.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/signup' }),
+    passport.authenticate('google', { failureRedirect: '/signup',failureFlash:true}),
     (req, res) => {
       const user = req.user;
-
+      if (user && user.isBlocked) {
+        console.log('blocked user accessing home')
+        req.flash('error', 'User is blocked. Please contact support.');
+        console.log(req.flash('error'))
+        // return res.redirect('/signup'); 
+        return res.redirect('/signup?error=blocked');
+      }
       
       const token = jwt.sign({ id: user._id }, process.env.USER_SECRET_KEY, {
         expiresIn: '12d', 
@@ -76,6 +83,10 @@ router.get('/editaddress/:addressId',verifyUser ,profileController.editAddress)
 router.post('/editAddress/:id',verifyUser,profileController.saveafterEdit)
 
 router.post('/deleteAddress/:id',verifyUser,profileController.deleteAddress)
+
+router.get('/cart',verifyUser,cartController.getCartPage)
+
+
 
 module.exports = router;
 

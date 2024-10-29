@@ -197,7 +197,7 @@
             <% if (typeof error !== 'undefined') { %>
             <p style="color: red" id="error"><%= error %></p>
             <% } %>
-            <!-- <p id="error" style="color: red"></p> -->
+
             <button type="submit">Sign up</button>
             <div class="social-btns">
               <a
@@ -217,7 +217,7 @@
           </form>
           <p>
             <span>Already have an account?</span>
-            <!-- <b onclick="togglePage('/login')" class="pointer">Sign in here</b> -->
+            
             <a href="/login" class="pointer"> Sign in here</a>
           </p>
         </div>
@@ -226,26 +226,25 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-      // Get the signup form element
+     
       const signupForm = document.getElementById("signupForm");
 
-      // Add event listener to handle form submission
-      signupForm.addEventListener("submit", (event) => {
-        // Retrieve and trim user inputs
+      
+       signupForm.addEventListener("submit", (event) => {
         const username = document.getElementById("username").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
         const password2 = document.getElementById("password2").value.trim();
 
-        // Clear previous error messages
+        
         document
           .querySelectorAll(".error-message")
           .forEach((el) => (el.textContent = ""));
 
-        // Initialize error flag
+        
         let hasError = false;
 
-        // Username validation
+        
         if (!username) {
           showError("usernameError", "Username is required.");
           hasError = true;
@@ -257,7 +256,7 @@
           hasError = true;
         }
 
-        // Email validation
+        
         if (!email) {
           showError("emailError", "Email is required.");
           hasError = true;
@@ -266,7 +265,7 @@
           hasError = true;
         }
 
-        // Password validation
+        
         if (!password) {
           showError("passwordError", "Password is required.");
           hasError = true;
@@ -287,7 +286,7 @@
           hasError = true;
         }
 
-        // Confirm password validation
+      
         if (!password2) {
           showError("password2Error", "Please confirm your password.");
           hasError = true;
@@ -296,7 +295,7 @@
           hasError = true;
         }
 
-        // Prevent form submission if there are errors
+       
         if (hasError) {
           event.preventDefault();
         } else {
@@ -360,6 +359,23 @@
 //     },
 //   });
 // }
+
+
+document.addEventListener('DOMContentLoaded',function(){
+         
+         const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'blocked') {
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Account Blocked',
+                text: 'Your account is blocked. Please contact support.',
+                confirmButtonText: 'OK'
+            }).then(() => {
+            history.replaceState(null, '', window.location.pathname);
+        });
+        }
+})
 
 
     </script>

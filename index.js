@@ -11,6 +11,7 @@ const adminRoute=require("./routes/admin")
 const passport=require('./config/passport')
 const cookieParser = require("cookie-parser")
 // const { urlencoded } = require("body-parser")
+const flash = require('connect-flash')
 
 
 dotenv.config({path:".env"})
@@ -49,8 +50,22 @@ app.use(session({
     secret:process.env.SESSION_SECRET,
     resave:false,
     saveUninitialized:true,
-    cookie:{maxAge:1800000}//for session expiry
+    cookie:{maxAge:1800000}
 }))
+
+app.use(flash());
+
+// Middleware to make flash messages accessible in templates
+// app.use((req, res, next) => {
+//     res.locals.error = req.flash('error');
+//     res.locals.success = req.flash('success');
+//     next();
+// });
+app.use((req, res, next) => {
+    res.locals.error = req.flash('error');
+    res.locals.success_msg = req.flash('success_msg');
+    next();
+});
 
 app.use(passport.initialize())
 app.use(passport.session())

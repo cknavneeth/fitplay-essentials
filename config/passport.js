@@ -24,12 +24,19 @@ async (accessToken, refreshToken, profile, done) => {
         console.log('passport useeee')
         let user = await User.findOne({ googleId: profile.id });
         if (user) {
+
+            if (user.status === "blocked") {
+                return done(null, false, { message: 'User is blocked. Please contact support.' });
+            }
+            
+            
             return done(null, user);
         } else {
             user = new User({
                 name: profile.displayName,
-                email: profile.emails[0].value,  // Corrected: emails is an array
-                googleId: profile.id
+                email: profile.emails[0].value,  
+                googleId: profile.id,
+                status:'active'
             });
             await user.save();
             return done(null, user);
