@@ -81,14 +81,28 @@
             <h4>overview:</h4>
             <p><%= products.description%></p>      
           </div>
-          <div class="pd_img_size fix">
+          <!-- <div class="pd_img_size fix">
             <h4>size:</h4>
             <a href="#">s</a>
             <a href="#">m</a>
             <a href="#">l</a>
             <a href="#">xl</a>
             
+          </div> -->
+          <div class="pd_img_size fix">
+            <h4>Size:</h4>
+            <select id="productSize" class="form-control">
+              <option value="" disabled selected>Select Size</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
           </div>
+
+
+
+
           <div>
             <h4>Available Quantity</h4>
             <%if(products.quantity==="0"){%>
@@ -102,18 +116,20 @@
 
 
           <div class="pd_clr_qntty_dtls fix">
-            <!-- <div class="pd_clr">
-              <h4>color:</h4>
-              <a href="#" class="active" style="background: #ffac9a;">color 1</a>
-              <a href="#" style="background: #ddd;">color 2</a>
-              <a href="#" style="background: #000000;">color 3</a>
-            </div> -->
+
             <div class="pd_qntty_area">
+              <h4>Quantity:</h4>
+              <div class="pd_qty fix">
+                <input id="productQuantity" value="1" min="1" max="<%= products.quantity %>" name="qttybutton" class="cart-plus-minus-box" type="number">
+              </div>
+            </div>
+           
+            <!-- <div class="pd_qntty_area">
               <h4>quantity:</h4>
               <div class="pd_qty fix">
                 <input value="1" name="qttybutton" class="cart-plus-minus-box" type="number">
               </div>
-            </div>
+            </div> -->
           </div>
           <!-- Product Action -->
           <div class="pd_btn fix">
