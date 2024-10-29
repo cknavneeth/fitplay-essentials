@@ -70,7 +70,7 @@ const productSchema = new Schema({
             },
             stock : {
                 // type : Number,
-                type:String,
+                type:Number,
                 // required : true,
                 min : 0,
             }

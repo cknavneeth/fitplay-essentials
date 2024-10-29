@@ -212,8 +212,14 @@ exports.indexPage = async (req, res) => {
   try {
     const products = await Product.find({ isBlocked: false });
   
-    const userId=req.user.id
-    const user=await User.findById(userId)
+    // const userId=req.user.id
+    // const user=await User.findById(userId)
+    const userId = req.user ? req.user.id : null;
+
+    let user = null;
+    if (userId) {
+      user = await User.findById(userId);
+    }
    
     
     const breadcrumbs = [
@@ -300,6 +306,9 @@ exports.productDetails = async (req, res) => {
   console.log("rendered")
   try {
     const products = await Product.findById(req.params.id);
+    console.log(products.sizes)
+    const sizeStock=products.sizes
+
     const prod = await Product.find({ isBlocked: false });
     
     const user = req.session.user || null;
@@ -323,7 +332,7 @@ exports.productDetails = async (req, res) => {
     if (!products) {
       res.status(400).json({ error: "product not found" });
     }
-    res.render("user/productDetails", { products, prod,user,breadcrumbs  });
+    res.render("user/productDetails", { products, prod,user,breadcrumbs,sizeStock });
     console.log("renderdd")
   } catch (error) {
     console.error(error);

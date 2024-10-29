@@ -89,7 +89,9 @@
             <a href="#">xl</a>
             
           </div> -->
-          <div class="pd_img_size fix">
+
+
+          <!-- <div class="pd_img_size fix">
             <h4>Size:</h4>
             <select id="productSize" class="form-control">
               <option value="" disabled selected>Select Size</option>
@@ -98,7 +100,30 @@
               <option value="L">L</option>
               <option value="XL">XL</option>
             </select>
+          </div> -->
+          <div class="pd_img_size fix">
+            <h4>Size:</h4>
+            <select id="productSize" class="form-control">
+              <option value="" disabled selected>Select Size</option>
+              
+              <% products.sizes.forEach(sizeObj => { %>
+                <% if (sizeObj.stock > 0) { %>
+                  <option value="<%= sizeObj.size %>">
+                    <%= sizeObj.size %> - <%= sizeObj.stock %> in stock
+                  </option>
+                <% } else { %>
+                  <option value="<%= sizeObj.size %>" disabled>
+                    <%= sizeObj.size %> - Out of stock
+                  </option>
+                <% } %>
+              <% }); %>
+            </select>
           </div>
+          
+
+
+
+
 
 
 
