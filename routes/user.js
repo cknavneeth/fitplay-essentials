@@ -33,7 +33,7 @@ router.get("/index",verifyUser,userController.indexPage);
 
 router.get('/shop',verifyUser,userController.shopPage)
 
-router.get('/productDetails/:id',userController.productDetails) 
+router.get('/productDetails/:id',verifyUser,userController.productDetails) 
 
 router.post('/logout',userController.logOut)
 
@@ -85,6 +85,8 @@ router.post('/editAddress/:id',verifyUser,profileController.saveafterEdit)
 router.post('/deleteAddress/:id',verifyUser,profileController.deleteAddress)
 
 router.get('/cart',verifyUser,cartController.getCartPage)
+
+router.post('/addToCart',verifyUser,cartController.addToCart)
 
 
 

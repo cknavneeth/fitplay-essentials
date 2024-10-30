@@ -311,7 +311,9 @@ exports.productDetails = async (req, res) => {
 
     const prod = await Product.find({ isBlocked: false });
     
-    const user = req.session.user || null;
+    // const user = req.session.user || null;
+    const userId=req.user.id
+    const user=await User.findById(userId)
     let breadcrumbs;
     if (req.headers.referer && req.headers.referer.includes('/shop')) {
       

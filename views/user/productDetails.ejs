@@ -81,26 +81,10 @@
             <h4>overview:</h4>
             <p><%= products.description%></p>      
           </div>
-          <!-- <div class="pd_img_size fix">
-            <h4>size:</h4>
-            <a href="#">s</a>
-            <a href="#">m</a>
-            <a href="#">l</a>
-            <a href="#">xl</a>
-            
-          </div> -->
+       
 
 
-          <!-- <div class="pd_img_size fix">
-            <h4>Size:</h4>
-            <select id="productSize" class="form-control">
-              <option value="" disabled selected>Select Size</option>
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-              <option value="XL">XL</option>
-            </select>
-          </div> -->
+       
           <div class="pd_img_size fix">
             <h4>Size:</h4>
             <select id="productSize" class="form-control">
@@ -140,14 +124,7 @@
 
 
 
-          <div class="pd_clr_qntty_dtls fix">
-
-            <div class="pd_qntty_area">
-              <h4>Quantity:</h4>
-              <div class="pd_qty fix">
-                <input id="productQuantity" value="1" min="1" max="<%= products.quantity %>" name="qttybutton" class="cart-plus-minus-box" type="number">
-              </div>
-            </div>
+         
            
             <!-- <div class="pd_qntty_area">
               <h4>quantity:</h4>
@@ -158,7 +135,7 @@
           </div>
           <!-- Product Action -->
           <div class="pd_btn fix">
-            <a class="btn btn-default acc_btn">add to bag</a>
+            <a class="btn btn-default acc_btn" onclick="addToCart('<%=products._id%>')">add to bag</a>
             <a class="btn btn-default acc_btn btn_icn"><i class="fa fa-heart"></i></a>
             <a class="btn btn-default acc_btn btn_icn"><i class="fa fa-refresh"></i></a>
           </div>
@@ -264,6 +241,7 @@
     </style>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="/hover-extended-magnify/extm.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	
 
     <script>
@@ -297,6 +275,64 @@ function changeMainImage(imageUrl) {
         });
     });
      </script>
+
+
+<script>
+  function addToCart(productId){
+    const selectedSize=document.getElementById('productSize').value
+    if(!selectedSize){
+      Swal.fire({
+        icon:'warning',
+        title:'select size',
+        text:'please select a size',
+        confirmButtonText:'OK'
+      })
+      return
+    }
+  
+
+   console.log(productId,selectedSize)
+    fetch('/addToCart',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+      },
+      body:JSON.stringify({
+        productId:productId,
+        size:selectedSize
+      })
+    })
+    .then((response)=>response.json())
+    .then((data)=>{
+      if(data.success){
+        Swal.fire({
+          icon:'success',
+          title:'added to cart',
+          text:'product added to cart',
+          confirmButtonText:'continue shopping'
+        })
+      }else{
+        Swal.fire({
+          icon:'error',
+          title:'not added to cart',
+          text:'failed to add product',
+          confirmButtonText:'OK'
+        })
+      }
+    })
+    .catch((err)=>{
+      console.error(error)
+      Swal.fire({
+        icon:'error',
+        title:'something happened',
+        text:'Try again later',
+        confirmButtonText:'OK'
+      })
+    })
+  }
+
+
+</script>
 
 
 	<%- include("../../views/layout/user/footer") %>	
