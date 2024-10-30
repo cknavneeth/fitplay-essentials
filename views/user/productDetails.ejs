@@ -303,6 +303,7 @@ function changeMainImage(imageUrl) {
       })
     })
     .then((response)=>response.json())
+    
     .then((data)=>{
       if(data.success){
         Swal.fire({
@@ -321,7 +322,7 @@ function changeMainImage(imageUrl) {
       }
     })
     .catch((err)=>{
-      console.error(error)
+      console.error(err)
       Swal.fire({
         icon:'error',
         title:'something happened',

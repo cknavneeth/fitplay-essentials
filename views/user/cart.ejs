@@ -26,25 +26,20 @@
 	
 	
 	<body>
-
-
-	<!--  End Header  -->
-
 		<!-- Page item Area -->
 		<div id="page_item_area">
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-6 text-left">
 						<h3>Shop Details</h3>
-					</div>		
-
+					</div>      
 					<div class="col-sm-6 text-right">
 						<ul class="p_items">
 							<li><a href="#">home</a></li>
 							<li><a href="#">category</a></li>
 							<li><span>Cart</span></li>
-						</ul>					
-					</div>	
+						</ul>                   
+					</div>  
 				</div>
 			</div>
 		</div>
@@ -68,62 +63,32 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td><span class="cp_no">1</span></td>
-										<td><a href="#" class="cp_img"><img src="img/cart-prdct/1.jpg" alt="" /></a></td>
-										<td><a href="#" class="cp_title">This is Product Title</a></td>
-										<td>										
-											<div class="cp_quntty">																			
-												<input name="quantity" value="1" size="2" type="number">													
-											</div>
-										</td>
-										<td><p class="cp_price">$104.99</p></td>
-										<td><p class="cpp_total">$104.99</p></td>
-										<td><a class="btn btn-default cp_remove"><i class="fa fa-trash"></i></a></td>
-									</tr>
-									
-									<tr>
-										<td><span class="cp_no">2</span></td>
-										<td><a href="#" class="cp_img"><img src="img/cart-prdct/2.jpg" alt="" /></a></td>
-										<td><a href="#" class="cp_title">This is Product Title</a></td>
-										<td>
-											<div class="cp_quntty">																			
-												<input name="quantity" value="1" size="2" type="number">													
-											</div>
-										</td>
-										<td><p class="cp_price">$104.99</p></td>
-										<td><p class="cpp_total">$104.99</p></td>
-										<td><a class="btn btn-default cp_remove"><i class="fa fa-trash"></i></a></td>
-									</tr>
-									
-									<tr>
-										<td><span class="cp_no">3</span></td>
-										<td><a href="#" class="cp_img"><img src="img/cart-prdct/3.jpg" alt="" /></a></td>
-										<td><a href="#" class="cp_title">This is Product Title</a></td>
-										<td>
-											<div class="cp_quntty">																			
-												<input name="quantity" value="1" size="2" type="number">													
-											</div>
-										</td>
-										<td><p class="cp_price">$104.99</p></td>
-										<td><p class="cpp_total">$104.99</p></td>
-										<td><a class="btn btn-default cp_remove"><i class="fa fa-trash"></i></a></td>
-									</tr>
-									
-									<tr>
-										<td><span class="cp_no">4</span></td>
-										<td><a href="#" class="cp_img"><img src="img/cart-prdct/4.jpg" alt="" /></a></td>
-										<td><a href="#" class="cp_title">This is Product Title</a></td>
-										<td>
-											<div class="cp_quntty">																			
-												<input name="quantity" value="1" size="2" type="number">													
-											</div>
-										</td>
-										<td><p class="cp_price">$104.99</p></td>
-										<td><p class="cpp_total">$104.99</p></td>
-										<td><a class="btn btn-default cp_remove"><i class="fa fa-trash"></i></a></td>
-									</tr>
-									
+									<% cart.forEach((item, index) => { %>
+										<tr>
+											<td><span class="cp_no"><%= index + 1 %></span></td>
+											<td>
+												<a href="#" class="cp_img">
+													<a href="#" class="cp_img">
+														<img src="/uploads/product-images/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>" />
+													</a>
+													
+												</a>
+											</td>
+											<td><a href="#" class="cp_title"><%= item.productId.productName %></a></td>
+											<td>                                        
+												<div class="cp_quntty">                                                                                
+													<input name="quantity" value="<%= item.quantity %>" size="2" type="number">                                                    
+												</div>
+											</td>
+											<td><p class="cp_price">Rs<%= item.price %></p></td>
+											<td><p class="cpp_total">Rs<%= item.totalPrice %></p></td>
+											<td>
+												<a href="/cart/remove/<%= item.productId._id %>" class="btn btn-default cp_remove">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+									<% }) %>
 								</tbody>
 							</table>
 						</div>
@@ -135,7 +100,7 @@
 						<div class="row">
 							<div class="col-sm-7">
 								<div class="cart-action">
-									<a href="#" class="btn border-btn">continiue shopping</a>
+									<a href="#" class="btn border-btn">continue shopping</a>
 									<a href="#" class="btn border-btn">update shopping bag</a>
 								</div>
 							</div>
@@ -155,14 +120,16 @@
 					
 					<div class="col-md-4 col-xs-12 cart-checkout-process text-right">
 						<div class="wrap">
-							<p><span>Subtotal</span><span>$200.00</span></p>
-							<h4><span>Grand total</span><span>$190.00</span></h4>
-							<a href="checkout.html" class="btn border-btn">process to checkout</a>
+							<p><span>Subtotal</span><span>Rs<%= cart.subTotal %></span></p>
+							<h4><span>Grand total</span><span>Rs<%= cart.grandTotal %></span></h4>
+							<a href="/checkout" class="btn border-btn">proceed to checkout</a>
 						</div>
 					</div>
 					
 				</div>
 			</div>
 		</div>
+	</body>
+	
 
 		<%- include("../../views/layout/user/footer") %>

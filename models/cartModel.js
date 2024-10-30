@@ -6,6 +6,10 @@ const cartItemSchema=new mongoose.Schema({
         ref:'Product',
         required:true
     },
+    size:{
+        type:String,
+        required:false
+    },
     quantity:{
         type:Number,
         required:true,
@@ -37,6 +41,14 @@ const cartSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
+    subTotal:{
+        type:Number,
+        default:0
+    },
+    grandTotal:{
+        type:Number,
+        default:0
+    },
     updatedAt:{
         type:Date,
         default:Date.now
@@ -46,7 +58,7 @@ const cartSchema=new mongoose.Schema({
 
 cartSchema.pre('save',function(next){
     this.totalItems=this.items.length,
-    this.totalAmount=this.items.reduce((sum,items)=>sum+items.totalPrice,0)
+    this.totalPrice=this.items.reduce((sum,items)=>sum+items.totalPrice,0)
     next()
 })
 
