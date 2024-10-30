@@ -58,16 +58,30 @@
 											<td><a href="#" class="cp_title"><%= item.productId.productName %></a></td>
 											<td>                                        
 												<div class="cp_quntty">                                                                                
-													<input name="quantity" value="<%= item.quantity %>" size="2" type="number">                                                    
+													<input 
+													name="quantity" 
+													min="1" 
+													max="<%= item.productId.sizes.find(size => size.size === item.size).stock %>" 
+													value="<%= item.quantity %>" 
+													size="2" 
+													type="number" 
+													onchange="updateQuantity('<%= item.productId._id %>', this.value, this.max)" 
+												/>                                                 
 												</div>
+												
 											</td>
+											
 											<td><p class="cp_price">Rs<%= item.price %></p></td>
 											<td><p class="cpp_total">Rs<%= item.totalPrice %></p></td>
+											
 											<td>
 												
 												<a href="#" onclick="removeFromCart('<%= item.productId._id %>')" class="btn btn-default cp_remove">
 													<i class="fa fa-trash"></i>
 												</a>
+											</td>
+											<td>
+												<p>Size: <%= item.size %></p> 
 											</td>
 										</tr>
 									<% }) %>
@@ -113,9 +127,10 @@
 				</div>
 			</div>
 		</div>
-	</body>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<script>
+		
 		async function removeFromCart(productId){
 			try {
 				await fetch(`/cart/remove/${productId}`,{method:'DELETE'})
@@ -126,6 +141,21 @@
 
 		}
 	</script>
-	
+
+	<script>
+		function updateQuantity(productId,newQuantity,maxStock){
+			if(parseInt(newQuantity)>parseInt(maxStock)){
+				Swal.fire({
+					icon: 'error',
+                    title: 'Quantity Exceeded',
+                    text: `Only ${maxStock} items are available for this product.`,
+                    confirmButtonText: 'OK'
+				})
+				document.querySelector(`input[name="quantity"][data-product-id="${productId}"]`).value=maxStock
+				return
+			}
+		}
+	</script>
+	</body>
 
 		<%- include("../../views/layout/user/footer") %>

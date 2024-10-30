@@ -94,6 +94,17 @@ exports.addToCart = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Product not found' });
         }
 
+        const sizeObject=product.sizes.find(s=>s.size===size)
+        if(!sizeObject){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'size is not found for this product'})
+        }
+
+
+        const stock=sizeObject.stock
+        console.log(stock)
+
+
+
         let cart = await Cart.findOne({ userId });
         if (!cart) {
             cart = new Cart({ userId, items: [] });
@@ -102,7 +113,7 @@ exports.addToCart = async (req, res) => {
         console.log("Request Product ID:", productId.toString());
 console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString(), size: item.size })));
 
-
+       
         
         const existingItemIndex = cart.items.findIndex(
             item => item.productId.toString() === productId && item.size === size
@@ -112,19 +123,21 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
 
         const price = product.salePrice;
 
+       
+
         if (existingItemIndex > -1) {
             console.log("shahal")
             const existingItem = cart.items[existingItemIndex];
 
             if(existingItem.quantity+1>stock){
-                return res.status(statusCodes.BAD_REQUEST).json({sucess:false,error:'quantity exceeds not in stock'})
+                return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Quantity exceeds available stock'})
             }
             existingItem.quantity += 1;
             existingItem.totalPrice = existingItem.quantity * existingItem.price;
             console.log("Updated existing item:", existingItem);
         } else {
            if(1>stock){
-            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'quantity exceeds not in stock'})
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Quantity exceeds available stock'})
            }
             const newItem = {
                 productId,
