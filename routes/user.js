@@ -88,6 +88,8 @@ router.get('/cart',verifyUser,cartController.getCartPage)
 
 router.post('/addToCart',verifyUser,cartController.addToCart)
 
+router.delete('/cart/remove/:id',verifyUser,cartController.deleteProductCart)
+
 
 
 module.exports = router;

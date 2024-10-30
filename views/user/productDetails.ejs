@@ -312,7 +312,16 @@ function changeMainImage(imageUrl) {
           text:'product added to cart',
           confirmButtonText:'continue shopping'
         })
-      }else{
+      }else if (data.error === 'Quantity exceeds available stock') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Not enough stock',
+                text: 'The selected quantity exceeds available stock.',
+                confirmButtonText: 'OK'
+            });
+        } 
+      
+      else{
         Swal.fire({
           icon:'error',
           title:'not added to cart',

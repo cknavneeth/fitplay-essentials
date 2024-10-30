@@ -207,7 +207,7 @@ exports.editProduct = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ error: "This product already exists!" });
         }
-        const size = Object.entries(data.sizes).map(([size, stock]) => ({
+        const sizes = Object.entries(data.sizes).map(([size, stock]) => ({
             size: size.toUpperCase(),
             stock: parseInt(stock, 10), 
         }));
@@ -217,7 +217,7 @@ exports.editProduct = async (req, res) => {
             regularPrice: data.regularPrice,
             salePrice: data.salePrice,
             quantity: data.quantity,
-            size: size,
+            sizes: sizes,
             color: data.color,
         };
 

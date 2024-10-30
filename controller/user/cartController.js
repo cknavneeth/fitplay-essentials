@@ -11,7 +11,8 @@ exports.getCartPage=async(req,res)=>{
         const user=await User.findById(userId)
 
         const cart=await Cart.findOne({userId}).populate('items.productId')
-
+        console.log("cart:",cart);
+        
         if(!cart||cart.items.length==0){
               return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Cart is empty'})
         }
@@ -19,7 +20,8 @@ exports.getCartPage=async(req,res)=>{
         const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
 
         // res.json({success:true,cart:{cart:cart.items,total:cartTotal}})
-        res.render('user/cart', { user, cart:cart? cart.items:[], total: cartTotal });
+        console.log("babloo",cart.items)
+        res.render('user/cart', { user, cart:cart? cart:[], total: cartTotal });
 
     } catch (error) {
         console.error(error)
@@ -113,12 +115,17 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
         if (existingItemIndex > -1) {
             console.log("shahal")
             const existingItem = cart.items[existingItemIndex];
-            console.log(existingItem)
+
+            if(existingItem.quantity+1>stock){
+                return res.status(statusCodes.BAD_REQUEST).json({sucess:false,error:'quantity exceeds not in stock'})
+            }
             existingItem.quantity += 1;
             existingItem.totalPrice = existingItem.quantity * existingItem.price;
             console.log("Updated existing item:", existingItem);
         } else {
-            // Add new item to cart
+           if(1>stock){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'quantity exceeds not in stock'})
+           }
             const newItem = {
                 productId,
                 size,
@@ -135,6 +142,10 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
         cart.subTotal=subtotal
         cart.grandTotal=subtotal
 
+        console.log('fuck offff',cart)
+        console.log("SubTotal ahne:", cart.subTotal); 
+console.log("GrandTotal ahne:", cart.grandTotal);
+
         await cart.save();
         res.json({ success: true, message: 'Cart updated successfully' });
     } catch (error) {
@@ -142,6 +153,34 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
         return res.status(500).json({ success: false, error: 'Internal server error' });
     }
 };
+
+
+exports.deleteProductCart=async(req,res)=>{
+    try {
+        const {id:productId}=req.params
+        const userId=req.user.id
+
+        const cart=await Cart.findOne({userId})
+
+        if(!cart){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart not found'})
+        }
+        // if (!Array.isArray(cart.items)) {
+        //     cart.items = []; // Initialize as empty array if not defined
+        // }
+
+        cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+
+
+        cart.subTotal=cart.items.reduce((sum,items)=>sum+items.totalPrice,0)
+        cart.grandTotal=cart.subTotal
+
+        await cart.save();
+        res.redirect('/cart')
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 
 

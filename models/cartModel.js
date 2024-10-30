@@ -41,13 +41,13 @@ const cartSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
-    subTotal:{
-        type:Number,
-        default:0
+    subTotal: { 
+        type: Number,
+        default: 0
     },
-    grandTotal:{
-        type:Number,
-        default:0
+    grandTotal: { 
+        type: Number,
+        default: 0
     },
     updatedAt:{
         type:Date,
