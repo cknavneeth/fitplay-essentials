@@ -51,10 +51,21 @@
 							<div class="address-selection">
 								<% addresses.forEach(address => { %>
 									<div class="address-card">
-										<input type="radio" name="selectedAddress" value="<%= address._id %>" required>
+										<input type="radio" 
+										name="selectedAddress" 
+										value="<%= address._id %>" 
+										required 
+										<% if (user.defaultAddress && user.defaultAddress.toString() === address._id.toString()) { %>
+											checked
+										<% } %>
+								 >
 										<p><strong>Name:</strong> <%= address.name %></p>
 										<p><strong>Address:</strong> <%= address.address %>, <%= address.city %>, <%= address.state %>, <%= address.zip %></p>
 										<p><strong>Phone:</strong> <%= address.mobile %></p>
+
+										<button type="button" onclick="location.href='/editaddress/<%= address._id %>'" class="btn btn-secondary">
+											Edit
+										</button>
 									</div>
 									<hr>
 								<% }) %>
@@ -109,7 +120,21 @@
 											<label class="custom-control-label" for="paypal">PayPal</label>
 										</div>    
 									</li>
+									<li>
+										<div class="custom-control custom-radio">
+											<input type="radio" id="cashOnDelivery" name="paymentMethod" value="cash" class="custom-control-input" required>
+											<label class="custom-control-label" for="cashOnDelivery">Cash on Delivery</label>
+										</div>    
+									</li>
+									
 								</ul>     
+							</div>
+
+
+							<div class="add-address mb-2">
+								<button type="button" onclick="location.href='/checkoutAddress'" class="btn btn-primary">
+									Add New Address
+								</button>
 							</div>
 							
 							<!-- Place Order Button -->

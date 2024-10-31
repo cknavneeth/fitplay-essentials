@@ -94,6 +94,10 @@ router.delete('/cart/remove/:id',verifyUser,cartController.deleteProductCart)
 
 router.get('/checkout',verifyUser,cartController.checkoutPage)
 
+router.get('/checkoutAddress',verifyUser,cartController.checkoutAddressPage) 
+
+router.post('/checkoutAddress',verifyUser,cartController.checkoutaddressSave)
+
 
 
 module.exports = router;

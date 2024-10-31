@@ -215,7 +215,7 @@ exports.deleteAddress=async(req,res)=>{
 exports.setDefaultAddress=async(req,res)=>{
 
     const userId=req.user.id
-    const addressId=req.params.id
+    const addressId=req.params.addressId
     console.log(userId)
     console.log(addressId)
 

@@ -227,4 +227,43 @@ exports.checkoutPage=async(req,res)=>{
 }
 
 
+exports.checkoutAddressPage=async(req,res)=>{
+    
+        const userId=req.user.id
+        console.log(userId)
+        const user = await User.findById(userId);
+       res.render('user/check-addaddress',{user})
+    
+}
+
+exports.checkoutaddressSave=async(req,res)=>{
+    const{name,mobile,pincode,locality,address,state,city,landmark,alternate_phone,address_type}=req.body
+
+    try {
+        const userId=req.user.id
+        const user=await User.findById(userId)
+
+        if(!user){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'user not found'})
+        }
+
+        user.addresses.push({
+            name,
+            mobile,
+            pincode,
+            locality,
+            address,
+            state,
+            city,
+            landmark,
+            alternate_phone,
+            address_type
+        })
+        await user.save()
+        res.redirect('/checkout')
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 
