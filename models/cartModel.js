@@ -41,7 +41,7 @@ const cartSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
-    subTotal: { 
+    subTotal:{ 
         type: Number,
         default: 0
     },

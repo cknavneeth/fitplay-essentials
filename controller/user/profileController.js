@@ -210,3 +210,33 @@ exports.deleteAddress=async(req,res)=>{
         return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'error occured while deleting'})
     }
 }
+
+
+exports.setDefaultAddress=async(req,res)=>{
+
+    const userId=req.user.id
+    const addressId=req.params.id
+    console.log(userId)
+    console.log(addressId)
+
+    try {
+        const user=await User.findById(userId)
+        if(!user){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'user not found'})
+        }
+
+        const addressExists = user.addresses.some(address => address._id.equals(addressId) && !address.deleted);
+        console.log("Address Exists:", addressExists);
+        if(!addressExists){
+           return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'address not found'})
+        }
+
+        user.defaultAddress=addressId
+        await user.save()
+        res.redirect('/address')
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+

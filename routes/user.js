@@ -84,11 +84,15 @@ router.post('/editAddress/:id',verifyUser,profileController.saveafterEdit)
 
 router.post('/deleteAddress/:id',verifyUser,profileController.deleteAddress)
 
+router.post('/setDefaultAddress/:addressId',verifyUser,profileController.setDefaultAddress)
+
 router.get('/cart',verifyUser,cartController.getCartPage)
 
 router.post('/addToCart',verifyUser,cartController.addToCart)
 
 router.delete('/cart/remove/:id',verifyUser,cartController.deleteProductCart)
+
+router.get('/checkout',verifyUser,cartController.checkoutPage)
 
 
 

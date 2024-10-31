@@ -144,7 +144,8 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
                 size,
                 quantity: 1,
                 price: price,
-                totalPrice: price
+                totalPrice: price,
+                // image: product.productImage[0]
             };
 
             cart.items.push(newItem);
@@ -178,9 +179,7 @@ exports.deleteProductCart=async(req,res)=>{
         if(!cart){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart not found'})
         }
-        // if (!Array.isArray(cart.items)) {
-        //     cart.items = []; // Initialize as empty array if not defined
-        // }
+      
 
         cart.items = cart.items.filter(item => item.productId.toString() !== productId);
 
@@ -195,6 +194,37 @@ exports.deleteProductCart=async(req,res)=>{
     }
 }
 
+
+
+
+//for check out page
+exports.checkoutPage=async(req,res)=>{
+    try {
+        const userId=req.user.id
+        const user=await User.findById(userId)
+
+        const cart=await Cart.findOne({userId}).populate("items.productId")
+        
+        if(!cart){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart not found'})
+        }
+
+        const cartItems=cart.items.map((item)=>({
+            productName:item.productId.productName,
+            image:item.productId.productImage[0],
+            quantity:item.quantity,
+            price:item.productId.salePrice,
+            totalPrice:item.quantity*item.productId.salePrice
+
+        }))
+
+        const addresses=user.addresses.filter(address=>!address.deleted)
+       
+        res.render('user/checkout',{cartItems,user,addresses})
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 
 

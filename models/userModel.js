@@ -44,7 +44,8 @@ const userSchema=new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    addresses: [addressSchema]
+    addresses: [addressSchema],
+    defaultAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' }
     
 })
 
@@ -58,3 +59,4 @@ userSchema.methods.matchPassword=async function(enteredpassword){
 }
 
 module.exports=mongoose.model('users',userSchema)
+

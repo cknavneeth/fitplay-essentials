@@ -253,13 +253,17 @@ body {
                             <button>Edit</button>
                         </a>
                           <button onclick="deleteAddress('<%=address._id%>')">Delete</button>
-                          <button class="default">
-                            <% if (user.defaultAddress === index) { %>
-                              Default Address
-                            <% } else { %>
-                              Set as Default
-                            <% } %>
-                          </button>
+
+                          <form action="/setDefaultAddress/<%= address._id %>" method="POST" style="display: inline;">
+                            <button class="default">
+                                <% if (user.defaultAddress && user.defaultAddress.equals(address._id)) { %>
+                                    Default Address
+                                <% } else { %>
+                                    Set as Default
+                                <% } %>
+                            </button>
+                        </form>
+                          
                       </div>
                   </div>
                 <% }); %>
