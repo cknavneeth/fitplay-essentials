@@ -267,3 +267,52 @@ exports.checkoutaddressSave=async(req,res)=>{
 }
 
 
+exports.checkoutaddressEdit=async(req,res)=>{
+    const userId=req.user.id
+    const user=await User.findById(userId)
+    const addressId=req.params.addressId
+    try {
+
+        const address=user.addresses.id(addressId)
+        if(!address){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'address not found'})
+        }
+        res.render('user/check-editadd',{user,address})
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+exports.checkouteditSave=async(req,res)=>{
+    const{name,mobile,pincode,locality,address,state,city,landmark,alternate_phone,address_type}=req.body
+    const addressId=req.params.addressId
+    try {
+        const user=await User.findOne({'addresses._id':addressId})
+
+        if(user&&user.addresses.length>0){
+            const addressupdate=user.addresses.id(addressId)
+            if(addressupdate){
+                addressupdate.name=name,
+                addressupdate.mobile=mobile,
+                addressupdate.pincode=pincode,
+                addressupdate.locality=locality,
+                addressupdate.address=address,
+                addressupdate.state=state,
+                addressupdate.city=city,
+                addressupdate.landmark=landmark,
+                addressupdate.alternate_phone=alternate_phone,
+                addressupdate.address_type=address_type
+
+                await user.save()
+                res.redirect('/checkout')
+            }else{
+                return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'address not found'})
+            }
+        }else{
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'user not found'})
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+

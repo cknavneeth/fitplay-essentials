@@ -98,6 +98,10 @@ router.get('/checkoutAddress',verifyUser,cartController.checkoutAddressPage)
 
 router.post('/checkoutAddress',verifyUser,cartController.checkoutaddressSave)
 
+router.get('/checkouteditaddress/:addressId',verifyUser,cartController.checkoutaddressEdit)
+
+router.post('/checkouteditaddress/:addressId',verifyUser,cartController.checkouteditSave)
+
 
 
 module.exports = router;

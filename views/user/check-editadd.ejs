@@ -1,0 +1,322 @@
+<%- include("../../views/layout/user/header",{user:user}) %>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Address</title>
+    <style>
+        .edit-address body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.edit-address .container {
+    width: 50%;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+    
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group select {
+            width: calc(50% - 10px);
+        }
+
+        .form-group textarea {
+            width: 100%;
+            resize: none;
+        }
+
+        .form-group.address-type {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group.address-type input {
+            margin-right: 5px;
+        }
+
+        .form-group.address-type label {
+            margin-right: 20px;
+        }
+
+        .form-group .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group .buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .form-group .buttons .save-btn {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        .form-group .buttons .cancel-btn {
+            background-color: transparent;
+            color: #007bff;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                margin: 20px auto;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="tel"],
+            .form-group select {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 12px;
+            }
+
+            .form-group .buttons button {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+        }
+
+
+
+
+
+        .form-group {
+    display: flex;
+    flex-direction: column; /* Stack input and error message vertically */
+    margin-bottom: 15px; /* Space between form groups */
+}
+
+.error-message {
+    color: red; /* Color of error messages */
+    font-size: 0.9em; /* Slightly smaller font size */
+    margin-top: 5px; /* Space between input field and error message */
+    /* Optionally, set a fixed height to keep spacing consistent */
+    min-height: 20px; /* Prevent shifts by reserving space for error messages */
+}
+
+
+
+
+/* Style for the address type section */
+.address-type {
+    margin-bottom: 15px; /* Space below the address type section */
+}
+
+.radio-option {
+    display: inline-block; /* Display radio buttons inline */
+    margin-right: 15px; /* Space between radio options */
+}
+
+/* Style for the buttons */
+.buttons {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: flex-start; /* Align buttons to the left */
+}
+
+.save-btn,
+.cancel-btn {
+    padding: 10px 15px; /* Add padding for better spacing */
+    margin-right: 10px; /* Space between buttons */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+/* Style for SAVE button */
+.save-btn {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    width: auto; /* Adjust width to content */
+    margin-bottom: 1rem;
+}
+
+/* Style for CANCEL button */
+.cancel-btn {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
+    width: auto; /* Adjust width to content */
+}
+
+/* Optional: Style on hover */
+.save-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.cancel-btn:hover {
+    background-color: #e53935; 
+}
+    </style>
+</head>
+<body >
+    <div class="container edit-address">
+        <h1>Edit Address</h1>
+        <form id="editAddressForm" action="/checkouteditAddress/<%= address._id %>" method="POST">
+            <div class="form-group">
+                <input type="text" name="name" placeholder="Name" value="<%= address.name %>" >
+                <span class="error-message" id="name-error"></span>
+                <input type="tel" name="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" value="<%= address.mobile %>" >
+                <span class="error-message" id="mobile-error"></span>
+            </div>
+            <div class="form-group">
+                <input type="text" name="pincode" placeholder="Pincode" value="<%= address.pincode %>" >
+                <span class="error-message" id="pincode-error"></span>
+                <input type="text" name="locality" placeholder="Locality" value="<%= address.locality %>" >
+                <span class="error-message" id="locality-error"></span>
+            </div>
+            <div class="form-group">
+                <textarea name="address" rows="3" placeholder="Address (Area and Street)" ><%= address.address %></textarea>
+            </div>
+            <div class="form-group">
+                <input type="text" name="city" placeholder="City/District/Town" value="<%= address.city %>" >
+                <span class="error-message" id="city-error"></span>
+                <select name="state" >
+                    <option value="">--Select State--</option>
+                    <option value="Kerala" <%= address.state === 'Kerala' ? 'selected' : '' %>>Kerala</option>
+                    <option value="Tamil Nadu" <%= address.state === 'Tamil Nadu' ? 'selected' : '' %>>Tamil Nadu</option>
+                    <!-- Add more states as needed -->
+                </select>
+                <span class="error-message" id="state-error"></span>
+            </div>
+            <div class="form-group">
+                <input type="text" name="landmark" placeholder="Landmark (Optional)" value="<%= address.landmark %>">
+                <input type="tel" name="alternate_phone" placeholder="Alternate Phone (Optional)" pattern="[0-9]{10}" value="<%= address.alternate_phone %>">
+            </div>
+            <div class="form-group address-type">
+                <label>Address Type</label>
+                <div class="radio-option">
+                    <input type="radio" name="address_type" value="home" <%= address.address_type === 'home' ? 'checked' : '' %>> Home
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="address_type" value="work" <%= address.address_type === 'work' ? 'checked' : '' %>> Work
+                </div>
+            </div>
+            <span class="error-message" id="address-type-error"></span>
+            <div class="form-group buttons">
+                <button type="submit" class="save-btn">SAVE</button>
+                <button type="reset" class="cancel-btn">CANCEL</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('editAddressForm').addEventListener('submit',(e)=>{
+            clearErrorMessages()
+       
+            let isValid=true
+        const name = document.querySelector('input[name="name"]').value.trim();
+        const mobile = document.querySelector('input[name="mobile"]').value.trim();
+        const pincode = document.querySelector('input[name="pincode"]').value.trim();
+        const locality = document.querySelector('input[name="locality"]').value.trim();
+        const address = document.querySelector('textarea[name="address"]').value.trim();
+        const city = document.querySelector('input[name="city"]').value.trim();
+        const state = document.querySelector('select[name="state"]').value;
+        const addressType = document.querySelector('input[name="address_type"]:checked');
+
+        if(name===''){
+            document.getElementById('name-error').innerText='Name is required'
+            isValid=false
+        }
+        if(!mobile.match(/^\d{10}$/)){
+            document.getElementById('mobile-error').innerText='please enter valid ten digits'
+            isValid=false
+        }
+        if(pincode===''){
+            document.getElementById('pincode-error').innerText='Please enter pincode'
+            isValid=false
+        }
+        if(locality===''){
+            document.getElementById('locality-error').innerText='Locality is require'
+            isValid=false
+        }
+        if(address===''){
+            document.getElementById('address-error').innerText='address is required'
+            isValid=false
+        }
+        if(city===''){
+            document.getElementById('city-error').innerText='city is required'
+            isValid=false
+        }
+        if (state === '') {
+                document.getElementById('state-error').innerText = 'State is required';
+                isValid = false;
+            }
+
+            if (!addressType) {
+                document.getElementById('address-type-error').innerText = 'Please select an address type';
+                isValid = false;
+            }
+            console.log('Form is valid:', isValid);
+
+            if (isValid==false) {
+                e.preventDefault()
+            }
+
+            function clearErrorMessages(){
+                const elementError=document.getElementsByClassName('error-message')
+                Array.from(elementError).forEach((item)=>{
+                      item.innerText=''
+                })
+            }
+        })
+    </script>
+</body>
+</html>
+
+<%- include("../../views/layout/user/footer") %>
