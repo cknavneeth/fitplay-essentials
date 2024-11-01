@@ -499,12 +499,24 @@ exports.handleCod=async(req,res)=>{
         })
     }
 
+    console.log("hashim aju",products)
+
+    const items=cart.items.map(item=>({
+        productId:item.productId._id,
+        productName:item.productId.productName,
+        image:item.productId.productImage[0],
+        price:item.price,
+        quantity:item.quantity,
+        totalPrice:item.price*item.quantity
+
+    }))
+
         const orderId = await getNextOrderId();
 
         const newOrder=new Order({
             user:userId,
             oid:orderId,
-            products,
+            items,
             totalAmount,
             paymentMethod,
             status:'Processing',
