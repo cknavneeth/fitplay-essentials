@@ -1,10 +1,34 @@
 const Cart=require('../../models/cartModel')
-const User=require('../../models/userModel')
+const mongoose = require('mongoose');
+const { User, addressSchema } = require("../../models/userModel.js"); 
+const Order=require('../../models/orderModel.js')
 const Product = require("../../models/productModel.js");
 const Category=require('../../models/categoryModel.js')
 const jwt = require("jsonwebtoken");
 const statusCodes=require('../../config/keys.js')
 
+// exports.getCartPage=async(req,res)=>{
+//     try {
+//         const userId=req.user.id
+//         const user=await User.findById(userId)
+
+//         const cart=await Cart.findOne({userId}).populate('items.productId')
+//         console.log("cart:",cart);
+        
+//         if(!cart||cart.items.length==0){
+//               return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Cart is empty'})
+//         }
+
+//         const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
+
+       
+//         console.log("babloo",cart.items)
+//         res.render('user/cart', { user, cart:cart? cart:[], total: cartTotal });
+
+//     } catch (error) {
+//         console.error(error)
+//     }
+// }
 exports.getCartPage=async(req,res)=>{
     try {
         const userId=req.user.id
@@ -13,15 +37,20 @@ exports.getCartPage=async(req,res)=>{
         const cart=await Cart.findOne({userId}).populate('items.productId')
         console.log("cart:",cart);
         
-        if(!cart||cart.items.length==0){
-              return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Cart is empty'})
+        // if(!cart||cart.items.length==0){
+        //       return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Cart is empty'})
+        // }
+
+        const cartEmpty=!cart||cart.items.length==0
+        if(cartEmpty){
+           return res.render('user/cart', { user, cart:cart? cart:[], total: 0,cartEmpty:true} )
         }
 
         const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
 
-        // res.json({success:true,cart:{cart:cart.items,total:cartTotal}})
+       
         console.log("babloo",cart.items)
-        res.render('user/cart', { user, cart:cart? cart:[], total: cartTotal });
+        res.render('user/cart', { user, cart:cart? cart:[], total: cartTotal ,cartEmpty:false});
 
     } catch (error) {
         console.error(error)
@@ -201,7 +230,8 @@ exports.deleteProductCart=async(req,res)=>{
 exports.checkoutPage=async(req,res)=>{
     try {
         const userId=req.user.id
-        const user=await User.findById(userId)
+        // const user=await User.findById({userId})
+        const user = await User.findById(userId);
 
         const cart=await Cart.findOne({userId}).populate("items.productId")
         
@@ -315,4 +345,213 @@ exports.checkouteditSave=async(req,res)=>{
         console.error(error)
     }
 }
+
+// exports.handleCod=async(req,res)=>{
+//     const userId=req.user.id
+//     const user=await User.findById(userId)
+//     const{items,totalAmount,address}=req.body
+//     console.log('address vangichutundeyyy',address)
+//     let session;
+//     try {
+//         const session=await mongoose.startSession();
+//         session.startTransaction();
+        
+//         const newOrder=new Order({
+//             userId,
+//             items,
+//             totalAmount,
+//             paymentMethod:'Cash on Delivery',
+//             paymentStatus:'Pending',
+//             orderStatus:'Processing',
+//             address
+
+//         })
+
+//         await newOrder.save({session})
+
+
+//         for(const item of items){
+
+//             const product=await Product.findById(item.productId).session(session)
+//             if(!product||product.stock<item.quantity){
+//                 throw new error (`insufficient stock for product ${item.productName}`)
+//             }
+//             product.stock-=item.quantity
+//             await product.save({session})
+
+//         }
+//         await User.findByIdAndUpdate(userId,{$set:{cart:[]}},{session})
+//         await session.commitTransaction()
+//         session.endSession();
+//         res.json({success:true,error:'Order placed successfully'})
+//     } catch (error) {
+//         console.error('error placing order',error)
+//         if(session)await session.abortTransaction();
+//         session.endSession()
+//         res.status(statusCodes.INTERNAL_SERVER_ERROR).json({success:false,error:'something error occured'})
+//     }
+// }
+
+
+exports.handleCod = async (req, res) => {
+    const userId = req.user.id;
+    console.log('braaaa',req.user)
+    console.log('braaaas',req.body)
+    const { items, totalAmount, address, paymentMethod } = req.body;
+    console.log("hayyo",items)
+    console.log("hoooo",totalAmount)
+
+    let session;
+    try {
+        session = await mongoose.startSession();
+        session.startTransaction();
+
+        const newOrder = new Order({
+            userId,
+            items,
+            totalAmount,
+            paymentMethod,
+            paymentStatus: 'Pending',
+            orderStatus: 'Processing',
+            address
+        });
+
+        await newOrder.save({ session });
+
+        for (const item of items) {
+            const product = await Product.findById(item.productId).session(session);
+            if (!product || product.stock < item.quantity) {
+                throw new Error(`Insufficient stock for product ${item.productName}`);
+            }
+            product.stock -= item.quantity;
+            await product.save({ session });
+        }
+
+        await User.findByIdAndUpdate(userId, { $set: { cart: [] } }, { session });
+        await session.commitTransaction();
+        session.endSession();
+
+        res.json({ success: true, message: 'Order placed successfully', orderId: newOrder._id });
+    } catch (error) {
+        console.error('Error placing order:', error);
+      
+        if (session) {
+            await session.abortTransaction();
+            session.endSession();
+        }
+
+        res.status(500).json({ success: false, error: 'An error occurred while placing your order' });
+    }
+
+};
+
+
+exports.handleCod=async(req,res)=>{
+    try {
+        const userId=req.user.id
+        
+        const{paymentMethod,address:selectedAddressId}=req.body
+        console.log('paymentmethod',paymentMethod)
+        if(!paymentMethod){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'invalid payment method'})
+        }
+        const [cart, user] = await Promise.all([
+            // Cart.find({ userId: userId }).populate('items.productId'),
+             Cart.findOne({ userId }).populate({
+                path: 'items.productId',
+                model: 'Product'
+            }),
+            
+            User.findById(userId).lean()
+        ]);
+        console.log("ithan ente cart",cart.items)
+
+        const selectedAddress=user.addresses.find(address=>address._id.toString()===selectedAddressId)
+
+        if(!selectedAddressId){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'invalid address'})
+        }
+
+        if(!cart||!cart.items||cart.items.length==0){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart is empty'})
+        }
+        
+        let totalAmount=0
+        let totalQuantity=0
+        const products=[]
+
+        for(const item of cart.items){
+           const{productId,size,price,quantity}=item;
+           const sizeStock=productId.sizes.find(s=>s.size===size)
+
+           if(!sizeStock||sizeStock.stock<quantity){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:`${productId.productName} (${size}) has insufficient stock. Only ${sizeStock ? sizeStock.stock : 0} left.`})
+           }
+        
+
+        totalAmount+=price*quantity
+        totalQuantity+=quantity
+        products.push({
+            product:productId._id,
+            size,
+            quantity,
+            price
+        })
+    }
+
+        const orderId = await getNextOrderId();
+
+        const newOrder=new Order({
+            user:userId,
+            oid:orderId,
+            products,
+            totalAmount,
+            paymentMethod,
+            status:'Processing',
+            totalQuantity,
+            address: {
+                name: selectedAddress.name,
+                mobile: selectedAddress.mobile,
+                pincode: selectedAddress.pincode,
+                locality: selectedAddress.locality,
+                address: selectedAddress.address,
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                landmark: selectedAddress.landmark,
+                alternate_phone: selectedAddress.alternate_phone,
+                address_type: selectedAddress.address_type
+            }
+
+        })
+
+        await newOrder.save()
+
+        for(const item of products){
+            const product=await Product.findOne(item.product)
+            const sizeStock=product.sizes.find(s=>s.size===item.size)
+            if(sizeStock){
+                sizeStock.stock-=item.quantity
+            }
+            await product.save()
+        }
+
+        await Cart.findByIdAndDelete(cart._id);
+
+
+        res.json({success:true,error:'Order updated successfully',cartEmpty:true,orderId:newOrder._id})
+
+
+    } catch (error) {
+        console.error(error)
+        return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({success:false,error:'internal server error'})
+    }
+}
+
+async function getNextOrderId() {
+    const timestamp = Date.now();
+    const randomSuffix = Math.floor(Math.random() * 1000);
+    return `ORD-${timestamp}-${randomSuffix}`;
+}
+
+
 

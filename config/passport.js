@@ -2,7 +2,8 @@ const passport=require("passport")
 const GoogleStrategy=require("passport-google-oauth20").Strategy
 // const User = require('../../models/userModel.js');
 const path = require('path');
-const User = require(path.resolve(__dirname, '../models/userModel.js'));
+const {User} = require(path.resolve(__dirname, '../models/userModel.js'));
+// const { User } = require("../../models/userModel.js"); 
 require('dotenv').config()
 
 

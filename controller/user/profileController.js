@@ -1,4 +1,5 @@
-const User = require("../../models/userModel.js");
+// const User = require("../../models/userModel");
+const { User, addressSchema } = require("../../models/userModel.js");
 const env = require("dotenv").config();
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
@@ -10,10 +11,12 @@ const statusCodes=require('../../config/keys.js')
 exports.contact=async(req,res)=>{
     console.log("machan",req.user)
     const userId=req.user.id
-    console.log(userId)
-    const user = await User.findById(userId);
-    res.render('user/contact',{user})
-        
+    try {
+        const user = await User.findById(userId);
+        res.render('user/contact',{user})
+    } catch (error) {
+        console.error(error)
+    }    
 }
 
 exports.profileUpdate=async(req,res)=>{
@@ -178,8 +181,6 @@ exports.saveafterEdit=async(req,res)=>{
             else{
                 return res.status(statusCodes.BAD_REQUEST).json({error:'address not found'})
             }
-           
-
         }else{
            return res.status(statusCodes.BAD_REQUEST).json({error:'user not found'})
         }

@@ -58,5 +58,9 @@ userSchema.methods.matchPassword=async function(enteredpassword){
     return ismatch
 }
 
-module.exports=mongoose.model('users',userSchema)
+// module.exports=mongoose.model('users',userSchema)
+module.exports = {
+  User: mongoose.model('users', userSchema),  // Only the user model
+  addressSchema  // Export addressSchema if needed elsewhere
+};
 

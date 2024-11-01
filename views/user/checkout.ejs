@@ -47,7 +47,7 @@
 						<div class="title">
 							<h3>Select Shipping Address</h3>
 						</div>
-						<form action="/place-order" method="POST">
+						<form action="/checkout/cod" method="POST">
 							<div class="address-selection">
 								<% addresses.forEach(address => { %>
 									<div class="address-card">
@@ -139,7 +139,7 @@
 							
 							<!-- Place Order Button -->
 							<div class="qc-button">
-								<button id="placeOrderButton" type="submit" class="btn border-btn">Place Order</button>
+								<button id="proceedToPayment" type="submit" class="btn border-btn" onclick="placeOrder(event)">Place Order</button>
 							</div>
 							
 						</form>
@@ -148,13 +148,156 @@
 			</div>
 		</section>
 		
-
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script>
-			document.getElementById('proceedToPayment').addEventListener('click',function(){
-				const selectedPaymentMethod=document.querySelector('input[name:"paymentMethod"]:checked')
-				if(selectedPaymentMethod&&selectedPaymentMethod.value===cash)
-			})
-		</script>
+// 			function placeOrder() {
+//     const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+//     const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+
+//     // Ensure the selected payment method and address are not null
+//     if (!selectedPaymentMethod || !selectedAddress) {
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Selection Error',
+//             text: 'Please select both a payment method and an address.'
+//         });
+//         return;
+//     }
+
+//     // Collecting cart items
+//     const items = Array.from(document.querySelectorAll('.cart-item')).map(item => ({
+//         productId: item.querySelector('input[name="productId"]').value, 
+//         productName: item.querySelector('.product-name').innerText,
+//         quantity: parseInt(item.querySelector('.product-quantity').value), 
+//         price: parseFloat(item.querySelector('.product-price').innerText.replace('Rs', ''))
+//     }));
+
+//     const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+//     // Sending data to the backend
+//     fetch('/checkout/cod', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             items,
+//             totalAmount,
+//             address: selectedAddress.value, // Getting the value of the selected address input
+//             paymentMethod: selectedPaymentMethod.value // Getting the value of the selected payment method input
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             Swal.fire({
+//                 icon: 'success',
+//                 title: 'Order Placed Successfully',
+//                 text: data.message,
+//                 confirmButtonText: 'View Order'
+//             }).then(() => {
+//                 window.location.href = `/order/success/${data.orderId}`;
+//             });
+//         } else {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Order Failed',
+//                 text: data.error
+//             });
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Order Error',
+//             text: 'There was an error placing your order. Please try again.'
+//         });
+//     });
+// }
+function placeOrder(event) {
+    event.preventDefault(); 
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+    const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+
+    // Check if an address is selected
+    if (!selectedAddress) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Selection Error',
+            text: 'Please select both a payment method and an address.'
+        });
+        return;
+    }
+    const paymentMethod=selectedPaymentMethod.value
+    const address = selectedAddress.value;
+    console.log(address);
+
+    Swal.fire({
+        title: 'Confirm Order',
+        text: "Do you want to place the order with Cash on Delivery?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, place it!',
+        cancelButtonText: 'No, cancel!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/checkout/cod', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    address: address,
+					paymentMethod:paymentMethod
+                }) // Closing brace for JSON.stringify
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Order Placed Successfully',
+                        text: data.message,
+                        confirmButtonText: 'View Order'
+                    }).then(() => {
+						if(data.cartEmpty){
+						Swal.fire({
+							icon:'info',
+							title:'Your cart is empty',
+							text:'successfully placed Order,your cart is empty ',
+							confirmButtonText:'Go To Cart'
+
+						}).then(()=>{
+							window.location.href='/cart'
+						})
+					}else{
+						window.location.href = `/order/success/${data.orderId}`;
+					}
+                      
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Order Failed',
+                        text: data.error
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Order Error',
+                    text: 'There was an error placing your order. Please try again.'
+                });
+            });
+        }
+    });
+}
+
+
+ </script>
 
 		<%- include("../../views/layout/user/footer") %>
 

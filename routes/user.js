@@ -102,6 +102,9 @@ router.get('/checkouteditaddress/:addressId',verifyUser,cartController.checkouta
 
 router.post('/checkouteditaddress/:addressId',verifyUser,cartController.checkouteditSave)
 
+router.post('/checkout/cod',verifyUser,cartController.handleCod)
+
+
 
 
 module.exports = router;

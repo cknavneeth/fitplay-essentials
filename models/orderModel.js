@@ -46,7 +46,7 @@ const orderSchema=new mongoose.Schema({
 })
 
 orderSchema.pre('save',function(next){
-    const amount=this.items.reduce((acc,curr)=>acc+curr,0)
+    const amount=this.items.reduce((acc,curr)=>acc+curr.totalPrice,0)
     this.totalAmount=amount
     next()
 })
