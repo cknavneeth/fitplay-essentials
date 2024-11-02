@@ -1,0 +1,151 @@
+
+<%- include('../../views/layout/admin/header') %>
+
+<h2>Admin Orders</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Items</th>
+            <th>Total Amount</th>
+            <th>Order Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% orders.forEach(order => { %>
+            <tr>
+                <td><%= order.oid %></td>
+                <td><%= order.user ? order.user.username : 'Guest' %></td>
+                <td>
+                    <ul>
+                        <% order.items.forEach(item => { %>
+                            <li><%= item.productName %> (x<%= item.quantity %>) - Rs<%= item.totalPrice %></li>
+                        <% }) %>
+                    </ul>
+                </td>
+                <td>Rs<%= order.totalAmount %></td>
+                <td><%= order.orderDate.toDateString() %></td>
+                <td><%= order.orderStatus %></td>
+
+                <td>
+                    <select class="status-dropdown" data-order-id="<%= order._id %>">
+                        <option value="Processing" <%= order.orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+                        <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                        <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                        <option value="Cancelled" <%= order.orderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                        <option value="Returned" <%= order.orderStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
+                    </select>
+                </td>
+
+
+                <td>
+                    <% if (order.orderStatus === 'Processing' || order.orderStatus === 'Pending') { %>
+                        <button type="button" class="btn btn-primary cancel-btn" data-order-id="<%= order._id %>">Cancel</button>
+                    <% } else if (order.orderStatus === 'Cancelled') { %>
+                        <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
+                    <% } else if (order.orderStatus === 'Delivered') { %>
+                        <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Return</button>
+                    <% } else if (order.orderStatus === 'Returned') { %>
+                        <button type="button" class="btn btn-secondary" disabled>Returned</button>
+                    <% } %>
+                </td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        document.querySelectorAll('.cancel-btn').forEach(button=>{
+            button.addEventListener('click',function(){
+                const orderId=this.getAttribute('data-order-id')
+                const cancelButton=this
+
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to cancel this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result)=>{
+                    if(result.isConfirmed){
+                        fetch(`/adcancel-order/${orderId}`,{
+                            method:'POST',
+                            headers:{
+                                'Content-Type':'application/json'
+                            }
+                        }).then((response)=>response.json())
+                        .then(data=>{
+                            if(data.success){
+                                cancelButton.classList.remove('btn-primary');
+                                    cancelButton.classList.add('btn-secondary');
+                                    cancelButton.textContent = 'Cancelled';
+                                    cancelButton.disabled = true;
+                                    Swal.fire('Cancelled!', 'Your order has been cancelled.', 'success');
+                            }
+                        })
+                        .catch((error)=>{
+                            console.error('error ayitund,onn sredhik',error)
+                        })
+                    }
+                })
+            })
+        })
+    })
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        document.querySelectorAll('.status-dropdown').forEach(dropdown=>{
+            dropdown.addEventListener('change',function(){
+                const orderId=this.getAttribute('data-order-id')
+                const newStatus=this.value
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to change status?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, change it!'
+                })
+                .then((result)=>{
+                    if(result.isConfirmed){
+                        fetch(`/updateOrderStatus/${orderId}`,{
+                            method:'POST',
+                            headers:{
+                                'Content-Type':'application/json'
+                            },
+                            body:JSON.stringify({status:newStatus})
+                        })
+                        .then(response=>response.json())
+                       
+                        .then(data=>{
+                            
+                            if(data.success){
+                                Swal.fire('updated','Order status has been updated','success')
+                            }else{
+                                Swal.fire('Failed','Order status updating failed','failed')
+                            }
+                        })
+                        .catch((error)=>{
+                            console.error('error occured',error)
+                            Swal.fire('Error','error happened while updating order status','error')
+                        })
+                    }
+                })
+            })
+        })
+    })
+</script>
+
+
+<%- include('../../views/layout/admin/footer') %>

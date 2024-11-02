@@ -59,8 +59,12 @@ userSchema.methods.matchPassword=async function(enteredpassword){
 }
 
 // module.exports=mongoose.model('users',userSchema)
+// module.exports = {
+//   User: mongoose.model('users', userSchema),  // Only the user model
+//   addressSchema  // Export addressSchema if needed elsewhere
+// };
 module.exports = {
-  User: mongoose.model('users', userSchema),  // Only the user model
-  addressSchema  // Export addressSchema if needed elsewhere
+  User: mongoose.model('User', userSchema),  
+  addressSchema  
 };
 

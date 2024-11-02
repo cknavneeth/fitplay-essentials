@@ -14,6 +14,7 @@ const adminController=require("../controller/admin/adminController")
 const customerController=require("../controller/admin/customerController")
 const categoryController=require("../controller/admin/categoryController")
 const productController=require("../controller/admin/productController")
+const orderController=require('../controller/admin/orderController')
 const {adminLoggedIn}=require('../middleware/adminMiddleware')
 
 
@@ -77,33 +78,14 @@ router.post('/editProduct/:id',uploads.array('images',4),productController.editP
 //single single image
 router.post('/deleteImage',productController.deleteSingleImage)
 
-//continue with google
-// router.get('/auth/google',passport.authenticate('google',{scope:['profile,email']}))/
 
- 
-
-
-// router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-
-// router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res)=>{
-//     res.redirect('/index')
-    
-// })
-// router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email']}));
-
-
-
-
-
-// router.get('/auth/google/callback',passport.authenticate('local', function(err, user) {
-//     if (!user) { return res.redirect('/login'); }
-//     res.end('Authenticated!');
-//   })(req, res)
-// )
 router.post('/adminLogout',adminController.adminLogout)
 
+router.get('/adminOrders',orderController.getOrderPage)
 
+router.post('/adcancel-order/:orderId',orderController.cancelOrderAdmin)
+
+router.post('/updateOrderStatus/:orderId',orderController.updateStatus)
 
 
 
