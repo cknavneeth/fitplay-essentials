@@ -1,0 +1,262 @@
+
+<%- include("../../views/layout/user/header",{user:user}) %>
+
+<head>
+    <title>Orders & Returns</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .dashboard body { /* Ensure body styles are scoped */
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard .container {
+            display: flex;
+        }
+        .dashboard .sidebar {
+            width: 250px;
+            background-color: #3f51b5;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard .sidebar h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .dashboard .sidebar p {
+            margin: 5px 0 20px;
+            font-size: 14px;
+        }
+        .dashboard .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .dashboard .sidebar ul li {
+            margin: 10px 0;
+        }
+        .dashboard .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .dashboard .sidebar ul li a:hover {
+            background-color: #5c6bc0;
+        }
+        .dashboard .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        .dashboard .sidebar ul li a span {
+            flex-grow: 1;
+        }
+        .dashboard .sidebar ul li a .amount {
+            font-size: 14px;
+        }
+        .dashboard .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .dashboard .content .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard .content .header h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .dashboard .content .header .tabs {
+            display: flex;
+        }
+        .dashboard .content .header .tabs button {
+            background-color: transparent;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .dashboard .content .header .tabs button:hover {
+            background-color: #e0e0e0;
+        }
+        .dashboard .content .header .tabs .active {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+        }
+        .dashboard .content .table-container {
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .dashboard .content .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .dashboard .content .table-container table th,
+        .dashboard .content .table-container table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .dashboard .content .table-container table th {
+            background-color: #f5f5f5;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="dashboard">
+    <div class="container">
+        <div class="sidebar">
+            <h2><%= user.name %></h2>
+            <p><%= user.phoneNumber %></p> <!-- Replace with the actual field for phone number -->
+            <ul>
+                <li><a href="#"><i class="fas fa-box"></i> <span>Orders & Returns</span></a></li>
+                <li><a href="#"><i class="fas fa-user"></i> <span>My Profile</span></a></li>
+                <li><a href="#"><i class="fas fa-wallet"></i> <span>Wallet</span> <span class="amount">₹ 0</span></a></li>
+                <li><a href="#"><i class="fas fa-gift"></i> <span>Sporty Rewards</span> <span class="amount">-</span></a></li>
+                <li><a href="#"><i class="fas fa-map-marker-alt"></i> <span>Address</span></a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h1>Orders & Returns</h1>
+                <div class="tabs">
+                    <button class="active">ONLINE ORDER</button>
+                    <button>STORE ORDER</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <form action="/orders/update" method="POST">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Product Image</th>
+                                <th>Date</th>
+                                <th>Total Price</th>
+                                <th>Grand Total</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (orders.length > 0) { %>
+                                <% orders.forEach(order => { %>
+                                    <tr>
+                                        <td><%= order.oid %></td>
+                                        <td>
+                                            <% if (order.items && order.items.length > 0) { %>
+                                                <img src="/uploads/product-images/<%= order.items[0].image %>" alt="Product Image" width="50">
+                                            <% } else { %>
+                                                <img src="/uploads/product-images/placeholder.png" alt="No Product Image" width="50">
+                                            <% } %>
+                                        </td>
+                                        <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+                                        <td>₹<%= order.items.reduce((acc, item) => acc + item.totalPrice, 0).toFixed(2) %></td>
+                                        <td>₹<%= order.totalAmount.toFixed(2) %></td>
+                                        <td>
+                                            <span><%= order.paymentMethod || 'N/A' %></span> <!-- Display payment method -->
+                                        </td>
+                                        <td>
+                                            <span><%= order.orderStatus || 'N/A' %></span> <!-- Display order status -->
+                                        </td>
+                                        
+                                        
+                                        <!-- <td>
+                                            <input type="hidden" name="orderId" value="">
+                                            <button type="submit" class="btn btn-primary">Cancel</button>
+                                        </td> -->
+                                        <td>
+                                            <input type="hidden" name="orderId" value="<%= order._id %>">
+                                            <% if (order.orderStatus === 'Delivered') { %>
+                                                <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Return Product</button>
+                                            <% } else if (order.orderStatus === 'Pending' || order.orderStatus === 'Processing') { %>
+                                                <button type="button" class="btn btn-primary cancel-btn" data-order-id="<%= order._id %>">Cancel</button>
+                                            <% } else if (order.orderStatus === 'Cancelled') { %>
+                                                <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
+                                            <% } else if (order.orderStatus === 'Returned') { %>
+                                                <button type="button" class="btn btn-secondary" disabled>Returned</button>
+                                            <% } else { %>
+                                                <span>N/A</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="7">No orders found.</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                        
+
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        document.querySelectorAll('.cancel-btn').forEach(button=>{
+            button.addEventListener('click',function(){
+                const orderId=this.getAttribute('data-order-id')
+                const cancelButton=this
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to cancel this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result)=>{
+                         if(result.isConfirmed){
+                            fetch(`/cancel-order/${orderId}`,{
+                                method:"POST",
+                                headers: {
+                                   'Content-Type': 'application/json'
+                                }
+                            })
+                            .then((response)=>response.json())
+                            .then(data=>{
+                                if(data.success){
+                                    cancelButton.classList.remove('btn-primary');
+                                    cancelButton.classList.add('btn-secondary');
+                                    cancelButton.textContent = 'Cancelled';
+                                    cancelButton.disabled = true;
+                                    Swal.fire('Cancelled!', 'Your order has been cancelled.', 'success');
+                                }
+                            })
+                            .catch((error)=>{
+                                 console.error(error)
+                            })
+                         }
+                })
+            })
+        })
+    })
+</script>
+</body>
+<%- include("../../views/layout/user/footer") %>
+
+

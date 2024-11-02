@@ -58,60 +58,7 @@ exports.getCartPage=async(req,res)=>{
 }
 
 
-// exports.addToCart=async(req,res)=>{
-//     const {productId,size}=req.body
-//     const userId=req.user.id
-//     try {
-//         const product=await Product.findById({_id:productId})
-//         if(!product){
-//             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'product not found'})
-//         }
 
-
-//         let cart=await Cart.findOne({userId})
-//         if(!cart){
-//             cart=new Cart({userId,items:[]})
-//         }
-
-//         // if(!cart.items){
-//         //     cart.items=[]
-//         // }
-
-//         const existingItemIndex= cart.items.findIndex(
-//             item=>item.productId.toString()===productId&&item.size===size
-//         )
-
-//         const price=product.salePrice
-//         const totalPrice=price
-
-//         if(existingItemIndex>-1){
-//             // cart.items[existingItemIndex].quantity+=1
-//             // cart.items[existingItemIndex].totalPrice+=cart.items[existingItemIndex].price
-//             const existingItem = cart.items[existingItemIndex];
-//             existingItem.quantity += 1;
-//             existingItem.totalPrice = existingItem.quantity * existingItem.price;
-//         }else{
-//             // cart.items.push({userId,size,quantity:1,price,totalPrice})
-//             const newItem = {
-//                 productId: productId,
-//                 size: size,
-//                 quantity: 1,
-//                 price: price,
-//                 totalPrice: totalPrice
-//               };
-        
-//               console.log("New Item to Add:", newItem);
-        
-//               cart.items.push(newItem);
-//         }
-
-//         await cart.save()
-//         res.json({success:true})
-//     } catch (error) {
-//         console.error(error)
-//         return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'internal server error'})
-//     }
-// }
 exports.addToCart = async (req, res) => {
     const { productId, size } = req.body;
     console.log(req.body)
@@ -346,51 +293,7 @@ exports.checkouteditSave=async(req,res)=>{
     }
 }
 
-// exports.handleCod=async(req,res)=>{
-//     const userId=req.user.id
-//     const user=await User.findById(userId)
-//     const{items,totalAmount,address}=req.body
-//     console.log('address vangichutundeyyy',address)
-//     let session;
-//     try {
-//         const session=await mongoose.startSession();
-//         session.startTransaction();
-        
-//         const newOrder=new Order({
-//             userId,
-//             items,
-//             totalAmount,
-//             paymentMethod:'Cash on Delivery',
-//             paymentStatus:'Pending',
-//             orderStatus:'Processing',
-//             address
 
-//         })
-
-//         await newOrder.save({session})
-
-
-//         for(const item of items){
-
-//             const product=await Product.findById(item.productId).session(session)
-//             if(!product||product.stock<item.quantity){
-//                 throw new error (`insufficient stock for product ${item.productName}`)
-//             }
-//             product.stock-=item.quantity
-//             await product.save({session})
-
-//         }
-//         await User.findByIdAndUpdate(userId,{$set:{cart:[]}},{session})
-//         await session.commitTransaction()
-//         session.endSession();
-//         res.json({success:true,error:'Order placed successfully'})
-//     } catch (error) {
-//         console.error('error placing order',error)
-//         if(session)await session.abortTransaction();
-//         session.endSession()
-//         res.status(statusCodes.INTERNAL_SERVER_ERROR).json({success:false,error:'something error occured'})
-//     }
-// }
 
 
 exports.handleCod = async (req, res) => {
@@ -564,6 +467,33 @@ async function getNextOrderId() {
     const randomSuffix = Math.floor(Math.random() * 1000);
     return `ORD-${timestamp}-${randomSuffix}`;
 }
+
+
+exports.getmyOrders=async(req,res)=>{
+    try {
+        const userId=req.user.id
+        const user=await User.findById(userId)
+        const orders=await Order.find({user:userId}).populate('items.productId')
+        res.render('user/myOrders',{user,orders})
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+//cancel order
+exports.cancelOrder=async(req,res)=>{
+    try {
+        const orderId=req.params.orderId
+        const updateOrder=await Order.findByIdAndUpdate(orderId,{orderStatus:'Cancelled'},{new:true})
+        if(!updateOrder){
+             return res.json({success:false,error:'order not found'})
+        }
+        res.json({success:true,error:'order cancel ayitund.nanni!'})
+    } catch (error) {
+        res.json({success:false,error:'error cancelling order'})
+    }
+}
+
 
 
 

@@ -8,6 +8,7 @@ const orderSchema=new mongoose.Schema({
         ref:'User',
         required:true
     },
+    oid: { type: String, required: true },
     items:[
         {
             productId:{
@@ -34,7 +35,7 @@ const orderSchema=new mongoose.Schema({
             totalPrice:{
                 type:Number,
                 required:true
-            }
+            },
         }
     ],
     address:addressSchema,

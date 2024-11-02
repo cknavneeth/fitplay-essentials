@@ -104,6 +104,9 @@ router.post('/checkouteditaddress/:addressId',verifyUser,cartController.checkout
 
 router.post('/checkout/cod',verifyUser,cartController.handleCod)
 
+router.get('/myOrders',verifyUser,cartController.getmyOrders)
+
+router.post('/cancel-order/:orderId',verifyUser,cartController.cancelOrder)
 
 
 
