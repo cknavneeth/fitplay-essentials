@@ -64,10 +64,11 @@ exports.signupRedirect = async (req, res) => {
       return res.json("emailerror");
     }
     req.session.userOtp = otp;
-    req.session.otpExpires=Date.now()+1000*60*5
+    req.session.otpExpires = Date.now() + 1000 * 60 * 2; 
     req.session.userData = { username, email, password };
     console.log(req.session.userData);
     res.render("user/otpVerification.ejs");
+    
     console.log("OTP send", req.session.userOtp);
   } catch (error) {
     console.error("signup error", error);
@@ -87,14 +88,21 @@ exports.otppage = async (req, res) => {
   try {
     const { otp } = req.body;
     const sessionOtp = req.session.userOtp;
+    const otpExpires=req.session.otpExpires
 
-    sessionOtp=Date.now>req.session.otpExpires?null:req.session.userOtp
+    if(Date.now()>otpExpires){
+      return res
+      .status(400)
+      .json({ success: false, message: "Invalid OTP, please try again" });
+    }
+
+    // const sessionOtp=Date.now>req.session.otpExpires?null:req.session.userOtp
 
     if (!otp || !sessionOtp || otp !== sessionOtp) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid OTP, please try again" });
-    }
+    }  
 
     const user = req.session.userData;
 
@@ -130,6 +138,7 @@ exports.otppage = async (req, res) => {
 
 exports.resendOtp = async (req, res) => {
   try {
+   
     const { email } = req.session.userData;
     if (!email) {
       res
@@ -138,6 +147,7 @@ exports.resendOtp = async (req, res) => {
     }
     const otp = generateOtp();
     req.session.userOtp = otp;
+    req.session.otpExpires = Date.now() + 1000 * 60 * 2;
     const emailSent = await sendVerificationEmail(email, otp);
     if (emailSent) {
       res.status(200).json({ success: true, error: "OTP resend successfull" });
@@ -392,7 +402,7 @@ exports.getForgotPassword=async(req,res)=>{
         return res.status(500).json({ success: false, error: 'Error occurred while sending email' });
       }
       console.log('Email sent:', info.response);
-      res.send('Reset link sent successfully');
+      res.json({ success: true, error: 'Reset link sent successfully' });
   
     })
   } catch (error) {
@@ -462,3 +472,5 @@ exports.resetPage=async(req,res)=>{
     console.error(error)
   }
 }
+
+
