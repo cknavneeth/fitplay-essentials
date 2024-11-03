@@ -229,6 +229,9 @@
      
       const signupForm = document.getElementById("signupForm");
 
+      const namePattern = /^[A-Za-z\s]+$/;
+
+
       
        signupForm.addEventListener("submit", (event) => {
         const username = document.getElementById("username").value.trim();
@@ -251,10 +254,15 @@
         } else if (username.length < 3) {
           showError("usernameError", "Username must be at least 3 characters.");
           hasError = true;
-        } else if (/\s/.test(username)) {
-          showError("usernameError", "Username cannot contain spaces.");
+        // } else if (/\s/.test(username)) {
+        //   showError("usernameError", "Username cannot contain spaces.");
+        //   hasError = true;
+        // }
+        } else if (!namePattern.test(username)) {
+          showError("usernameError", "only letters,no special characters.");
           hasError = true;
         }
+        
 
         
         if (!email) {

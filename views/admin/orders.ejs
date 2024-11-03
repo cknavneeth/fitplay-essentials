@@ -48,7 +48,7 @@
                     <% } else if (order.orderStatus === 'Cancelled') { %>
                         <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
                     <% } else if (order.orderStatus === 'Delivered') { %>
-                        <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Return</button>
+                        <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Delivered</button>
                     <% } else if (order.orderStatus === 'Returned') { %>
                         <button type="button" class="btn btn-secondary" disabled>Returned</button>
                     <% } %>

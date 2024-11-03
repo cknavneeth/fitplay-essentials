@@ -44,6 +44,8 @@ const userSchema=new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     addresses: [addressSchema],
     defaultAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' }
     

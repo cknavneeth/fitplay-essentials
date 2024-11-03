@@ -108,6 +108,14 @@ router.get('/myOrders',verifyUser,cartController.getmyOrders)
 
 router.post('/cancel-order/:orderId',verifyUser,cartController.cancelOrder)
 
+router.post('/forgot-password',userController.getForgotPassword)
+
+router.get('/forgot-password',userController.getForgotPage)
+
+router.get('/reset-password/:token',userController.getResetpage)
+
+router.post('/reset-password/:token',userController.resetPage)
+
 
 
 module.exports = router;

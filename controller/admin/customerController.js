@@ -1,5 +1,5 @@
 const StatusCodes = require('../../config/keys.js');
-const User = require('../../models/userModel.js');
+const {User} = require('../../models/userModel.js');
 
 exports.listCustomers = async (req, res) => {
     const perPage = 10; 

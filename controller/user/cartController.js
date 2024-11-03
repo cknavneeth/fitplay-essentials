@@ -134,7 +134,7 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
 
         console.log('fuck offff',cart)
         console.log("SubTotal ahne:", cart.subTotal); 
-console.log("GrandTotal ahne:", cart.grandTotal);
+        console.log("GrandTotal ahne:", cart.grandTotal);
 
         await cart.save();
         res.json({ success: true, message: 'Cart updated successfully' });
@@ -296,57 +296,57 @@ exports.checkouteditSave=async(req,res)=>{
 
 
 
-exports.handleCod = async (req, res) => {
-    const userId = req.user.id;
-    console.log('braaaa',req.user)
-    console.log('braaaas',req.body)
-    const { items, totalAmount, address, paymentMethod } = req.body;
-    console.log("hayyo",items)
-    console.log("hoooo",totalAmount)
+// exports.handleCod = async (req, res) => {
+//     const userId = req.user.id;
+//     console.log('braaaa',req.user)
+//     console.log('braaaas',req.body)
+//     const { items, totalAmount, address, paymentMethod } = req.body;
+//     console.log("hayyo",items)
+//     console.log("hoooo",totalAmount)
 
-    let session;
-    try {
-        session = await mongoose.startSession();
-        session.startTransaction();
+//     let session;
+//     try {
+//         session = await mongoose.startSession();
+//         session.startTransaction();
 
-        const newOrder = new Order({
-            userId,
-            items,
-            totalAmount,
-            paymentMethod,
-            paymentStatus: 'Pending',
-            orderStatus: 'Processing',
-            address
-        });
+//         const newOrder = new Order({
+//             userId,
+//             items,
+//             totalAmount,
+//             paymentMethod,
+//             paymentStatus: 'Pending',
+//             orderStatus: 'Processing',
+//             address
+//         });
 
-        await newOrder.save({ session });
+//         await newOrder.save({ session });
 
-        for (const item of items) {
-            const product = await Product.findById(item.productId).session(session);
-            if (!product || product.stock < item.quantity) {
-                throw new Error(`Insufficient stock for product ${item.productName}`);
-            }
-            product.stock -= item.quantity;
-            await product.save({ session });
-        }
+//         for (const item of items) {
+//             const product = await Product.findById(item.productId).session(session);
+//             if (!product || product.stock < item.quantity) {
+//                 throw new Error(`Insufficient stock for product ${item.productName}`);
+//             }
+//             product.stock -= item.quantity;
+//             await product.save({ session });
+//         }
 
-        await User.findByIdAndUpdate(userId, { $set: { cart: [] } }, { session });
-        await session.commitTransaction();
-        session.endSession();
+//         await User.findByIdAndUpdate(userId, { $set: { cart: [] } }, { session });
+//         await session.commitTransaction();
+//         session.endSession();
 
-        res.json({ success: true, message: 'Order placed successfully', orderId: newOrder._id });
-    } catch (error) {
-        console.error('Error placing order:', error);
+//         res.json({ success: true, message: 'Order placed successfully', orderId: newOrder._id });
+//     } catch (error) {
+//         console.error('Error placing order:', error);
       
-        if (session) {
-            await session.abortTransaction();
-            session.endSession();
-        }
+//         if (session) {
+//             await session.abortTransaction();
+//             session.endSession();
+//         }
 
-        res.status(500).json({ success: false, error: 'An error occurred while placing your order' });
-    }
+//         res.status(500).json({ success: false, error: 'An error occurred while placing your order' });
+//     }
 
-};
+// };
 
 
 exports.handleCod=async(req,res)=>{

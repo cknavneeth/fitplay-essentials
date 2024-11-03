@@ -243,6 +243,8 @@
             
             clearErrorMessages()
 
+
+
             let isValid=true
             
             const name = document.querySelector('input[name="name"]').value.trim();
@@ -254,13 +256,15 @@
         const state = document.querySelector('select[name="state"]').value;
         const addressType = document.querySelector('input[name="address_type"]:checked');
 
+        const phonePattern = /^(?!.*(\d)\1{4})[0-9]{10}$/;
+
 
             if(name===''){
                 document.getElementById('name-error').innerText="name is required"
                 isValid =false
             }
 
-            if (!mobile.match(/^\d{10}$/)) {
+            if (!mobile.match(phonePattern)) {
                 document.getElementById('mobile-error').innerText = 'Mobile number must be 10 digits';
                 isValid = false;
             }

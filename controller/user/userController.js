@@ -6,6 +6,8 @@ const Product = require("../../models/productModel.js");
 const Category=require('../../models/categoryModel.js')
 const jwt = require("jsonwebtoken");
 const statusCodes=require('../../config/keys.js')
+const crypto = require('crypto');
+
 
 
 function generateOtp() {
@@ -62,6 +64,7 @@ exports.signupRedirect = async (req, res) => {
       return res.json("emailerror");
     }
     req.session.userOtp = otp;
+    req.session.otpExpires=Date.now()+1000*60*5
     req.session.userData = { username, email, password };
     console.log(req.session.userData);
     res.render("user/otpVerification.ejs");
@@ -84,6 +87,8 @@ exports.otppage = async (req, res) => {
   try {
     const { otp } = req.body;
     const sessionOtp = req.session.userOtp;
+
+    sessionOtp=Date.now>req.session.otpExpires?null:req.session.userOtp
 
     if (!otp || !sessionOtp || otp !== sessionOtp) {
       return res
@@ -348,3 +353,112 @@ exports.logOut=async (req,res)=>{
   res.redirect('/login')
 }
 
+
+exports.getForgotPassword=async(req,res)=>{
+  try {
+    const {email}=req.body
+    const user=await User.findOne({email})
+
+    if(!user){
+      return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'user not found'})
+    }
+
+    const token=crypto.randomBytes(32).toString('hex')
+    user.resetPasswordToken=token
+    user.resetPasswordExpires=Date.now()+3600000
+    await user.save()
+
+    const transporter=nodemailer.createTransport({
+      service: "gmail",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD,
+      },
+    })
+
+    const mailOptions={
+      to: user.email,
+      subject: 'Password Reset',
+      text: `Please click the following link to reset your password: http://localhost:3000/reset-password/${token}`
+    }
+    console.log(`Password reset link (for testing): http://localhost:3000/reset-password/${token}`);
+
+    transporter.sendMail(mailOptions,(err)=>{
+      if (err) {
+        console.error('Error sending email:', err);
+        return res.status(500).json({ success: false, error: 'Error occurred while sending email' });
+      }
+      console.log('Email sent:', info.response);
+      res.send('Reset link sent successfully');
+  
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+exports.getForgotPage=async(req,res)=>{
+  try {
+    res.render('user/forgotPassword')
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+exports.getResetpage=async(req,res)=>{
+  try {
+    const token=req.params.token
+    const user=await User.findOne({
+      resetPasswordToken:token,
+      resetPasswordExpires:{$gt:Date.now()}
+    })
+
+    if(!user){
+      return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'user not found'})
+    }
+
+    res.render('user/resetPassword',{token})
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+exports.resetPage=async(req,res)=>{
+  try {
+    const token=req.params.token
+    const {password,confirmPassword}=req.body
+
+    if(!password||!confirmPassword){
+      return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'password illa'})
+    }
+
+    if(password!==confirmPassword){
+      return res.status(statusCodes.BAD_REQUEST).json({success:false,error:"password do not match"})
+    }
+
+    const user=await User.findOne({
+      resetPasswordToken:token,
+      resetPasswordExpires:{$gt:Date.now()}
+    })
+
+    console.log("Reset token saved:", token);  // Debugging output
+    console.log("Token expiration:", user.resetPasswordExpires);
+
+    if(!user){
+      return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'password token expired i think'})
+    }
+    user.password=await bcrypt.hash(password,10)
+    user.resetPasswordToken=undefined;
+    user.resetPasswordExpires=undefined
+
+    await user.save()
+    res.send('password has been reset successfully')
+  } catch (error) {
+    console.error(error)
+  }
+}
