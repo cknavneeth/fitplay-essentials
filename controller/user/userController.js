@@ -422,11 +422,14 @@ exports.getForgotPage=async(req,res)=>{
 exports.getResetpage=async(req,res)=>{
   try {
     const token=req.params.token
+    console.log("Token received:", token);
+
     const user=await User.findOne({
       resetPasswordToken:token,
       resetPasswordExpires:{$gt:Date.now()}
     })
 
+    console.log("User found:", user);
     if(!user){
       return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'user not found'})
     }
@@ -456,7 +459,7 @@ exports.resetPage=async(req,res)=>{
       resetPasswordExpires:{$gt:Date.now()}
     })
 
-    console.log("Reset token saved:", token);  // Debugging output
+    console.log("Reset token saved:", token);  
     console.log("Token expiration:", user.resetPasswordExpires);
 
     if(!user){
@@ -467,7 +470,8 @@ exports.resetPage=async(req,res)=>{
     user.resetPasswordExpires=undefined
 
     await user.save()
-    res.send('password has been reset successfully')
+    // res.send('password has been reset successfully')
+    return res.status(statusCodes.OK).json({success:true,error:'password has been reset successfully'})
   } catch (error) {
     console.error(error)
   }

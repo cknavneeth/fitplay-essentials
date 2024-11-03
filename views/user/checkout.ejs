@@ -150,71 +150,7 @@
 		
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script>
-// 			function placeOrder() {
-//     const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-//     const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
 
-//     // Ensure the selected payment method and address are not null
-//     if (!selectedPaymentMethod || !selectedAddress) {
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Selection Error',
-//             text: 'Please select both a payment method and an address.'
-//         });
-//         return;
-//     }
-
-//     // Collecting cart items
-//     const items = Array.from(document.querySelectorAll('.cart-item')).map(item => ({
-//         productId: item.querySelector('input[name="productId"]').value, 
-//         productName: item.querySelector('.product-name').innerText,
-//         quantity: parseInt(item.querySelector('.product-quantity').value), 
-//         price: parseFloat(item.querySelector('.product-price').innerText.replace('Rs', ''))
-//     }));
-
-//     const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-//     // Sending data to the backend
-//     fetch('/checkout/cod', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             items,
-//             totalAmount,
-//             address: selectedAddress.value, // Getting the value of the selected address input
-//             paymentMethod: selectedPaymentMethod.value // Getting the value of the selected payment method input
-//         })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             Swal.fire({
-//                 icon: 'success',
-//                 title: 'Order Placed Successfully',
-//                 text: data.message,
-//                 confirmButtonText: 'View Order'
-//             }).then(() => {
-//                 window.location.href = `/order/success/${data.orderId}`;
-//             });
-//         } else {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Order Failed',
-//                 text: data.error
-//             });
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Order Error',
-//             text: 'There was an error placing your order. Please try again.'
-//         });
-//     });
-// }
 function placeOrder(event) {
     event.preventDefault(); 
     const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');

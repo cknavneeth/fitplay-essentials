@@ -257,92 +257,99 @@
     </div>
 
     <script>
-        document.getElementById('editAddressForm').addEventListener('submit',(e)=>{
-            clearErrorMessages()
        
-            let isValid=true
-        const name = document.querySelector('input[name="name"]').value.trim();
-        const mobile = document.querySelector('input[name="mobile"]').value.trim();
-        const pincode = document.querySelector('input[name="pincode"]').value.trim();
-        const locality = document.querySelector('input[name="locality"]').value.trim();
-        const address = document.querySelector('textarea[name="address"]').value.trim();
-        const city = document.querySelector('input[name="city"]').value.trim();
-        const state = document.querySelector('select[name="state"]').value;
-        const addressType = document.querySelector('input[name="address_type"]:checked');
+        document.getElementById('editAddressForm').addEventListener('submit', (e) => {
+    clearErrorMessages();
 
-        const phonePattern = /^(?!.*(\d)\1{4})[0-9]{10}$/;
-        const namePattern = /^[A-Za-z\s]+$/;
-        const pincodePattern = /^[0-9]+$/;
+    let isValid = true;
+    const name = document.querySelector('input[name="name"]').value.trim();
+    const mobile = document.querySelector('input[name="mobile"]').value.trim();
+    const pincode = document.querySelector('input[name="pincode"]').value.trim();
+    const locality = document.querySelector('input[name="locality"]').value.trim();
+    const address = document.querySelector('textarea[name="address"]').value.trim();
+    const city = document.querySelector('input[name="city"]').value.trim();
+    const state = document.querySelector('select[name="state"]').value;
+    const addressType = document.querySelector('input[name="address_type"]:checked');
 
+    const phonePattern = /^(?!.*(\d)\1{4})[0-9]{10}$/;
+    const namePattern = /^[A-Za-z\s]+$/;
+    const pincodePattern = /^[0-9]+$/;
 
+   
+    if (name === '') {
+        document.getElementById('name-error').innerText = "Name is required";
+        isValid = false;
+    } else if (!namePattern.test(name)) {
+        document.getElementById('name-error').innerText = "Alphabet letters only";
+        isValid = false;
+    }
 
-            if(name===''){
-                document.getElementById('name-error').innerText="name is required"
-                isValid =false
-            }else if(!namePattern.test(name)){
-               document.getElementById('name-error').innerText="Alphabet letters only "
-               isValid=false
-            }
+ 
+    if (!mobile.match(phonePattern)) {
+        document.getElementById('mobile-error').innerText = 'Mobile number must be 10 digits';
+        isValid = false;
+    }
 
-            if (!mobile.match(phonePattern)) {
-                document.getElementById('mobile-error').innerText = 'Mobile number must be 10 digits';
-                isValid = false;
-            }
+    
+    if (pincode === '') {
+        document.getElementById('pincode-error').innerText = 'Pincode is required';
+        isValid = false;
+    } else if (!pincodePattern.test(pincode)) {
+        document.getElementById('pincode-error').innerText = 'Only numbers allowed';
+        isValid = false;
+    }
 
-            if (pincode === '') {
-                document.getElementById('pincode-error').innerText = 'Pincode is required';
-                isValid = false;
-            }else if(!pincodePattern.test(pincode)){
-                document.getElementById('pincode-error').innerText='Only numbers allowed'
-                isValid=false
-            }
+    
+    if (locality === '') {
+        document.getElementById('locality-error').innerText = 'Locality is required';
+        isValid = false;
+    } else if (!namePattern.test(locality)) {
+        document.getElementById('locality-error').innerText = "Only alphabets allowed";
+        isValid = false;
+    }
 
-            if (locality === '') {
-                document.getElementById('locality-error').innerText = 'Locality is required';
-                isValid = false;
-            }else if(!namePattern.test(locality)){
-                document.getElementById('locality-error').innerText="Only alphabets allowed"
-                isValid=false
-            }
+    
+    if (address === '') {
+        document.getElementById('address-error').innerText = 'Address is required';
+        isValid = false;
+    }
 
-            if (address === '') {
-                document.getElementById('address-error').innerText = 'Address is required';
-                isValid = false;
-            }else if(!namePattern.test(address)){
-                document.getElementById('address-error').innerText='Only alphabets allowed'
-                isValid=false
-            }
+    
+    if (city === '') {
+        document.getElementById('city-error').innerText = 'City is required';
+        isValid = false;
+    } else if (!namePattern.test(city)) {
+        document.getElementById('city-error').innerText = "Only alphabets allowed";
+        isValid = false;
+    }
 
-            if (city === '') {
-                document.getElementById('city-error').innerText = 'City is required';
-                isValid = false;
-            }else if(!namePattern.test(city)){
-                document.getElementById('city-error').innerText="Only alphabets allowed"
-                isValid=false
-            }
+    
+    if (state === '') {
+        document.getElementById('state-error').innerText = 'State is required';
+        isValid = false;
+    }
 
-            if (state === '') {
-                document.getElementById('state-error').innerText = 'State is required';
-                isValid = false;
-            }
+    
+    if (!addressType) {
+        document.getElementById('address-type-error').innerText = 'Please select an address type';
+        isValid = false;
+    }
 
-            if (!addressType) {
-                document.getElementById('address-type-error').innerText = 'Please select an address type';
-                isValid = false;
-            }
-            console.log('Form is valid:', isValid);
+    console.log('Form is valid:', isValid);
 
-            if (isValid==false) {
-                e.preventDefault()
-            }
+    
+    if (!isValid) {
+        e.preventDefault();
+    }
 
-            function clearErrorMessages(){
-                const elementError=document.getElementsByClassName('error-message')
-                Array.from(elementError).forEach((item)=>{
-                      item.innerText=''
-                })
-            }
-        })
+    function clearErrorMessages() {
+        const elementError = document.getElementsByClassName('error-message');
+        Array.from(elementError).forEach((item) => {
+            item.innerText = '';
+        });
+    }
+});
+
     </script>
 </body>
 </html>

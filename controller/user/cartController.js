@@ -296,57 +296,7 @@ exports.checkouteditSave=async(req,res)=>{
 
 
 
-// exports.handleCod = async (req, res) => {
-//     const userId = req.user.id;
-//     console.log('braaaa',req.user)
-//     console.log('braaaas',req.body)
-//     const { items, totalAmount, address, paymentMethod } = req.body;
-//     console.log("hayyo",items)
-//     console.log("hoooo",totalAmount)
 
-//     let session;
-//     try {
-//         session = await mongoose.startSession();
-//         session.startTransaction();
-
-//         const newOrder = new Order({
-//             userId,
-//             items,
-//             totalAmount,
-//             paymentMethod,
-//             paymentStatus: 'Pending',
-//             orderStatus: 'Processing',
-//             address
-//         });
-
-//         await newOrder.save({ session });
-
-//         for (const item of items) {
-//             const product = await Product.findById(item.productId).session(session);
-//             if (!product || product.stock < item.quantity) {
-//                 throw new Error(`Insufficient stock for product ${item.productName}`);
-//             }
-//             product.stock -= item.quantity;
-//             await product.save({ session });
-//         }
-
-//         await User.findByIdAndUpdate(userId, { $set: { cart: [] } }, { session });
-//         await session.commitTransaction();
-//         session.endSession();
-
-//         res.json({ success: true, message: 'Order placed successfully', orderId: newOrder._id });
-//     } catch (error) {
-//         console.error('Error placing order:', error);
-      
-//         if (session) {
-//             await session.abortTransaction();
-//             session.endSession();
-//         }
-
-//         res.status(500).json({ success: false, error: 'An error occurred while placing your order' });
-//     }
-
-// };
 
 
 exports.handleCod=async(req,res)=>{

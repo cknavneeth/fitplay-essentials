@@ -274,7 +274,7 @@ body {
 	   <input id="confirmPassword" name="confirmPassword" type="text" />
 	   <small id="confirm-password-error" class="error-message"></small>
 	  </div>
-	  <div class="form-group">
+	  <!-- <div class="form-group">
 	   <label>
 		Gender
 	   </label>
@@ -286,18 +286,16 @@ body {
 		 Female
 		</button>
 	   </div>
-	  </div>
+	  </div> -->
 	  <div class="form-group">
 	   <label>
 		Fill some sporty stuff in your inbox
 	   </label>
 	   <div class="newsletter-options">
 		<button class="active">
-		 Yes
+		 Change it now!
 		</button>
-		<button>
-		 No
-		</button>
+		
 	   </div>
 	  </div>
 	  <div class="form-group">
@@ -363,60 +361,137 @@ body {
 	}
 });
 
-function validateForm() {
-    let isValid = true;
-    console.log('asthafarullah')
+// function validateForm() {
+//     let isValid = true;
+//     console.log('asthafarullah')
 	
     
+//     const name = document.getElementById('first-name').value.trim();
+//     const email = document.getElementById('email').value.trim();
+//     const currentPassword = document.getElementById('password').value.trim();
+//     const newPassword = document.getElementById('newPassword').value.trim();
+//     const confirmPassword = document.getElementById('confirmPassword').value.trim();
+	
+
+// 	console.log("Name:", name);
+//     console.log("Email:", email);
+//     console.log("Current Password:", currentPassword);
+//     console.log("New Password:", newPassword);
+//     console.log("Confirm Password:", confirmPassword);
+
+    
+//     document.getElementById('name-error').innerText = '';
+//     document.getElementById('email-error').innerText = '';
+//     document.getElementById('password-error').innerText = '';
+//     document.getElementById('new-password-error').innerText = '';
+//     document.getElementById('confirm-password-error').innerText = '';
+
+	
+// 	const phonePattern = /^(?!.*(\d)\1{4})[0-9]{10}$/;
+//         const namePattern = /^[A-Za-z\s]+$/;
+//         const pincodePattern = /^[0-9]+$/;
+
+
+    
+//     if (name === '') {
+//         document.getElementById('name-error').innerText = 'Name is required';
+//         isValid = false;
+//     }else if(!namePattern.test(name)){
+// 		document.getElementById('name-error').innerText='Not a proper name'
+// 	}
+
+    
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     if (!email.match(emailRegex)) {
+//         document.getElementById('email-error').innerText = 'Invalid email format';
+//         isValid = false;
+//     }
+
+    
+//     if (currentPassword === '') {
+//         document.getElementById('password-error').innerText = 'Current password is required';
+//         isValid = false;
+//     }
+
+    
+//     if (newPassword !== '' || confirmPassword !== '') {
+//         if (newPassword !== confirmPassword) {
+//             document.getElementById('confirm-password-error').innerText = 'Passwords do not match';
+//             isValid = false;
+//         }
+//     }
+// 	else if (newPassword.length < 6) {
+//          document.getElementById('new-password-error').innerText='Password must be 6 characters!'
+//           isValid=false
+//         } else if (!/[A-Z]/.test(newPassword)) {
+//           document.getElementById('new-password-error').innerText='Atleast include One uppercase letter!'
+//           isValid=false
+//         } else if (!/[0-9]/.test(newPassword)) {
+//           document.getElementById('new-password-error').innerText="Atleast include one number! "
+//           isValid=false
+//         }
+
+//     return isValid; 
+// }
+function validateForm() {
+    let isValid = true;
+
     const name = document.getElementById('first-name').value.trim();
     const email = document.getElementById('email').value.trim();
     const currentPassword = document.getElementById('password').value.trim();
     const newPassword = document.getElementById('newPassword').value.trim();
     const confirmPassword = document.getElementById('confirmPassword').value.trim();
-	
 
-	console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Current Password:", currentPassword);
-    console.log("New Password:", newPassword);
-    console.log("Confirm Password:", confirmPassword);
-
-    
     document.getElementById('name-error').innerText = '';
     document.getElementById('email-error').innerText = '';
     document.getElementById('password-error').innerText = '';
     document.getElementById('new-password-error').innerText = '';
     document.getElementById('confirm-password-error').innerText = '';
 
-    
+    const namePattern = /^[A-Za-z\s]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (name === '') {
         document.getElementById('name-error').innerText = 'Name is required';
         isValid = false;
+    } else if (!namePattern.test(name)) {
+        document.getElementById('name-error').innerText = 'Not a proper name';
+        isValid = false;
     }
 
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.match(emailRegex)) {
         document.getElementById('email-error').innerText = 'Invalid email format';
         isValid = false;
     }
 
-    
     if (currentPassword === '') {
         document.getElementById('password-error').innerText = 'Current password is required';
         isValid = false;
     }
 
-    
     if (newPassword !== '' || confirmPassword !== '') {
         if (newPassword !== confirmPassword) {
             document.getElementById('confirm-password-error').innerText = 'Passwords do not match';
             isValid = false;
+        } else {
+            if (newPassword.length < 6) {
+                document.getElementById('new-password-error').innerText = 'Password must be 6 characters!';
+                isValid = false;
+            }
+            if (!/[A-Z]/.test(newPassword)) {
+                document.getElementById('new-password-error').innerText += ' At least one uppercase letter required!';
+                isValid = false;
+            }
+            if (!/[0-9]/.test(newPassword)) {
+                document.getElementById('new-password-error').innerText += ' At least one number required!';
+                isValid = false;
+            }
         }
     }
 
-    return isValid; 
+    return isValid;
 }
+
 
    </script>
    </body>
