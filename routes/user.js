@@ -116,6 +116,7 @@ router.get('/reset-password/:token',userController.getResetpage)
 
 router.post('/reset-password/:token',userController.resetPage)
 
+router.patch('/updateQuantity',verifyUser,userController.updateQuantity)
 
 
 

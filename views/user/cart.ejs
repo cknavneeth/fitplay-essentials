@@ -3,143 +3,170 @@
 	
 
 	</head> -->
-    <%- include("../../views/layout/user/header",{user:user}) %>
-	
-	
-	<body>
-		<!-- Page item Area -->
-		<!-- Cart Page -->
-<div class="cart_page_area">
+<%- include("../../views/layout/user/header",{user:user}) %>
+
+<body>
+  <!-- Page item Area -->
+  <!-- Cart Page -->
+  <div class="cart_page_area">
     <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
-                <% if (cartEmpty) { %>
-                    <div class="empty-cart-message text-center">
-                        <h2>Your Cart is Empty</h2>
-                        <p>You have successfully placed your order. Your cart is now empty.</p>
-                        <a href="/shop" class="btn border-btn">Continue Shopping</a>
+      <div class="row">
+        <div class="col-sm-12">
+          <% if (cartEmpty) { %>
+          <div class="empty-cart-message text-center">
+            <h2>Your Cart is Empty</h2>
+            <p>
+              You have successfully placed your order. Your cart is now empty.
+            </p>
+            <a href="/shop" class="btn border-btn">Continue Shopping</a>
+          </div>
+          <% } else { %>
+          <div class="cart_table_area table-responsive">
+            <table class="table cart_prdct_table text-center">
+              <thead>
+                <tr>
+                  <th class="cpt_no">No.</th>
+                  <th class="cpt_img">Image</th>
+                  <th class="cpt_pn">Product Name</th>
+                  <th class="cpt_q">Quantity</th>
+                  <th class="cpt_p">Price</th>
+                  <th class="cpt_t">Total</th>
+                  <th class="cpt_r">Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% cart.items.forEach((item, index) => { %>
+                <tr>
+                  <td><span class="cp_no"><%= index + 1 %></span></td>
+                  <td>
+                    <a href="#" class="cp_img">
+                      <img
+                        src="/uploads/product-images/<%= item.productId.productImage[0] %>"
+                        alt="<%= item.productId.productName %>"
+                      />
+                    </a>
+                  </td>
+                  <td>
+                    <a href="#" class="cp_title"
+                      ><%= item.productId.productName %></a
+                    >
+                  </td>
+                  <td>
+                    <div class="cp_quntty">
+                      <input
+                        name="quantity"
+                        min="1"
+                        max="<%= item.productId.sizes.find(size => size.size === item.size).stock %>"
+                        value="<%= item.quantity %>"
+                        size="2"
+                        type="number"
+                        onchange="updateQuantity('<%= item._id %>', this.value, this.max)"
+                      />
                     </div>
-                <% } else { %>
-                    <div class="cart_table_area table-responsive">
-                        <table class="table cart_prdct_table text-center">
-                            <thead>
-                                <tr>
-                                    <th class="cpt_no">No.</th>
-                                    <th class="cpt_img">Image</th>
-                                    <th class="cpt_pn">Product Name</th>
-                                    <th class="cpt_q">Quantity</th>
-                                    <th class="cpt_p">Price</th>
-                                    <th class="cpt_t">Total</th>
-                                    <th class="cpt_r">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% cart.items.forEach((item, index) => { %>
-                                    <tr>
-                                        <td><span class="cp_no"><%= index + 1 %></span></td>
-                                        <td>
-                                            <a href="#" class="cp_img">
-                                                <img src="/uploads/product-images/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>" />
-                                            </a>
-                                        </td>
-                                        <td><a href="#" class="cp_title"><%= item.productId.productName %></a></td>
-                                        <td>
-                                            <div class="cp_quntty">
-                                                <input 
-                                                    name="quantity" 
-                                                    min="1" 
-                                                    max="<%= item.productId.sizes.find(size => size.size === item.size).stock %>" 
-                                                    value="<%= item.quantity %>" 
-                                                    size="2" 
-                                                    type="number" 
-                                                    onchange="updateQuantity('<%= item.productId._id %>', this.value, this.max)" 
-                                                />                                                 
-                                            </div>
-                                        </td>
-                                        <td><p class="cp_price">Rs <%= item.price %></p></td>
-                                        <td><p class="cpp_total">Rs <%= item.totalPrice %></p></td>
-                                        <td>
-                                            <a href="#" onclick="removeFromCart('<%= item.productId._id %>')" class="btn btn-default cp_remove">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <p>Size: <%= item.size %></p> 
-                                        </td>
-                                    </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-                    </div>
-                <% } %>
+                  </td>
+                  <td><p class="cp_price">Rs <%= item.price %></p></td>
+                  <td><p class="cpp_total">Rs <%= item.totalPrice %></p></td>
+                  <td>
+                    <a
+                      href="#"
+                      onclick="removeFromCart('<%= item.productId._id %>')"
+                      class="btn btn-default cp_remove"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </a>
+                  </td>
+                  <td>
+                    <p>Size: <%= item.size %></p>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <% if (!cartEmpty) { %>
+      <!-- Only show this part if cart is not empty -->
+      <div class="row">
+        <div class="col-md-8 col-xs-12 cart-actions cart-button-cuppon">
+          <div class="row">
+            <div class="col-sm-7">
+              <div class="cart-action">
+                <a href="#" class="btn border-btn">Continue Shopping</a>
+                <a href="#" class="btn border-btn">Update Shopping Bag</a>
+              </div>
             </div>
+
+            <div class="col-sm-5">
+              <div class="cuppon-wrap">
+                <h4>Discount Code</h4>
+                <p>Enter your coupon code if you have</p>
+                <form action="#" class="cuppon-form">
+                  <input type="text" />
+                  <button class="btn border-btn">Apply Coupon</button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <% if (!cartEmpty) { %> <!-- Only show this part if cart is not empty -->
-        <div class="row">
-            <div class="col-md-8 col-xs-12 cart-actions cart-button-cuppon">
-                <div class="row">
-                    <div class="col-sm-7">
-                        <div class="cart-action">
-                            <a href="#" class="btn border-btn">Continue Shopping</a>
-                            <a href="#" class="btn border-btn">Update Shopping Bag</a>
-                        </div>
-                    </div>
-                    
-                    <div class="col-sm-5">
-                        <div class="cuppon-wrap">
-                            <h4>Discount Code</h4>
-                            <p>Enter your coupon code if you have</p>
-                            <form action="#" class="cuppon-form">
-                                <input type="text" />
-                                <button class="btn border-btn">Apply Coupon</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 col-xs-12 cart-checkout-process text-right">
-                <div class="wrap">
-                    <p><span>Subtotal</span><span>Rs <%= total %></span></p>
-                    <h4><span>Grand Total</span><span>Rs <%= total %></span></h4>
-                    <a href="/checkout" class="btn border-btn">Proceed to Checkout</a>
-                </div>
-            </div>
+        <div class="col-md-4 col-xs-12 cart-checkout-process text-right">
+          <div class="wrap">
+            <p><span>Subtotal</span><span>Rs <%= total%></span></p>
+            <h4><span>Grand Total</span><span>Rs <%= total%></span></h4>
+            <a href="/checkout" class="btn border-btn">Proceed to Checkout</a>
+          </div>
         </div>
-        <% } %>
+      </div>
+      <% } %>
     </div>
-</div>
+  </div>
 
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-	<script>
-		
-		async function removeFromCart(productId){
-			try {
-				await fetch(`/cart/remove/${productId}`,{method:'DELETE'})
-				location.reload()
-			} catch (error) {
-				 console.error(error)
-			}
+  <script>
+    async function removeFromCart(productId) {
+      try {
+        await fetch(`/cart/remove/${productId}`, { method: "DELETE" });
+        location.reload();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  </script>
 
-		}
-	</script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    async function updateQuantity(productId, newQuantity, maxStock) {
+      try {
+        const response = await axios.patch(
+          "http://localhost:3000/updateQuantity",
+          {
+            newQuantity,
+            productId,
+          }
+        );
+        window.location.reload();
+      } catch (error) {
+        alert(error?.response.data.message);
+      }
 
-	<script>
-		function updateQuantity(productId,newQuantity,maxStock){
-			if(parseInt(newQuantity)>parseInt(maxStock)){
-				Swal.fire({
-					icon: 'error',
-                    title: 'Quantity Exceeded',
-                    text: `Only ${maxStock} items are available for this product.`,
-                    confirmButtonText: 'OK'
-				})
-				document.querySelector(`input[name="quantity"][data-product-id="${productId}"]`).value=maxStock
-				return
-			}
-		}
-	</script>
-	</body>
+      if (parseInt(newQuantity) > parseInt(maxStock)) {
+        Swal.fire({
+          icon: "error",
+          title: "Quantity Exceeded",
+          text: `Only ${maxStock} items are available for this product.`,
+          confirmButtonText: "OK",
+        });
+        document.querySelector(
+          `input[name="quantity"][data-product-id="${productId}"]`
+        ).value = maxStock;
+        return;
+      }
+    }
+  </script>
+</body>
 
-		<%- include("../../views/layout/user/footer") %>
+<%- include("../../views/layout/user/footer") %>

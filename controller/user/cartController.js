@@ -98,7 +98,8 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
         console.log("Existing item index:", existingItemIndex);
 
         const price = product.salePrice;
-
+        
+        
        
 
         if (existingItemIndex > -1) {
@@ -111,6 +112,7 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
             existingItem.quantity += 1;
             existingItem.totalPrice = existingItem.quantity * existingItem.price;
             console.log("Updated existing item:", existingItem);
+            // await existingItem.save()
         } else {
            if(1>stock){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Quantity exceeds available stock'})
@@ -132,7 +134,6 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
         cart.subTotal=subtotal
         cart.grandTotal=subtotal
 
-        console.log('fuck offff',cart)
         console.log("SubTotal ahne:", cart.subTotal); 
         console.log("GrandTotal ahne:", cart.grandTotal);
 
@@ -185,7 +186,7 @@ exports.checkoutPage=async(req,res)=>{
         if(!cart){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart not found'})
         }
-
+        
         const cartItems=cart.items.map((item)=>({
             productName:item.productId.productName,
             image:item.productId.productImage[0],
@@ -194,7 +195,7 @@ exports.checkoutPage=async(req,res)=>{
             totalPrice:item.quantity*item.productId.salePrice
 
         }))
-
+         
         const addresses=user.addresses.filter(address=>!address.deleted)
        
         res.render('user/checkout',{cartItems,user,addresses})
