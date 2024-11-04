@@ -234,19 +234,152 @@ exports.indexPage = async (req, res) => {
     console.error(error);
   }
 };
+// exports.shopPage = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const user = await User.findById(userId);
+
+//     const categories = await Category.find({});
+
+//     let filter = { isBlocked: false };
+
+//     if (req.query.category) {
+//       filter.category = req.query.category;
+//     }
+
+//     if (req.query.minPrice && req.query.maxPrice) {
+//       filter.salePrice = {
+//         $gte: Number(req.query.minPrice),
+//         $lte: Number(req.query.maxPrice),
+//       };
+//     }
+
+//     if (req.query.rating) {
+//       filter.rating = {
+//         $gte: Number(req.query.rating),
+//       };
+//     }
+
+//     exports.shopPage = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const user = await User.findById(userId);
+
+//     const categories = await Category.find({});
+
+//     let filter = { isBlocked: false };
+
+//     if (req.query.category) {
+//       filter.category = req.query.category;
+//     }
+
+//     if (req.query.minPrice && req.query.maxPrice) {
+//       filter.salePrice = {
+//         $gte: Number(req.query.minPrice),
+//         $lte: Number(req.query.maxPrice),
+//       };
+//     }
+
+//     if (req.query.rating) {
+//       filter.rating = {
+//         $gte: Number(req.query.rating),
+//       };
+//     }
+//     if (req.query.search) {
+//       filter.productName = { $regex: new RegExp(".*" + req.query.search + ".*", "i") };
+//     }
+
+//     let products = await Product.find(filter);
+   
+
+//     const sortOptions = req.query.sort || "popularity";
+//     switch (sortOptions) {
+//       case "priceLowToHigh":
+//         products.sort((a, b) => a.salePrice - b.salePrice);
+//         break;
+
+//       case "priceHighToLow":
+//         products.sort((a, b) => b.salePrice - a.salePrice);
+//         break;
+
+//       case "averageRating":
+//         products.sort((a, b) => b.rating - a.rating);
+//         break;
+
+//       case "newArrivals":
+//         products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+//         break;
+
+//       case "nameAsc":
+//         products.sort((a, b) => a.productName.localeCompare(b.productName));
+//         break;
+
+//       case "nameDesc":
+//         products.sort((a, b) => b.productName.localeCompare(a.productName));
+//         break;
+
+//       default:
+//         products = products.sort((a, b) => b.popularity - a.popularity);
+//     }
+
+//     res.render("user/shop", { products, user, categories });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+//     let products = await Product.find(filter);
+   
+
+//     const sortOptions = req.query.sort || "popularity";
+//     switch (sortOptions) {
+//       case "priceLowToHigh":
+//         products.sort((a, b) => a.salePrice - b.salePrice);
+//         break;
+
+//       case "priceHighToLow":
+//         products.sort((a, b) => b.salePrice - a.salePrice);
+//         break;
+
+//       case "averageRating":
+//         products.sort((a, b) => b.rating - a.rating);
+//         break;
+
+//       case "newArrivals":
+//         products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+//         break;
+
+//       case "nameAsc":
+//         products.sort((a, b) => a.productName.localeCompare(b.productName));
+//         break;
+
+//       case "nameDesc":
+//         products.sort((a, b) => b.productName.localeCompare(a.productName));
+//         break;
+
+//       default:
+//         products = products.sort((a, b) => b.popularity - a.popularity);
+//     }
+
+//     res.render("user/shop", { products, user, categories });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 exports.shopPage = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId);
-
     const categories = await Category.find({});
 
     let filter = { isBlocked: false };
 
+    // Apply category filter
     if (req.query.category) {
       filter.category = req.query.category;
     }
 
+    // Apply price range filter
     if (req.query.minPrice && req.query.maxPrice) {
       filter.salePrice = {
         $gte: Number(req.query.minPrice),
@@ -254,14 +387,23 @@ exports.shopPage = async (req, res) => {
       };
     }
 
+    // Apply rating filter
     if (req.query.rating) {
       filter.rating = {
         $gte: Number(req.query.rating),
       };
     }
 
+    // Apply search filter
+    if (req.query.search) {
+      filter.productName = { $regex: new RegExp(".*" + req.query.search + ".*", "i") };
+    }
+    
+
+    // Fetch products with filters
     let products = await Product.find(filter);
 
+    // Apply sorting options
     const sortOptions = req.query.sort || "popularity";
     switch (sortOptions) {
       case "priceLowToHigh":
@@ -295,8 +437,15 @@ exports.shopPage = async (req, res) => {
     res.render("user/shop", { products, user, categories });
   } catch (error) {
     console.error(error);
+    res.status(500).send("An error occurred while loading the shop page.");
   }
 };
+
+
+
+
+
+
 
 //product detail page
 exports.productDetails = async (req, res) => {

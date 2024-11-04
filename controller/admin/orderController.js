@@ -7,14 +7,41 @@ const path=require("path")
 const sharp=require("sharp")
 const statusCodes=require('../../config/keys.js')
 
-exports.getOrderPage=async(req,res)=>{
+exports.getOrderPage = async (req, res) => {
     try {
-        const orders=await Order.find().populate('user').populate('items.productId')
-        res.render('admin/orders',{orders})
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 7; 
+        const skip = (page - 1) * limit;
+
+        
+        const totalOrders = await Order.countDocuments();
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        
+        const orders = await Order.find()
+            .populate('user')
+            .populate('items.productId')
+            .skip(skip)
+            .limit(limit);
+
+        
+        res.render('admin/orders', { orders, currentPage: page, totalPages, limit });
     } catch (error) {
-        console.error('error fetching orders',error)
+        console.error('Error fetching orders', error);
+        res.status(500).send('Internal Server Error');
     }
-}
+};
+
+
+
+// exports.getOrderPage=async(req,res)=>{
+//     try {
+//         const orders=await Order.find().populate('user').populate('items.productId')
+//         res.render('admin/orders',{orders})
+//     } catch (error) {
+//         console.error('error fetching orders',error)
+//     }
+// }
 
 exports.cancelOrderAdmin=async(req,res)=>{
     try {

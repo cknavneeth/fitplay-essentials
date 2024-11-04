@@ -255,34 +255,55 @@
         const addressType = document.querySelector('input[name="address_type"]:checked');
 
 
+        const phonePattern = /^(?!.*(\d)\1{4})[0-9]{10}$/;
+        const namePattern = /^[A-Za-z\s]+$/;
+        const pincodePattern = /^[0-9]+$/;
+
+
+
             if(name===''){
                 document.getElementById('name-error').innerText="name is required"
                 isValid =false
+            }else if(!namePattern.test(name)){
+               document.getElementById('name-error').innerText="Alphabet letters only "
+               isValid=false
             }
 
-            if (!mobile.match(/^\d{10}$/)) {
-                document.getElementById('mobile-error').innerText = 'Mobile number must be 10 digits';
+            if (!mobile.match(phonePattern)) {
+                document.getElementById('mobile-error').innerText = 'Mobile number must be 10 valid digits';
                 isValid = false;
             }
 
             if (pincode === '') {
                 document.getElementById('pincode-error').innerText = 'Pincode is required';
                 isValid = false;
+            }else if(!pincodePattern.test(pincode)){
+                document.getElementById('pincode-error').innerText='Only numbers allowed'
+                isValid=false
             }
 
             if (locality === '') {
                 document.getElementById('locality-error').innerText = 'Locality is required';
                 isValid = false;
+            }else if(!namePattern.test(locality)){
+                document.getElementById('locality-error').innerText="Only alphabets allowed"
+                isValid=false
             }
 
             if (address === '') {
                 document.getElementById('address-error').innerText = 'Address is required';
                 isValid = false;
+            }else if(!namePattern.test(address)){
+                document.getElementById('address-error').innerText='Only alphabets allowed'
+                isValid=false
             }
 
             if (city === '') {
                 document.getElementById('city-error').innerText = 'City is required';
                 isValid = false;
+            }else if(!namePattern.test(city)){
+                document.getElementById('city-error').innerText="Only alphabets allowed"
+                isValid=false
             }
 
             if (state === '') {

@@ -7,28 +7,7 @@ const Category=require('../../models/categoryModel.js')
 const jwt = require("jsonwebtoken");
 const statusCodes=require('../../config/keys.js')
 
-// exports.getCartPage=async(req,res)=>{
-//     try {
-//         const userId=req.user.id
-//         const user=await User.findById(userId)
 
-//         const cart=await Cart.findOne({userId}).populate('items.productId')
-//         console.log("cart:",cart);
-        
-//         if(!cart||cart.items.length==0){
-//               return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Cart is empty'})
-//         }
-
-//         const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
-
-       
-//         console.log("babloo",cart.items)
-//         res.render('user/cart', { user, cart:cart? cart:[], total: cartTotal });
-
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
 exports.getCartPage=async(req,res)=>{
     try {
         const userId=req.user.id
@@ -103,7 +82,7 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
        
 
         if (existingItemIndex > -1) {
-            console.log("shahal")
+            
             const existingItem = cart.items[existingItemIndex];
 
             if(existingItem.quantity+1>stock){
@@ -123,11 +102,10 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
                 quantity: 1,
                 price: price,
                 totalPrice: price,
-                // image: product.productImage[0]
             };
 
             cart.items.push(newItem);
-            console.log("New item added:", cart.items[cart.items.length - 1]);
+            
         }
 
         const subtotal=cart.items.reduce((sum,item)=>sum+item.totalPrice,0)
@@ -178,7 +156,7 @@ exports.deleteProductCart=async(req,res)=>{
 exports.checkoutPage=async(req,res)=>{
     try {
         const userId=req.user.id
-        // const user=await User.findById({userId})
+        
         const user = await User.findById(userId);
 
         const cart=await Cart.findOne({userId}).populate("items.productId")
