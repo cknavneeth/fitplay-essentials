@@ -2,18 +2,20 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 mt-60">
-            <form method="post" action="/editCategory/<%=category._id%>">
+            <form method="post" action="/editCategory/<%=category._id%>" id='formEdit'>
                 <div class="d-grid text-end mt-30 col-md-5">
                     <button class="btn btn-primary" type="submit">Update category</button>
                 </div>
                 <div class="mb-4 mt-30">
                     <label for="product_name" class="form-label">Name</label>
-                    <input type="text" name="categoryName" value="<%=category.name%>" class="form-control border" />
+                    <input type="text" id='categoryName' name="categoryName" value="<%=category.name%>" class="form-control border" />
+                    <div id="name-error" class="error-message" style="color: red; display: none;"></div>
                 </div>
                 
                 <div class="mb-4">
                     <label class="form-label">Description</label>
-                    <textarea name="description" class="form-control border"><%=category.description%></textarea>
+                    <textarea name="description" id='description' class="form-control border"><%=category.description%></textarea>
+                    <div id="description-error" class="error-message" style="color: red; display: none;"></div>
                 </div>
                 <% if (typeof error !== 'undefined') { %>
                     <div class="alert alert-danger"><%= error %></div>
@@ -22,4 +24,55 @@
         </div>
     </div>
 </div>
+  <script>
+    document.getElementById('formEdit').addEventListener('submit',(e)=>{
+        clearErrorMessages()
+
+        const name = document.getElementById('categoryName').value.trim();
+        const description = document.getElementById('description').value.trim();
+
+        const namePattern = /^[A-Za-z\s]+$/;
+
+        isValid=true
+
+            if (name=== "") {
+                 displayErrorMessage('name-error', 'Please enter a category name.');
+                 isValid = false;
+            } else if (!namePattern.test(name)) {
+                 displayErrorMessage('name-error', 'Category name should contain only alphabetic characters.');
+                 isValid = false;
+            }
+            
+            if (description === "") {
+                 displayErrorMessage('description-error', 'Please enter a category description.');
+                 isValid = false;
+
+            } else if (!namePattern.test(description)) {
+                 displayErrorMessage('description-error', 'category description should contain only alphabetic characters.');
+                 isValid = false;
+            }
+            if(isValid===false){
+                e.preventDefault()
+            }
+    })
+
+    
+    function displayErrorMessage(elementId, error) {
+              var errorElement = document.getElementById(elementId);
+              errorElement.innerText = error;
+              errorElement.style.display = "block";
+          }
+  
+  
+          function clearErrorMessages() {
+              const errorElements = document.getElementsByClassName('error-message');
+              Array.from(errorElements).forEach(element => {
+                  element.innerText = '';
+              });
+              const errorMessage = document.getElementById('errorMessage');
+  
+  
+          }
+
+  </script>
 <%- include("../../views/layout/admin/footer") %>

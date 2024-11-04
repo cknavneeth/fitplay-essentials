@@ -115,8 +115,8 @@
                     <th>Offer Price</th>
                     <th>Offer</th>
                     <th>Status</th>
-                    <th>List/Unlist</th>
                     <th class="text-start">Edit</th>
+                    <th>List/Unlist</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -148,14 +148,14 @@
                       
                       
                     </td>
-                    <td class="text-start">
+                    <!-- <td class="text-start">
                       <button class="btn btn-danger" style="width: 70px">
                         <a href="#" class="text-white">Unlist</a>
                       </button>
                       <button class="btn btn-success" style="width: 70px">
                         <a href="" class="text-white">List</a>
                       </button>
-                    </td>
+                    </td> -->
                     <td class="text-start">
                       <a href="/editCategory?id=<%=category._id%>" class="btn btn-info text-white">Edit</a>
                     </td>
@@ -261,24 +261,55 @@
 
 
 
-    function validateForm(){
-        const name=document.getElementsByName("name")[0].value.trim()
-        const description=document.getElementById("descriptionId").value.trim()
-        isValid=true
+    // function validateForm(){
+    //     const name=document.getElementsByName("name")[0].value.trim()
+    //     const description=document.getElementById("descriptionId").value.trim()
+    //     isValid=true
+    //     const namePattern = /^[A-Za-z\s]+$/;
 
-        if(name===""){
-            displayErrorMessage("name-error","name cant be empty")
-            isValid=false
-        }else if(!/^[a-zA-Z\s]+$/.test(name)){
-            displayErrorMessage("name-error","category name should contain alphabetic characters")
-        }
 
-        if(description===""){
-            displayErrorMessage("description-error","descripton cant be empty!")
-            isValid=false
-        }
-        return isValid
+    //     if(name===""){
+    //         displayErrorMessage("name-error","name cant be empty")
+    //         isValid=false
+    //     }else if(!namePattern.test(name)){
+    //         displayErrorMessage("name-error","category name should contain alphabetic characters")
+    //     }
+
+    //     if(description===""){
+    //         displayErrorMessage("description-error","descripton cant be empty!")
+    //         isValid=false
+    //     }
+    //     return isValid
+    // }
+    function validateForm() {
+    const name = document.getElementsByName("name")[0].value.trim();
+    const description = document.getElementById("descriptionId").value.trim();
+    let isValid = true;
+    const namePattern = /^[A-Za-z\s]+$/; // Allows only letters and spaces
+
+    // Clear any previous error messages
+    clearErrorMessage("name-error");
+    clearErrorMessage("description-error");
+
+    if (name === "") {
+        displayErrorMessage("name-error", "Name can't be empty");
+        isValid = false;
+    } else if (!namePattern.test(name)) {
+        displayErrorMessage("name-error", "Category name should contain only alphabetic characters and spaces");
+        isValid = false;
     }
+
+    if (description === "") {
+        displayErrorMessage("description-error", "Description can't be empty!");
+        isValid = false;
+    } else if (!namePattern.test(description)) {
+        displayErrorMessage("description-error", "Description should contain only alphabetic characters and spaces");
+        isValid = false;
+    }
+
+    return isValid;
+}
+
 
 
     function displayErrorMessage(elementId,error){

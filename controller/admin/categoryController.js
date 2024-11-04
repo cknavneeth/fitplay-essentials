@@ -84,7 +84,7 @@ exports.addCategory = async (req, res) => {
         let id=req.params.id
         const {categoryName,description}=req.body
         const exitingCategory=await Category.findOne({ name: categoryName });
-        if(exitingCategory){
+        if(exitingCategory&&existingCategory._id.toString()!==id){
             
             const category = await Category.findById(id); 
             return res.render('admin/editCategory', {

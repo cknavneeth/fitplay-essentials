@@ -484,6 +484,9 @@ exports.updateQuantity = async (req, res) => {
     console.log(cart, "<<cart>>>");
     if (!cart) return res.status(400).json({ message: "cart not found " });
 
+    // const existingItem = cart.items.findIndex(
+    //   (item) => item._id.toString() == productId
+    // );
     const existingItem = cart.items.findIndex(
       (item) => item._id.toString() == productId
     );
