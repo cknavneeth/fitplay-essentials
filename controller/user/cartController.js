@@ -288,7 +288,6 @@ exports.handleCod=async(req,res)=>{
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'invalid payment method'})
         }
         const [cart, user] = await Promise.all([
-            // Cart.find({ userId: userId }).populate('items.productId'),
              Cart.findOne({ userId }).populate({
                 path: 'items.productId',
                 model: 'Product'
@@ -417,7 +416,7 @@ exports.cancelOrder=async(req,res)=>{
         if(!updateOrder){
              return res.json({success:false,error:'order not found'})
         }
-        res.json({success:true,error:'order cancel ayitund.nanni!'})
+        res.json({success:true,error:'order successfully cancelled!'})
     } catch (error) {
         res.json({success:false,error:'error cancelling order'})
     }

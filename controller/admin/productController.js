@@ -193,7 +193,6 @@ exports.editProduct = async (req, res) => {
 
         
         const category = await Category.findOne({ name: data.category });
-        console.log(category)
         if (!category) {
             return res.status(statusCodes.BAD_REQUEST).json({ error: "Category not found!" });
         }
