@@ -29,8 +29,11 @@ const categorySchema = new mongoose.Schema({
   isDeleted: {
     type: Boolean,
     default: false, 
+},
+  categoryOffer:{
+   type:Number,
+   default:0
 }
-
 });
 
 

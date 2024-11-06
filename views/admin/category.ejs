@@ -127,14 +127,19 @@
                     <td class="text-start"><%=category.description%></td>
                     <td>
                     </td>
+
+
                     <td class="text-start">
-                      <button class="btn btn-info" style="width: 100px">
-                        <a href="#" class="text-white">Add Offer</a>
+                      <button class="btn btn-info" style="width: 100px" onclick="addOffer('<%= category._id %>')">
+                        Add Offer
                       </button>
-                      <button class="btn btn-info"style="width: 100px">
-                        <a href="#" class="text-white">Remove</a>
+                      <button class="btn btn-info" style="width: 100px" onclick="removeOffer('<%= category._id %>')">
+                        Remove Offer
                       </button>
                     </td>
+                    
+
+
                     <td class="text-start">
                       
                       <button class="btn btn-danger delete-category" data-id="<%= category._id %>" style="width: 70px; height: 30px; display: flex; align-items: center; justify-content: center; margin-bottom:10px;">
@@ -407,6 +412,57 @@
        
       })
     })
+  </script>
+
+  <script>
+   async function addOffer(categoryId) {
+ 
+  const { value: amount } = await Swal.fire({
+    title: 'Offer in percentage',
+    input: 'number',
+    inputLabel: 'Percentage',
+    inputPlaceholder: '%',
+    inputAttributes: {
+      min: 0,
+      max: 100,
+      step: 1
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Add Offer',
+    cancelButtonText: 'Cancel'
+  });
+
+
+  if (amount) {
+   
+    $.ajax({
+      method: 'POST',
+      url: '/addCategoryOffer',
+      data: {
+        percentage: amount,
+        categoryId: categoryId
+      },
+      success: (response) => {
+        if (response.status === true) {
+          Swal.fire({
+            title: 'Offer Added Successfully',
+            text: `Offer of ${amount}% has been applied to the category and its products.`,
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            location.reload(); 
+          });
+        } else {
+          Swal.fire('Failed', 'Failed to add offer', 'error');
+        }
+      },
+      error: (err) => {
+        Swal.fire('Error', 'An error occurred while adding the offer', 'error');
+      }
+    });
+  }
+}
+
   </script>
 
 <%- include("../../views/layout/admin/footer") %>

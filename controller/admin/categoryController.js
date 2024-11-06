@@ -1,5 +1,6 @@
 const StatusCodes = require('../../config/keys.js');
 const Category = require('../../models/categoryModel.js');
+const Product=require('../../models/productModel.js')
 const statusCodes=require('../../config/keys.js')
 const mongoose=require('mongoose')
 
@@ -117,5 +118,45 @@ exports.addCategory = async (req, res) => {
     } catch (error) {
       console.log(error)
       res.status(statusCodes.INTERNAL_SERVER_ERROR).json({error:"error while delete"})
+    }
+  }
+
+
+  //adding offer
+
+  exports.addCategoryOffer=async(req,res)=>{
+    try {
+      const {categoryId,percentage}=req.body
+      const category=await Category.findById(categoryId)
+
+      if(!category){
+        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'category not found'})
+      }
+
+      category.categoryOffer=percentage
+      await category.save()
+
+      const products=await Product.find({category:categoryId})
+      console.log("Before applying offer:", products.salePrice);
+      for(let product of products){
+        console.log("miraaa",product.salePrice)
+        const discountAmount=Math.floor(product.regularPrice*(percentage/100))
+        product.salePrice=product.regularPrice-discountAmount
+        console.log("Regular Price:", product.regularPrice);
+        console.log("Discount Amount:", discountAmount);
+        console.log("Updated Sale Price:", product.salePrice);
+        console.log("thankan",product.salePrice)
+        product.productOffer=percentage
+        await product.save()
+        console.log('offer add ayitund',product)
+      }
+      
+
+
+
+      res.json({ status: true, message: `Offer of ${percentage}% applied to category and products.` });
+    } catch (error) {
+      console.error(error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }

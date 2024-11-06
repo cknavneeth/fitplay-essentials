@@ -87,6 +87,8 @@ router.post('/adcancel-order/:orderId',orderController.cancelOrderAdmin)
 
 router.post('/updateOrderStatus/:orderId',orderController.updateStatus)
 
+router.post('/addCategoryOffer',categoryController.addCategoryOffer)
+
 
 
 
