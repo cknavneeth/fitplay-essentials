@@ -89,6 +89,8 @@ router.post('/updateOrderStatus/:orderId',orderController.updateStatus)
 
 router.post('/addCategoryOffer',categoryController.addCategoryOffer)
 
+router.post('/removeCategoryOffer',categoryController.removeCategoryOffer)
+
 
 
 

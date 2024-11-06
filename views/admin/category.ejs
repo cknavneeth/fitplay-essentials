@@ -463,6 +463,37 @@
   }
 }
 
+
+
+async function removeOffer(categoryId){
+  $.ajax({
+    method:'POST',
+    url:'/removeCategoryOffer',
+    data:{
+      categoryId: categoryId
+    },
+ 
+  success:(response)=>{
+    if(response.success){
+      
+        Swal.fire({
+          title: 'Offer Removed ayitund,sredhikuka',
+          text: 'The offer has been removed from this category.',
+          icon: 'success'
+        }).then(() => {
+          location.reload();
+        });
+      
+    }else{
+      Swal.fire('Error', response.error, 'error');
+    }
+  },
+  error: (xhr, status, error) => { // Adding error handling
+      console.error('AJAX error:', error);
+      Swal.fire('Error', 'Failed to remove offer.', 'error');
+    }
+  })
+}
   </script>
 
 <%- include("../../views/layout/admin/footer") %>

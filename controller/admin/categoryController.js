@@ -160,3 +160,33 @@ exports.addCategory = async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }
+
+
+  exports.removeCategoryOffer=async(req,res)=>{
+    try {
+      const {categoryId}=req.body
+
+      const category=await Category.findById(categoryId)
+      if(!category){
+        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'category not found'})
+      }
+
+      const percentage=category.categoryOffer
+      category.categoryOffer=0
+      await category.save()
+
+      const products=await Product.find({categoryId: categoryId})
+
+      for(const product of products){
+        const discountAmount=Math.floor(product.regularPrice*(percentage/100))
+       product.salePrice = product.salePrice + discountAmount;
+      
+        product.productOffer=0
+        await product.save()
+      }
+
+      res.status(statusCodes.OK).json({success:true,error:'offer deleted successfully'})
+    } catch (error) {
+      console.error(error)
+    }
+  }
