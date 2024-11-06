@@ -7,7 +7,7 @@ const {verifyUser}=require('../middleware/authMiddlware')
 const {userLoggedIn}=require('../middleware/authMiddlware')
 const passport=require('passport')
 const jwt = require('jsonwebtoken');
-
+const wishlistController=require('../controller/user/wishlistController')
 
 console.log("hello")
 router.get("/",(req, res) => {
@@ -117,6 +117,13 @@ router.get('/reset-password/:token',userController.getResetpage)
 router.post('/reset-password/:token',userController.resetPage)
 
 router.patch('/updateQuantity',verifyUser,userController.updateQuantity)
+
+router.get('/wishlist',verifyUser,wishlistController.getWishlist)
+
+router.post('/wishlist/:productId',verifyUser,wishlistController.addtoWishlist)
+
+router.delete('/wishlist/remove/:productId',verifyUser,wishlistController.removefromWishlist)
+
 
 
 

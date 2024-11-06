@@ -136,7 +136,14 @@
           <!-- Product Action -->
           <div class="pd_btn fix">
             <a class="btn btn-default acc_btn" onclick="addToCart('<%=products._id%>')">add to bag</a>
-            <a class="btn btn-default acc_btn btn_icn"><i class="fa fa-heart"></i></a>
+            <!-- <a class="btn btn-default acc_btn btn_icn"><i class="fa fa-heart"></i></a> -->
+            <button type="button" class="btn btn-default acc_btn btn_icn" onclick="addToWishlist('<%= products._id %>')"><i class="fa fa-heart"></i> Add to Wishlist</button>
+
+          
+              <i class="fa fa-heart"></i>
+          </a>
+          
+          
             <a class="btn btn-default acc_btn btn_icn"><i class="fa fa-refresh"></i></a>
           </div>
           <div class="pd_share_area fix">
@@ -179,7 +186,8 @@
               </a>
               <ul class="social">
                 <li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-                <li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
+                <button type="button" class="btn btn-default acc_btn btn_icn" onclick="addToWishlist('<%= products._id %>')"><i class="fa fa-heart"></i> Add to Wishlist</button>
+
                 <li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
               </ul>
               <% if (product.isOnSale) { %>
@@ -280,6 +288,7 @@ function changeMainImage(imageUrl) {
 <script>
   function addToCart(productId){
     const selectedSize=document.getElementById('productSize').value
+    
     if(!selectedSize){
       Swal.fire({
         icon:'warning',
@@ -342,6 +351,61 @@ function changeMainImage(imageUrl) {
   }
 
 
+</script>
+
+<script>
+  function addToWishlist(productId){
+    const sizeDropdown = document.getElementById('productSize');
+   const selectedSizeText = sizeDropdown.options[sizeDropdown.selectedIndex].text;
+   const selectedSize = sizeDropdown.value;
+
+   // Extract stock number from the selected text
+   const stockMatch = selectedSizeText.match(/(\d+)\s+in stock/);
+   const selectedStock = stockMatch ? parseInt(stockMatch[1], 10) : null;
+   const salePriceElement = document.querySelector('.pd_price .new');
+   const salePrice = salePriceElement ? parseFloat(salePriceElement.textContent.replace('Rs', '').trim()) : null;
+console.log(salePrice)
+   if (!selectedSize || selectedStock === null||salePrice === null) {
+      Swal.fire({
+         icon: 'warning',
+         title: 'Please select a valid size',
+         text: 'Ensure the selected size is in stock.',
+         confirmButtonText: 'Okay'
+      });
+      return;
+   }
+
+   fetch(`/wishlist/${productId}`,{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({size:selectedSize,stock: selectedStock,  salePrice: salePrice,})
+   })
+   .then(response=>response.json())
+   
+   .then(data=>{
+    Swal.fire({
+            icon: 'success',
+            title: 'Added to Wishlist!',
+            text: data.message || 'The product has been successfully added to your wishlist.',
+            showConfirmButton: true,
+            confirmButtonText: 'Okay',
+        });
+   })
+   .catch(error=>{
+    console.error('Error:', error);
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'There was an error adding the product to your wishlist. Please try again.',
+            showConfirmButton: true,
+            confirmButtonText: 'Try Again',
+        });
+   })
+
+  }
 </script>
 
 

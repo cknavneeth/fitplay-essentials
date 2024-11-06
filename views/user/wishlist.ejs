@@ -1,0 +1,278 @@
+<%- include("../../views/layout/user/header",{user:user}) %>
+	<!--  End Header  -->
+		
+		<!-- Page item Area -->
+		<!-- <div id="page_item_area">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6 text-left">
+						<h3>Wishlist</h3>
+					</div>		
+
+					<div class="col-sm-6 text-right">
+						<ul class="p_items">
+							<li><a href="#">home</a></li>
+							<li><a href="#">category</a></li>
+							<li><span>Wishlist</span></li>
+						</ul>					
+					</div>	
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="wishlist-page">
+			<div class="container">
+				<div class="table-responsive">
+					<table class="table cart-table cart_prdct_table text-center">
+						<thead>
+							<tr>
+								<th class="cpt_no">#</th>
+								<th class="cpt_img">image</th>
+								<th class="cpt_pn">product name</th>
+								<th class="stock">stock status</th>
+								<th class="cpt_p">price</th>
+								<th class="add-cart">add to cart</th>
+								<th class="cpt_r">remove</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><span class="cart-number">1</span></td>
+								<td><a href="#" class="cp_img"><img src="img/cart-prdct/1.jpg" alt="" /></a></td>
+								<td><a href="#" class="cart-pro-title">This is Product Title</a></td>
+								<td><p class="stock in-stock">Out of stock</p></td>
+								<td><p class="cart-pro-price">$204.00</p></td>
+								<td><a href="#" class="btn border-btn">add to cart</a></td>
+								<td><a class="cp_remove"><i class="fa fa-trash"></i></a></td>
+							</tr>
+							<tr>
+								<td><span class="cart-number">2</span></td>
+								<td><a href="#" class="cp_img"><img src="img/cart-prdct/2.jpg" alt="" /></a></td>
+								<td><a href="#" class="cart-pro-title">This is Product Title</a></td>
+								<td><p class="stock in-stock">in stock</p></td>
+								<td><p class="cart-pro-price">$89.00</p></td>
+								<td><a href="#" class="btn border-btn">add to cart</a></td>
+								<td><a class="cp_remove"><i class="fa fa-trash"></i></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div> -->
+
+
+		<!--  FOOTER START  -->
+		  <!-- Page item Area -->
+		  <div id="page_item_area">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6 text-left">
+						<h3>Wishlist</h3>
+					</div>        
+		
+					<div class="col-sm-6 text-right">
+						<ul class="p_items">
+							<li><a href="#">home</a></li>
+							<li><a href="#">category</a></li>
+							<li><span>Wishlist</span></li>
+						</ul>                    
+					</div>    
+				</div>
+			</div>
+		</div>
+		
+		<!-- Wishlist Page -->
+		<div class="wishlist-page">
+			<div class="container">
+				<!-- Form Wrapper -->
+				<form action="/wishlist" method="post">
+					<div class="table-responsive">
+						<table class="table cart-table cart_prdct_table text-center">
+							<thead>
+								<tr>
+									<th class="cpt_no">#</th>
+									<th class="cpt_img">Image</th>
+									<th class="cpt_pn">Product Name</th>
+									<th class="stock">Stock Status</th>
+									<th class="cpt_p">Price</th>
+									<th class="add-cart">Add to Cart</th>
+									<th class="cpt_r">Remove</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% wishlist.items.forEach((item, index) => { %>
+								  <tr>
+									<td><span class="cart-number"><%= index + 1 %></span></td>
+									
+									<!-- Correct Image Placement -->
+									<td>
+									  <% if (item.productId && item.productId.productImage && item.productId.productImage[0]) { %>
+										<a href="#" class="cp_img">
+											<img src="/uploads/product-images/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>" />
+
+										</a>
+									  <% } else { %>
+										<span>No image available</span>
+									  <% } %>
+									</td>
+									
+									<td>
+										<a href="#" class="cart-pro-title">
+											<%= item.productId ? item.productId.productName : 'Unknown Product' %>
+										</a>
+									</td>
+									
+									
+									<td>
+										<% if (item.productId && item.size && item.stock !== undefined) { %>
+											<ul class="size-stock-list">
+												<li>
+													<strong>Size:</strong> <%= item.size %> | 
+													<strong>Stock:</strong> <%= item.stock > 0 ? item.stock : 'Out of stock' %>
+												</li>
+											</ul>
+										<% } else { %>
+											<p>Stock details not available</p>
+										<% } %>
+									</td>
+ 									
+									
+									<td>
+										<% if (item.salePrice !== undefined) { %>
+										   <p class="wishlist-item-sale-price">Rs <%= item.salePrice.toFixed(2) %></p>
+										<% } else { %>
+										   <p class="wishlist-item-sale-price">Price not available</p>
+										<% } %>
+									</td>
+									<!-- <td>
+									  <button type="submit" name="addToCart" value="<%= item.productId._id %>" class="btn border-btn">Add to Cart</button>
+									</td> -->
+									<td>
+										<button type="button" 
+												onclick="addToCartFromWishlist('<%= item.productId._id %>', '<%= item.size %>')" 
+												class="btn border-btn">Add to Cart</button>
+									  </td>
+									  
+									  <td>
+										<button type="button" 
+												onclick="removeFromWishlist('<%= item.productId._id %>')" 
+												class="btn btn-link cp_remove" 
+												title="Remove from Wishlist">
+											<i class="fa fa-trash"></i> Remove
+										</button>
+									</td>
+									
+									  
+								  </tr>
+								<% }) %>
+							  </tbody>
+							  
+							
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		<script>
+			function addToCartFromWishlist(productId,selectedSize){
+     
+    
+    if(!selectedSize){
+      Swal.fire({
+        icon:'warning',
+        title:'select size',
+        text:'please select a size',
+        confirmButtonText:'OK'
+      })
+      return
+    }
+  
+
+   console.log(productId,selectedSize)
+    fetch('/addToCart',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+      },
+      body:JSON.stringify({
+        productId:productId,
+        size:selectedSize
+      })
+    })
+    .then((response)=>response.json())
+    
+    .then((data)=>{
+      if(data.success){
+        Swal.fire({
+          icon:'success',
+          title:'added to cart',
+          text:'product added to cart',
+          confirmButtonText:'continue shopping'
+        })
+      }else if (data.error === 'Quantity exceeds available stock') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Not enough stock',
+                text: 'The selected quantity exceeds available stock.',
+                confirmButtonText: 'OK'
+            });
+        } 
+      
+      else{
+        Swal.fire({
+          icon:'error',
+          title:'not added to cart',
+          text:'failed to add product',
+          confirmButtonText:'OK'
+        })
+      }
+    })
+    .catch((err)=>{
+      console.error(err)
+      Swal.fire({
+        icon:'error',
+        title:'something happened',
+        text:'Try again later',
+        confirmButtonText:'OK'
+      })
+    })
+  }
+		</script>
+
+		<script>
+			// async function removeFromWishlist(productId){
+			// 	try {
+			// 		await fetch(`/wishlist/remove/${productId}`,{method:'DELETE'})
+			// 		.then(()=>{
+			// 			location.reload()
+			// 		})
+					
+			// 	} catch (error) {
+			// 		console.error(error)
+			// 	}
+			// }
+			async function removeFromWishlist(productId) {
+    try {
+        const response = await fetch(`/wishlist/remove/${productId}`, { method: 'DELETE' });
+
+        // Check if the response is successful
+        if (response.ok) {
+            // If successful, reload the page or update the UI
+            location.reload();  // Reload the page
+        } else {
+            // If the response was not successful, log the error message
+            const result = await response.json();
+            console.error(result.error);  // Show the error message from the backend
+        }
+    } catch (error) {
+        console.error('Error while removing from wishlist:', error);
+    }
+}
+
+		</script>
+		
+		
+		<%- include("../../views/layout/user/footer") %>
