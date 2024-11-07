@@ -1,0 +1,141 @@
+<%- include("../../views/layout/admin/header") %>
+
+<h2 class="page-title">All Coupons</h2>
+
+<!-- Button to redirect to add new coupon page -->
+<a href="/adminAddCoupon" class="add-coupon-btn">
+  <button type="button">Add New Coupon</button>
+</a>
+
+<!-- Form to refresh the list of coupons -->
+<form action="/adminCoupons" method="GET">
+    <table class="coupon-table">
+      <thead>
+        <tr>
+          <th>Coupon Code</th>
+          <th>Discount Type</th>
+          <th>Discount Amount</th>
+          <th>Min Purchase Amount</th>
+          <th>Expiration Date</th>
+          <th>Max Discount</th>
+          <th>Usage Limit</th>
+          <th>Per User Limit</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% coupons.forEach(coupon => { %>
+          <tr>
+            <td><%= coupon.code %></td>
+            <td><%= coupon.discountType %></td>
+            <td><%= coupon.discountAmount %></td>
+            <td><%= coupon.minPurchaseAmount %></td>
+            <td><%= coupon.expirationDate.toISOString().split('T')[0] %></td> <!-- Format date if necessary -->
+            <td><%= coupon.maxDiscount || 'N/A' %></td>
+            <td><%= coupon.usageLimit || 'N/A' %></td>
+            <td><%= coupon.perUserLimit || 'N/A' %></td>
+            <td class="<%= coupon.isActive ? 'status-active' : 'status-inactive' %>">
+              <%= coupon.isActive ? 'Active' : 'Inactive' %>
+            </td>
+            <td>
+              <a href="/editCoupon/<%= coupon._id %>" class="edit-link">Edit</a>
+              <a href="/deleteCoupon/<%= coupon._id %>" class="delete-link">Delete</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <button type="submit" class="refresh-btn">Refresh Coupon List</button>
+  </form>
+  
+
+<%- include("../../views/layout/admin/footer") %>
+
+<!-- Inline CSS for quick styling preview -->
+<style>
+  .page-title {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .add-coupon-btn button {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .add-coupon-btn button:hover {
+    background-color: #45a049;
+  }
+
+  .coupon-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+
+  .coupon-table th, .coupon-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .coupon-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    font-size: 0.9em;
+  }
+
+  .coupon-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .status-active {
+    color: green;
+    font-weight: bold;
+  }
+
+  .status-inactive {
+    color: red;
+    font-weight: bold;
+  }
+
+  .edit-link, .delete-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .delete-link {
+    color: #d9534f;
+  }
+
+  .edit-link:hover, .delete-link:hover {
+    text-decoration: underline;
+  }
+
+  .refresh-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 30px;
+    font-size: 1em;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .refresh-btn:hover {
+    background-color: #0069d9;
+  }
+</style>

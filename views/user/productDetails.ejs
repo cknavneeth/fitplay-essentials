@@ -354,7 +354,60 @@ function changeMainImage(imageUrl) {
 </script>
 
 <script>
-  function addToWishlist(productId){
+//   function addToWishlist(productId){
+//     const sizeDropdown = document.getElementById('productSize');
+//    const selectedSizeText = sizeDropdown.options[sizeDropdown.selectedIndex].text;
+//    const selectedSize = sizeDropdown.value;
+
+//    // Extract stock number from the selected text
+//    const stockMatch = selectedSizeText.match(/(\d+)\s+in stock/);
+//    const selectedStock = stockMatch ? parseInt(stockMatch[1], 10) : null;
+//    const salePriceElement = document.querySelector('.pd_price .new');
+//    const salePrice = salePriceElement ? parseFloat(salePriceElement.textContent.replace('Rs', '').trim()) : null;
+// console.log(salePrice)
+//    if (!selectedSize || selectedStock === null||salePrice === null) {
+//       Swal.fire({
+//          icon: 'warning',
+//          title: 'Please select a valid size',
+//          text: 'Ensure the selected size is in stock.',
+//          confirmButtonText: 'Okay'
+//       });
+//       return;
+//    }
+
+//    fetch(`/wishlist/${productId}`,{
+//     method:'POST',
+//     headers:{
+//       'Content-Type':'application/json'
+//     },
+//     body:JSON.stringify({size:selectedSize,stock: selectedStock,  salePrice: salePrice,})
+//    })
+//    .then(response=>response.json())
+   
+//    .then(data=>{
+    
+//     Swal.fire({
+//             icon: 'success',
+//             title: 'Added to Wishlist!',
+//             text: data.message || 'The product has been successfully added to your wishlist.',
+//             showConfirmButton: true,
+//             confirmButtonText: 'Okay',
+//         });
+//    })
+//    .catch(error=>{
+//     console.error('Error:', error);
+        
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Oops...',
+//             text: 'There was an error adding the product to your wishlist. Please try again.',
+//             showConfirmButton: true,
+//             confirmButtonText: 'Try Again',
+//         });
+//    })
+
+//   }
+function addToWishlist(productId){
     const sizeDropdown = document.getElementById('productSize');
    const selectedSizeText = sizeDropdown.options[sizeDropdown.selectedIndex].text;
    const selectedSize = sizeDropdown.value;
@@ -385,13 +438,23 @@ console.log(salePrice)
    .then(response=>response.json())
    
    .then(data=>{
-    Swal.fire({
+    if(data.success){
+      Swal.fire({
             icon: 'success',
             title: 'Added to Wishlist!',
             text: data.message || 'The product has been successfully added to your wishlist.',
             showConfirmButton: true,
             confirmButtonText: 'Okay',
         });
+    }else{
+      Swal.fire({
+                icon: 'info',
+                title: 'Already in Wishlist',
+                text: data.error || 'This product in the selected size is already in your wishlist.',
+                confirmButtonText: 'Okay'
+            });
+    }
+    
    })
    .catch(error=>{
     console.error('Error:', error);

@@ -15,6 +15,7 @@ const customerController=require("../controller/admin/customerController")
 const categoryController=require("../controller/admin/categoryController")
 const productController=require("../controller/admin/productController")
 const orderController=require('../controller/admin/orderController')
+const couponController=require('../controller/admin/couponController')
 const {adminLoggedIn}=require('../middleware/adminMiddleware')
 
 
@@ -90,6 +91,12 @@ router.post('/updateOrderStatus/:orderId',orderController.updateStatus)
 router.post('/addCategoryOffer',categoryController.addCategoryOffer)
 
 router.post('/removeCategoryOffer',categoryController.removeCategoryOffer)
+
+router.get('/adminCoupons',couponController.getCoupons)
+
+router.get('/adminAddCoupon',couponController.getAddCoupon)
+
+router.post('/adminAddCoupon',couponController.addCoupon)
 
 
 

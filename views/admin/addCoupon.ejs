@@ -1,0 +1,226 @@
+<%- include("../../views/layout/admin/header") %>
+
+<h2 class="form-title">Create a New Coupon</h2>
+<form action="/admin/coupons" method="POST" class="coupon-form"  id="couponForm">
+  <label for="code">Coupon Code:</label>
+  <input type="text" id="code" name="code" required>
+
+  <label for="discountType">Discount Type:</label>
+  <select id="discountType" name="discountType" required>
+    <option value="percentage">Percentage</option>
+    <option value="fixed">Fixed Amount</option>
+  </select>
+
+  <label for="discountAmount">Discount Amount:</label>
+  <input type="number" id="discountAmount" name="discountAmount" required>
+
+  <label for="minPurchaseAmount">Minimum Purchase Amount:</label>
+  <input type="number" id="minPurchaseAmount" name="minPurchaseAmount" required>
+
+  <label for="expirationDate">Expiration Date:</label>
+  <input type="date" id="expirationDate" name="expirationDate" required>
+
+  <label for="maxDiscount">Maximum Discount (for percentage discounts):</label>
+  <input type="number" id="maxDiscount" name="maxDiscount">
+
+  <label for="usageLimit">Total Usage Limit:</label>
+  <input type="number" id="usageLimit" name="usageLimit">
+
+  <label for="perUserLimit">Per User Usage Limit:</label>
+  <input type="number" id="perUserLimit" name="perUserLimit">
+
+  <label for="isActive">Active:</label>
+  <input type="checkbox" id="isActive" name="isActive" checked>
+
+  <button type="button" class="submit-btn" onclick="submitCouponForm()">Create Coupon</button>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function submitCouponForm(){
+        const form=document.getElementById('couponForm')
+        const formData=new FormData(form)
+        const data=Object.fromEntries(formData.entries())
+
+        data.isActive = document.getElementById('isActive').checked;
+
+        console.log("Data being sent to server:", data);
+
+        // try {
+        //     const response=await fetch('/adminAddCoupon',{
+        //         method:'POST',
+        //         headers:{
+        //             'Content-Type':'application/json'
+        //         },
+        //         body:JSON.stringify(data)
+        //     })
+        //     const result=await response.json()
+        //     if(result.success){
+        //         Swal.fire({
+        //           title: 'Success!',
+        //           text: 'Coupon created successfully!',
+        //           icon: 'success',
+        //          confirmButtonText: 'OK'
+        //          }).then(() => {
+        //            window.location.href = '/adminCoupons'; 
+        //          });
+        //     }else{
+        //         Swal.fire({
+        //         title: 'Error!',
+        //         text: result.message || 'Failed to create coupon',
+        //         icon: 'error',
+        //         confirmButtonText: 'OK'
+        //          });
+        //     }
+        // } catch (error) {
+        //     console.error('Error creating coupon:', error);
+        //        Swal.fire({
+        //           title: 'Error!',
+        //           text: 'An error occurred while creating the coupon',
+        //           icon: 'error',
+        //           confirmButtonText: 'OK'
+        //        });
+        // }
+        try {
+    const response = await fetch('/adminAddCoupon', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error from server:', errorText);
+        Swal.fire({
+            title: 'Error!',
+            text: `An error occurred: ${errorText}`,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    const result = await response.json();
+    if (result.success) {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Coupon created successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            window.location.href = '/adminCoupons'; 
+        });
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: result.message || 'Failed to create coupon',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+} catch (error) {
+    console.error('Error creating coupon:', error);
+    Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred while creating the coupon',
+        icon: 'error',
+        confirmButtonText: 'OK'
+    });
+}
+
+    }
+</script>
+
+<%- include("../../views/layout/admin/footer") %>
+
+
+
+<!-- Inline CSS for previewing styles -->
+<style>
+  /* Form container styling */
+  .coupon-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+
+  .form-title {
+    text-align: center;
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  /* Label styling */
+  .coupon-form label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+  }
+
+  /* Input and select styling */
+  .coupon-form input[type="text"],
+  .coupon-form input[type="number"],
+  .coupon-form input[type="date"],
+  .coupon-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+  }
+
+  .coupon-form input[type="text"]:focus,
+  .coupon-form input[type="number"]:focus,
+  .coupon-form input[type="date"]:focus,
+  .coupon-form select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+  }
+
+  /* Checkbox styling */
+  .coupon-form input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+  }
+
+  /* Button styling */
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .submit-btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Form layout adjustments for small screens */
+  @media (max-width: 500px) {
+    .coupon-form {
+      padding: 15px;
+    }
+
+    .submit-btn {
+      font-size: 0.9em;
+    }
+  }
+</style>
