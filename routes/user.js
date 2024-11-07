@@ -8,6 +8,7 @@ const {userLoggedIn}=require('../middleware/authMiddlware')
 const passport=require('passport')
 const jwt = require('jsonwebtoken');
 const wishlistController=require('../controller/user/wishlistController')
+const couponsController=require('../controller/user/couponsController')
 
 console.log("hello")
 router.get("/",(req, res) => {
@@ -123,6 +124,8 @@ router.get('/wishlist',verifyUser,wishlistController.getWishlist)
 router.post('/wishlist/:productId',verifyUser,wishlistController.addtoWishlist)
 
 router.delete('/wishlist/remove/:productId',verifyUser,wishlistController.removefromWishlist)
+
+router.post('/applyCoupon',verifyUser,couponsController.applyCoupon)
 
 
 

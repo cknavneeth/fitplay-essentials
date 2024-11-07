@@ -49,6 +49,8 @@ const cartSchema=new mongoose.Schema({
         type: Number,
         default: 0
     },
+    discount: { type: Number, default: 0 },           
+    couponCode: { type: String, default: null }, 
     updatedAt:{
         type:Date,
         default:Date.now
@@ -59,6 +61,7 @@ const cartSchema=new mongoose.Schema({
 cartSchema.pre('save',function(next){
     this.totalItems=this.items.length,
     this.totalPrice=this.items.reduce((sum,items)=>sum+items.totalPrice,0)
+    this.grandTotal=this.totalPrice-(this.discount||0)
     next()
 })
 

@@ -64,8 +64,8 @@
                       />
                     </div>
                   </td>
-                  <td><p class="cp_price">Rs <%= item.price %></p></td>
-                  <td><p class="cpp_total">Rs <%= item.totalPrice %></p></td>
+                  <td><p class="cp_price" id="cartTotal">Rs <%= item.price %></p></td>
+                  <td><p class="cpp_total" id="cartTotal">Rs <%= item.totalPrice %></p></td>
                   <td>
                     <a
                       href="#"
@@ -103,9 +103,9 @@
               <div class="cuppon-wrap">
                 <h4>Discount Code</h4>
                 <p>Enter your coupon code if you have</p>
-                <form action="#" class="cuppon-form">
-                  <input type="text" />
-                  <button class="btn border-btn">Apply Coupon</button>
+                <form id="couponForm" class="cuppon-form">
+                  <input type="text" id="couponCode" placeholder="Enter coupon code" />
+                  <button type="button" class="btn border-btn" onclick="applyCoupon()">Apply Coupon</button>
                 </form>
               </div>
             </div>
@@ -114,8 +114,8 @@
 
         <div class="col-md-4 col-xs-12 cart-checkout-process text-right">
           <div class="wrap">
-            <p><span>Subtotal</span><span>Rs <%= total%></span></p>
-            <h4><span>Grand Total</span><span>Rs <%= total%></span></h4>
+            <p><span>Subtotal</span><span id="subTotal">Rs <%= total%></span></p>
+            <h4><span>Grand Total</span><span id="grandTotal">Rs <%= total%></span></h4>
             <a href="/checkout" class="btn border-btn">Proceed to Checkout</a>
           </div>
         </div>
@@ -167,6 +167,61 @@
       }
     }
   </script>
+
+  <script>
+  //   async function applyCoupon(){
+  //     const couponCode=document.getElementById('couponCode').value.trim()
+
+  //     if(!couponCode){
+  //       Swal.fire({
+  //         icon: 'warning',
+  //         title: 'No Coupon Code',
+  //         text: 'Please enter a coupon code before applying.',
+
+  //       })
+  //       return 
+  //     }
+
+  //     try {
+  //       const response=await fetch('/applyCoupon',{
+  //         method:'POST',
+  //         headers:{
+  //           'Content-Type':'application/json'
+  //         },
+  //         body:JSON.stringify({couponCode})
+  //       })
+
+  //       const result=await response.json()
+
+  //       if(result.success){
+  //         Swal.fire({
+  //           icon: 'success',
+  //           title: 'Coupon Applied!',
+  //           text: 'Your coupon has been successfully applied!',
+  //         })
+  //         document.getElementById('subtotal').innerText = `Rs ${result.subtotal.toFixed(2)}`;
+  //         document.getElementById('grandTotal').innerText = `Rs ${result.grandTotal.toFixed(2)}`;
+  //         document.querySelectorAll('.cpp_total').forEach((el, index) => {
+  //         el.innerText = `Rs ${result.items[index].totalPrice.toFixed(2)}`;
+  //     });
+  //       }else{
+  //         Swal.fire({
+  //         icon: 'error',
+  //         title: 'Coupon Failed',
+  //         text: result.message || 'Failed to apply the coupon. Please try again.',
+  //       });
+  //       }
+
+  //     } catch (error) {
+  //       console.error('Error applying coupon:', error);
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: 'An error occurred while applying the coupon. Please try again later.',
+  //     });
+  //     }
+  //   }
+  // </script>
 </body>
 
 <%- include("../../views/layout/user/footer") %>

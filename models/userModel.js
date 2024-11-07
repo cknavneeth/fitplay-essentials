@@ -47,7 +47,20 @@ const userSchema=new mongoose.Schema({
     resetPasswordToken: String,
     resetPasswordExpires: Date,
     addresses: [addressSchema],
-    defaultAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' }
+    defaultAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' },
+
+    couponsUsed: [
+      {
+        coupon: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'coupon',
+        },
+        usageCount: {
+          type: Number,
+          default: 0
+        }
+      }
+    ]
     
 })
 
