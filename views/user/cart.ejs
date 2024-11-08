@@ -4,7 +4,7 @@
 
 	</head> -->
 <%- include("../../views/layout/user/header",{user:user}) %>
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <body>
   <!-- Page item Area -->
   <!-- Cart Page -->
@@ -64,8 +64,8 @@
                       />
                     </div>
                   </td>
-                  <td><p class="cp_price" id="cartTotal">Rs <%= item.price %></p></td>
-                  <td><p class="cpp_total" id="cartTotal">Rs <%= item.totalPrice %></p></td>
+                  <td><p class="cp_price" id="cartTotal">Rs <%=Math.round( item.price) %></p></td>
+                  <td><p class="cpp_total" id="cartTotal">Rs <%= item.totalPrice.toFixed(0)%></p></td>
                   <td>
                     <a
                       href="#"
@@ -114,8 +114,8 @@
 
         <div class="col-md-4 col-xs-12 cart-checkout-process text-right">
           <div class="wrap">
-            <p><span>Subtotal</span><span id="subTotal">Rs <%= total%></span></p>
-            <h4><span>Grand Total</span><span id="grandTotal">Rs <%= total%></span></h4>
+            <p><span>Subtotal</span><span id="subtotal">Rs <%= total.toFixed(0)%></span></p>
+            <h4><span>Grand Total</span><span id="grandTotal">Rs <%= total.toFixed(0)%></span></h4>
             <a href="/checkout" class="btn border-btn">Proceed to Checkout</a>
           </div>
         </div>
@@ -124,6 +124,31 @@
     </div>
   </div>
 
+
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" onclick="fetchCoupons()">View Coupons</button>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul id="couponList" class="list-group">
+          <!-- Coupon items will be injected here -->
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
@@ -169,59 +194,138 @@
   </script>
 
   <script>
-  //   async function applyCoupon(){
-  //     const couponCode=document.getElementById('couponCode').value.trim()
+    async function applyCoupon(){
+      const couponCode=document.getElementById('couponCode').value.trim()
 
-  //     if(!couponCode){
-  //       Swal.fire({
-  //         icon: 'warning',
-  //         title: 'No Coupon Code',
-  //         text: 'Please enter a coupon code before applying.',
+      if(!couponCode){
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Coupon Code',
+          text: 'Please enter a coupon code before applying.',
 
-  //       })
-  //       return 
+        })
+        return 
+      }
+
+      try {
+        const response=await fetch('/applyCoupon',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({couponCode})
+        })
+
+        const result=await response.json()
+
+        if(result.success){
+          Swal.fire({
+            icon: 'success',
+            title: 'Coupon Applied!',
+            text: 'Your coupon has been successfully applied!',
+          })
+          
+          if (result.totalPrice !== undefined) {
+                document.getElementById('subtotal').innerText = `Rs ${result.totalPrice.toFixed(2)}`;
+            } 
+          if (result.subtotal) {
+                document.getElementById('subtotal').innerText = `Rs ${result.subtotal.toFixed(2)}`;
+            }
+            if (result.grandTotal) {
+                document.getElementById('grandTotal').innerText = `Rs ${result.grandTotal.toFixed(2)}`;
+            }
+
+            // Update each item’s total price if items are provided in response
+            if (result.items) {
+                document.querySelectorAll('.cpp_total').forEach((el, index) => {
+                    if (result.items[index]) {
+                        el.innerText = `Rs ${result.items[index].totalPrice.toFixed(2)}`;
+                    }
+                });
+            }
+  //         if (result.totalPrice !== undefined) {
+  //   document.getElementById('subtotal').innerText = `Rs ${Math.round(result.totalPrice)}`;
+  // }
+  // if (result.subtotal) {
+  //   document.getElementById('subtotal').innerText = `Rs ${Math.round(result.subtotal)}`;
+  // }
+  // if (result.grandTotal) {
+  //   document.getElementById('grandTotal').innerText = `Rs ${Math.round(result.grandTotal)}`;
+  // }
+
+  // // Update each item’s total price if items are provided in response
+  // if (result.items) {
+  //   document.querySelectorAll('.cpp_total').forEach((el, index) => {
+  //     if (result.items[index]) {
+  //       el.innerText = `Rs ${Math.round(result.items[index].totalPrice)}`;
   //     }
+  //   });
+  // }
+        }else{
+          Swal.fire({
+          icon: 'error',
+          title: 'Coupon Failed',
+          text: result.message || 'Failed to apply the coupon. Please try again.',
+        });
+        }
 
-  //     try {
-  //       const response=await fetch('/applyCoupon',{
-  //         method:'POST',
-  //         headers:{
-  //           'Content-Type':'application/json'
-  //         },
-  //         body:JSON.stringify({couponCode})
-  //       })
-
-  //       const result=await response.json()
-
-  //       if(result.success){
-  //         Swal.fire({
-  //           icon: 'success',
-  //           title: 'Coupon Applied!',
-  //           text: 'Your coupon has been successfully applied!',
-  //         })
-  //         document.getElementById('subtotal').innerText = `Rs ${result.subtotal.toFixed(2)}`;
-  //         document.getElementById('grandTotal').innerText = `Rs ${result.grandTotal.toFixed(2)}`;
-  //         document.querySelectorAll('.cpp_total').forEach((el, index) => {
-  //         el.innerText = `Rs ${result.items[index].totalPrice.toFixed(2)}`;
-  //     });
-  //       }else{
-  //         Swal.fire({
-  //         icon: 'error',
-  //         title: 'Coupon Failed',
-  //         text: result.message || 'Failed to apply the coupon. Please try again.',
-  //       });
-  //       }
-
-  //     } catch (error) {
-  //       console.error('Error applying coupon:', error);
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Error',
-  //         text: 'An error occurred while applying the coupon. Please try again later.',
-  //     });
-  //     }
-  //   }
+      } catch (error) {
+        console.error('Error applying coupon:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred while applying the coupon. Please try again later.',
+      });
+      }
+    }
   // </script>
+
+
+<script>
+  async function fetchCoupons(){
+    try {
+      const response=await fetch('/coupons')
+      const coupons=await response.json()
+
+      const couponList=document.getElementById('couponList')
+      couponList.innerHTML=""
+
+
+      if(coupons.length>0){
+        coupons.forEach(coupon => {
+          const listItem = document.createElement('li');
+          listItem.classList.add('list-group-item', 'bg-light', 'text-dark');
+          listItem.textContent = `${coupon.code} - ${coupon.discountType === 'percentage' ? coupon.discountAmount + '%' : '$' + coupon.discountAmount} off (Expires: ${new Date(coupon.expirationDate).toLocaleDateString()})`;
+          
+
+
+          // listItem.textContent = `${coupon.code} - ${coupon.discountType === 'percentage' 
+          //   ? Math.round(coupon.discountAmount) + '%' 
+          //   : '$' + Math.round(coupon.discountAmount)} off (Expires: ${new Date(coupon.expirationDate).toLocaleDateString()})`;
+          // Show max discount, usage limit, or other details if they exist
+          if (coupon.maxDiscount) {
+            listItem.textContent += `, Max Discount: RS${coupon.maxDiscount}`;
+          }
+          if (coupon.usageLimit) {
+            listItem.textContent += `, Usage Limit: ${coupon.usageLimit}`;
+          }
+          if (coupon.perUserLimit) {
+            listItem.textContent += `, Per User Limit: ${coupon.perUserLimit}`;
+          }
+
+          couponList.appendChild(listItem); 
+        });
+      }else{
+        const noCouponItem = document.createElement('li');
+        noCouponItem.classList.add('list-group-item', 'text-center', 'bg-warning', 'text-dark');
+        noCouponItem.textContent = 'No available coupons';
+        couponList.appendChild(noCouponItem);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+</script>
 </body>
 
 <%- include("../../views/layout/user/footer") %>

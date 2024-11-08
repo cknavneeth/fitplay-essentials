@@ -112,6 +112,8 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
         cart.subTotal=subtotal
         cart.grandTotal=subtotal
 
+        cart.isCouponApplied = false;
+
         console.log("SubTotal ahne:", cart.subTotal); 
         console.log("GrandTotal ahne:", cart.grandTotal);
 

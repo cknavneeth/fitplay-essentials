@@ -44,6 +44,10 @@ const couponSchema=new mongoose.Schema({
         type: Boolean,
         default: true,
       },
+      isCouponApplied: {
+        type: Boolean,
+        default: false
+    }
 })
 
 

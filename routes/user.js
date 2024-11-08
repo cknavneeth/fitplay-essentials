@@ -127,6 +127,8 @@ router.delete('/wishlist/remove/:productId',verifyUser,wishlistController.remove
 
 router.post('/applyCoupon',verifyUser,couponsController.applyCoupon)
 
+router.get('/coupons',verifyUser,couponsController.gettingCoupon)
+
 
 
 
