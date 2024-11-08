@@ -265,11 +265,14 @@ exports.applyCoupon = async (req, res) => {
             const updatedTotalPrice = updatedPrice * item.quantity;
             return {
                 ...item.toObject(),
-                price: updatedPrice,
+                // price: updatedPrice,
                 totalPrice: updatedTotalPrice
             };
         });
         cart.items = updatedItems;
+
+
+        // cart.grandTotal = updatedItems.reduce((acc, item) => acc + item.totalPrice, 0);
 
         const existingEntry = user.couponsUsed.find(entry => entry.coupon.equals(coupon._id));
         if (existingEntry) {

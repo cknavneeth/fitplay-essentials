@@ -115,6 +115,8 @@
         <div class="col-md-4 col-xs-12 cart-checkout-process text-right">
           <div class="wrap">
             <p><span>Subtotal</span><span id="subtotal">Rs <%= total.toFixed(0)%></span></p>
+            <p id="couponCodeDisplay">Coupon Code: </p>
+            <p id="discount">Discount: </p>
             <h4><span>Grand Total</span><span id="grandTotal">Rs <%= total.toFixed(0)%></span></h4>
             <a href="/checkout" class="btn border-btn">Proceed to Checkout</a>
           </div>
@@ -235,7 +237,22 @@
                 document.getElementById('grandTotal').innerText = `Rs ${result.grandTotal.toFixed(2)}`;
             }
 
-            // Update each item’s total price if items are provided in response
+
+
+            if (result.discountAmount !== undefined) {
+                const discountDisplay = document.getElementById('discount');
+                if (discountDisplay) {
+                    discountDisplay.innerText = `Discount: Rs ${result.discountAmount.toFixed(2)}`;
+                }
+            }
+
+            // Display the coupon code in the cart (you can display it wherever you want)
+            const couponCodeDisplay = document.getElementById('couponCodeDisplay');
+            if (couponCodeDisplay) {
+                couponCodeDisplay.innerText = `Coupon Code: ${result.couponCode}`;
+            }
+
+            
             if (result.items) {
                 document.querySelectorAll('.cpp_total').forEach((el, index) => {
                     if (result.items[index]) {
@@ -243,6 +260,7 @@
                     }
                 });
             }
+
           
         }
         
@@ -266,6 +284,9 @@
       }
     }
   // </script>
+
+
+
 
 
 <script>
