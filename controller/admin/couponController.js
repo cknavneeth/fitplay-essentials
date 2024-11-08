@@ -81,3 +81,73 @@ exports.addCoupon=async(req,res)=>{
         res.status(500).json({ success: false, message: 'Failed to create coupon' });
     }
 }
+
+
+
+exports.deleteCoupon=async(req,res)=>{
+    try {
+        const id=req.params.couponId
+        const coupon=await Coupon.findByIdAndDelete(id)
+        if(!coupon){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'coupon not found'})
+        }
+
+        res.json({success:true,error:'Coupon deleted successfully'})
+    } catch (error) {
+        console.error(error)
+        return res.status(statusCodes).json({success:false,error:'error while deleting'})
+    }
+}
+
+
+exports.editCoupon=async(req,res)=>{
+    try {
+        const id=req.params.couponId
+
+        const coupon=await Coupon.findById(id)
+        if(!coupon){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:"coupon not found"})
+        }
+
+        res.render('admin/editCoupon',{coupon})
+    } catch (error) {
+        console.error(error)   
+     }
+}
+
+
+exports.postEditCoupon=async(req,res)=>{
+    try {
+        const{couponId}=req.params
+        const {
+            code,
+            discountType,
+            discountAmount,
+            minPurchaseAmount,
+            expirationDate,
+            maxDiscount,
+            usageLimit,
+            perUserLimit,
+            isActive
+        }=req.body
+
+        await Coupon.findByIdAndUpdate(couponId,{
+            code,
+            discountType,
+            discountAmount,
+            minPurchaseAmount,
+            expirationDate:new Date(expirationDate),
+            maxDiscount:maxDiscount||null,
+            usageLimit:usageLimit||null,
+            perUserLimit:perUserLimit||null,
+            isActive:isActive==='true'
+
+        })
+
+      
+
+        res.redirect('/adminCoupons')
+    } catch (error) {
+        console.error(error)
+    }
+}

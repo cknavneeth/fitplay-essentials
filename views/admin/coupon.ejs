@@ -2,6 +2,138 @@
 
 <h2 class="page-title">All Coupons</h2>
 
+<style>
+/* Container */
+/* General Styling */
+/* Container styling for centering and padding */
+form {
+  max-width: auto;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: 'Arial', sans-serif;
+  color: #333333;
+  transition: padding 0.3s ease;
+}
+
+/* Form title styling */
+h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #333333;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+/* Label styling */
+form label {
+  display: block;
+  font-weight: 600;
+  color: #555555;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Input and select styling */
+form input[type="text"],
+form input[type="number"],
+form input[type="date"],
+form select {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #333333;
+  background-color: #f5f5f5;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Input focus and select styling */
+form input[type="text"]:focus,
+form input[type="number"]:focus,
+form input[type="date"]:focus,
+form select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+/* Button styling */
+form button[type="submit"] {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 1.5rem;
+  background-color: #007bff;
+  border: none;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Button hover effect */
+form button[type="submit"]:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 91, 187, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  form {
+    padding: 1.5rem;
+    margin: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  form label {
+    font-size: 0.85rem;
+  }
+
+  form input[type="text"],
+  form input[type="number"],
+  form input[type="date"],
+  form select {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
+
+  form button[type="submit"] {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  form input[type="text"],
+  form input[type="number"],
+  form input[type="date"],
+  form select,
+  form button[type="submit"] {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+}
+
+
+</style>
+
 <!-- Button to redirect to add new coupon page -->
 <a href="/adminAddCoupon" class="add-coupon-btn">
   <button type="button">Add New Coupon</button>
@@ -26,7 +158,7 @@
       </thead>
       <tbody>
         <% coupons.forEach(coupon => { %>
-          <tr>
+          <tr id="coupon-<%= coupon._id %>">
             <td><%= coupon.code %></td>
             <td><%= coupon.discountType %></td>
             <td><%= coupon.discountAmount %></td>
@@ -40,7 +172,7 @@
             </td>
             <td>
               <a href="/editCoupon/<%= coupon._id %>" class="edit-link">Edit</a>
-              <a href="/deleteCoupon/<%= coupon._id %>" class="delete-link">Delete</a>
+              <a href="#" onclick="deleteCoupon('<%= coupon._id %>')" class="delete-link">Delete</a>
             </td>
           </tr>
         <% }) %>
@@ -48,8 +180,43 @@
     </table>
     <button type="submit" class="refresh-btn">Refresh Coupon List</button>
   </form>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
+<script>
+  async function deleteCoupon(couponId){
+    try {
+      const confirmation=await Swal.fire({
+        title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+      })
+     
+      if(!confirmation.isConfirmed){
+          return
+      }
 
+      const response=await fetch(`/deleteCoupon/${couponId}`,{
+        method:'DELETE',
+        headers:{
+          'Content-Type':'application/json'
+        }
+      })
+      const result=await response.json()
+      if(result.success){
+        Swal.fire('Delete',result.error,'successfully deleted')
+        document.getElementById(`coupon-${couponId}`).remove()
+      }else{
+        Swal.fire('Error',result.error,'error while deleting')
+      }
+    } catch (error) {
+      Swal.fire('error','error occured somewhere','not able to delete')
+    }
+  }
+</script>
 <%- include("../../views/layout/admin/footer") %>
 
 <!-- Inline CSS for quick styling preview -->

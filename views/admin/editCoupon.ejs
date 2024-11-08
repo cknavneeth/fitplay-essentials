@@ -1,0 +1,173 @@
+    
+<%- include("../../views/layout/admin/header") %>
+
+<style>
+/* Container styling for centering and padding */
+form {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: 'Arial', sans-serif;
+  color: #333333;
+  transition: padding 0.3s ease;
+}
+
+/* Form title styling */
+h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #333333;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+/* Label styling */
+form label {
+  display: block;
+  font-weight: 600;
+  color: #555555;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Input and select styling */
+form input[type="text"],
+form input[type="number"],
+form input[type="date"],
+form select {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #333333;
+  background-color: #f5f5f5;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Input focus and select styling */
+form input[type="text"]:focus,
+form input[type="number"]:focus,
+form input[type="date"]:focus,
+form select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+/* Button styling */
+form button[type="submit"] {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 1.5rem;
+  background-color: #007bff;
+  border: none;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Button hover effect */
+form button[type="submit"]:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 91, 187, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  form {
+    padding: 1.5rem;
+    margin: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  form label {
+    font-size: 0.85rem;
+  }
+
+  form input[type="text"],
+  form input[type="number"],
+  form input[type="date"],
+  form select {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
+
+  form button[type="submit"] {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  form input[type="text"],
+  form input[type="number"],
+  form input[type="date"],
+  form select,
+  form button[type="submit"] {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+}
+
+</style>
+
+
+<h2>Edit Coupon</h2>
+
+<form action="/editCoupon/<%= coupon._id %>" method="POST">
+  <label for="code">Coupon Code:</label>
+  <input type="text" name="code" id="code" value="<%= coupon.code %>" required>
+
+  <label for="discountType">Discount Type:</label>
+  <select name="discountType" id="discountType" required>
+    <option value="percentage" <%= coupon.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
+    <option value="fixed" <%= coupon.discountType === 'fixed' ? 'selected' : '' %>>Fixed</option>
+  </select>
+
+  <label for="discountAmount">Discount Amount:</label>
+  <input type="number" name="discountAmount" id="discountAmount" value="<%= coupon.discountAmount %>" required>
+
+  <label for="minPurchaseAmount">Min Purchase Amount:</label>
+  <input type="number" name="minPurchaseAmount" id="minPurchaseAmount" value="<%= coupon.minPurchaseAmount %>">
+
+  <label for="expirationDate">Expiration Date:</label>
+  <input type="date" name="expirationDate" id="expirationDate" value="<%= coupon.expirationDate.toISOString().split('T')[0] %>" required>
+
+  <label for="maxDiscount">Max Discount (Optional):</label>
+  <input type="number" name="maxDiscount" id="maxDiscount" value="<%= coupon.maxDiscount %>">
+
+  <label for="usageLimit">Usage Limit (Optional):</label>
+  <input type="number" name="usageLimit" id="usageLimit" value="<%= coupon.usageLimit %>">
+
+  <label for="perUserLimit">Per User Limit (Optional):</label>
+  <input type="number" name="perUserLimit" id="perUserLimit" value="<%= coupon.perUserLimit %>">
+
+  <label for="isActive">Status:</label>
+  <select name="isActive" id="isActive">
+    <option value="true" <%= coupon.isActive ? 'selected' : '' %>>Active</option>
+    <option value="false" <%= !coupon.isActive ? 'selected' : '' %>>Inactive</option>
+  </select>
+
+  <button type="submit">Save Changes</button>
+</form>
+    
+<%- include("../../views/layout/admin/footer") %>

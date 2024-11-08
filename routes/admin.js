@@ -98,8 +98,10 @@ router.get('/adminAddCoupon',couponController.getAddCoupon)
 
 router.post('/adminAddCoupon',couponController.addCoupon)
 
+router.delete('/deleteCoupon/:couponId',couponController.deleteCoupon)
 
+router.get('/editCoupon/:couponId',couponController.editCoupon)
 
-
+router.post('/editCoupon/:couponId',couponController.postEditCoupon)
 
 module.exports=router

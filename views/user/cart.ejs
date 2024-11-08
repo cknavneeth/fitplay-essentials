@@ -243,31 +243,18 @@
                     }
                 });
             }
-  //         if (result.totalPrice !== undefined) {
-  //   document.getElementById('subtotal').innerText = `Rs ${Math.round(result.totalPrice)}`;
-  // }
-  // if (result.subtotal) {
-  //   document.getElementById('subtotal').innerText = `Rs ${Math.round(result.subtotal)}`;
-  // }
-  // if (result.grandTotal) {
-  //   document.getElementById('grandTotal').innerText = `Rs ${Math.round(result.grandTotal)}`;
-  // }
-
-  // // Update each item’s total price if items are provided in response
-  // if (result.items) {
-  //   document.querySelectorAll('.cpp_total').forEach((el, index) => {
-  //     if (result.items[index]) {
-  //       el.innerText = `Rs ${Math.round(result.items[index].totalPrice)}`;
-  //     }
-  //   });
-  // }
-        }else{
-          Swal.fire({
-          icon: 'error',
-          title: 'Coupon Failed',
-          text: result.message || 'Failed to apply the coupon. Please try again.',
-        });
+          
         }
+        
+        if (!result.success) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Coupon Failed',
+        text: result.error || result.message || 'Failed to apply the coupon. Please try again.',
+    });
+}
+
+        
 
       } catch (error) {
         console.error('Error applying coupon:', error);

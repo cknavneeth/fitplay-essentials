@@ -213,7 +213,11 @@ exports.applyCoupon = async (req, res) => {
         if (cart.couponCode) {
             return res.status(400).json({ success: false, error: 'You have already used a coupon for this cart. Please add new products to apply a coupon again.' });
         }
-        console.log('balalu',cart.isCouponApplied)
+        console.log('balalu',cart.couponCode)
+
+        if(cart.totalPrice<coupon.minPurchaseAmount){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:`Minimum purchase amount of ${coupon.minPurchaseAmount} is required to apply this coupon` })
+        }
 
 
        
