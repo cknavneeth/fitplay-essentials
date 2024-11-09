@@ -181,33 +181,6 @@
 
 
 
-    // async function updateQuantity(productId, newQuantity, maxStock) {
-    //   try {
-    //     const response = await axios.patch(
-    //       "http://localhost:3000/updateQuantity",
-    //       {
-    //         newQuantity,
-    //         productId,
-    //       }
-    //     );
-    //     window.location.reload();
-    //   } catch (error) {
-    //     alert(error?.response.data.message);
-    //   }
-
-    //   if (parseInt(newQuantity) > parseInt(maxStock)) {
-    //     Swal.fire({
-    //       icon: "error",
-    //       title: "Quantity Exceeded",
-    //       text: `Only ${maxStock} items are available for this product.`,
-    //       confirmButtonText: "OK",
-    //     });
-    //     document.querySelector(
-    //       `input[name="quantity"][data-product-id="${productId}"]`
-    //     ).value = maxStock;
-    //     return;
-    //   }
-    // }
     async function updateQuantity(productId, newQuantity, maxStock) {
     let couponCode =  document.getElementById("couponCodeDisplay").textContent;
     // Validate if the quantity exceeds available stock
