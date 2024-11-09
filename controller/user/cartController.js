@@ -4,6 +4,7 @@ const { User, addressSchema } = require("../../models/userModel.js");
 const Order=require('../../models/orderModel.js')
 const Product = require("../../models/productModel.js");
 const Category=require('../../models/categoryModel.js')
+const Coupon=require('../../models/couponModel.js')
 const jwt = require("jsonwebtoken");
 const statusCodes=require('../../config/keys.js')
 
@@ -22,14 +23,32 @@ exports.getCartPage=async(req,res)=>{
 
         const cartEmpty=!cart||cart.items.length==0
         if(cartEmpty){
-           return res.render('user/cart', { user, cart:cart? cart:[], total: 0,cartEmpty:true} )
+           return res.render('user/cart', { 
+            user,
+             cart:cart? cart:[], 
+             total: 0,
+             discountAmount:0,
+             couponCode:'',
+             grandTotal:0,
+             cartEmpty:true} )
         }
 
         const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
 
+
+        const discountAmount=cart.discountAmount||0
+        const couponCode=cart.couponCode||''
+        const grandTotal=cartTotal-discountAmount
        
         console.log("babloo",cart.items)
-        res.render('user/cart', { user, cart:cart? cart:[], total: cartTotal ,cartEmpty:false});
+        res.render('user/cart', { user,
+             cart:cart? cart:[],
+              total: cartTotal,
+               discountAmount,
+               couponCode,
+               grandTotal:cart.grandTotal,
+               cartEmpty:false});
+               console.log('jijo shibu',grandTotal)
 
     } catch (error) {
         console.error(error)
@@ -111,11 +130,43 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
         const subtotal=cart.items.reduce((sum,item)=>sum+item.totalPrice,0)
         cart.subTotal=subtotal
         cart.grandTotal=subtotal
-
-        cart.isCouponApplied = false;
-
+         
+        // cart.isCouponApplied = false;
+     
         console.log("SubTotal ahne:", cart.subTotal); 
         console.log("GrandTotal ahne:", cart.grandTotal);
+
+
+
+
+        let discountAmount = 0;
+        if (cart.isCouponApplied && cart.couponCode) {
+            const coupon = await Coupon.findOne({ code: cart.couponCode, isActive: true });
+            if (coupon) {
+                if (coupon.discountType === 'percentage') {
+                    discountAmount = (coupon.discountAmount / 100) * subtotal;
+                } else if (coupon.discountType === 'fixed') {
+                    discountAmount = coupon.discountAmount;
+                }
+                if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
+                    discountAmount = coupon.maxDiscount;
+                }
+                cart.discount = discountAmount;
+            } else {
+                
+                cart.isCouponApplied = false;
+                cart.couponCode = null;
+                cart.discount = 0;
+            }
+        }
+
+        
+        cart.grandTotal = subtotal - discountAmount;
+
+
+
+
+
 
         await cart.save();
         res.json({ success: true, message: 'Cart updated successfully' });
@@ -175,10 +226,14 @@ exports.checkoutPage=async(req,res)=>{
             totalPrice:item.quantity*item.productId.salePrice
 
         }))
-         
+         const subTotal=cartItems.reduce((sum,item)=>sum+item.totalPrice,0)
+
+         const discount=cart.discount||0
+
+         const grandTotal=subTotal-discount
         const addresses=user.addresses.filter(address=>!address.deleted)
        
-        res.render('user/checkout',{cartItems,user,addresses})
+        res.render('user/checkout',{cartItems,user,addresses,subTotal,grandTotal,discount,couponCode:cart.couponCode||null})
     } catch (error) {
         console.error(error)
     }
@@ -190,6 +245,7 @@ exports.checkoutAddressPage=async(req,res)=>{
         const userId=req.user.id
         console.log(userId)
         const user = await User.findById(userId);
+        
        res.render('user/check-addaddress',{user})
     
 }

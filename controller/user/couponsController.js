@@ -193,6 +193,9 @@ const Cart = require("../../models/cartModel.js");
 // };
 
 
+
+
+
 exports.applyCoupon = async (req, res) => {
     try {
         const { couponCode } = req.body;
@@ -213,6 +216,7 @@ exports.applyCoupon = async (req, res) => {
         if (cart.couponCode) {
             return res.status(400).json({ success: false, error: 'You have already used a coupon for this cart. Please add new products to apply a coupon again.' });
         }
+        console.log("bbruuhh",cart.couponCode)
         console.log('balalu',cart.couponCode)
 
         if(cart.totalPrice<coupon.minPurchaseAmount){
@@ -251,25 +255,28 @@ exports.applyCoupon = async (req, res) => {
             discountAmount = coupon.maxDiscount;
         }
         
-        const discountPerItem = discountAmount / cart.items.length;
+        // const discountPerItem = discountAmount / cart.items.length;
         
         cart.discount = discountAmount;
         cart.couponCode = couponCode;
         cart.grandTotal = cart.totalPrice - discountAmount;
         
         
-
+        console.log("Discount applied:", discountAmount);
+        console.log("Updated grand total:", cart.grandTotal);
       
-        const updatedItems = cart.items.map(item => {
-            const updatedPrice = item.price - discountPerItem / item.quantity;
-            const updatedTotalPrice = updatedPrice * item.quantity;
-            return {
-                ...item.toObject(),
-                // price: updatedPrice,
-                totalPrice: updatedTotalPrice
-            };
-        });
-        cart.items = updatedItems;
+        // const updatedItems = cart.items.map(item => {
+        //     const updatedPrice = item.price - discountPerItem / item.quantity;
+        //     const updatedTotalPrice = updatedPrice * item.quantity;
+        //     return {
+        //         ...item.toObject(),
+        //         // price: updatedPrice,
+        //         totalPrice: updatedTotalPrice
+        //     };
+        // });
+        // cart.items = updatedItems;
+
+        console.log('thingss',cart.items)
 
 
         // cart.grandTotal = updatedItems.reduce((acc, item) => acc + item.totalPrice, 0);
@@ -287,7 +294,7 @@ exports.applyCoupon = async (req, res) => {
         await coupon.save();
         await user.save();
 
-        res.json({ success: true, discountAmount, grandTotal: cart.grandTotal, items: updatedItems });
+        res.json({ success: true, discountAmount, grandTotal: cart.grandTotal, items: cart.items });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: 'Internal server error' });
@@ -299,6 +306,38 @@ exports.gettingCoupon=async(req,res)=>{
     try {
         const coupons=await Coupon.find({isActive:true})
         res.json(coupons)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+
+
+
+exports.removeCoupon=async(req,res)=>{
+    try {
+        const userId=req.user.id
+
+        const cart=await Cart.findOne({userId})
+
+        if(!cart){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart not found'})
+        }
+
+        cart.couponCode=null
+        cart.discount=0
+       
+        cart.grandTotal = cart.subTotal;
+
+        await cart.save();
+
+        
+        res.json({
+            subTotal: cart.subTotal, 
+            cartTotal: cart.cartTotal,
+            grandTotal: cart.grandTotal 
+        });
+
     } catch (error) {
         console.error(error)
     }

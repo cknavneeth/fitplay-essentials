@@ -106,6 +106,7 @@
                 <form id="couponForm" class="cuppon-form">
                   <input type="text" id="couponCode" placeholder="Enter coupon code" />
                   <button type="button" class="btn border-btn" onclick="applyCoupon()">Apply Coupon</button>
+                  <button type="button" class="btn border-btn " id="removeCouponBtn" onclick="removeCoupon()">Remove Coupon</button>
                 </form>
               </div>
             </div>
@@ -115,9 +116,11 @@
         <div class="col-md-4 col-xs-12 cart-checkout-process text-right">
           <div class="wrap">
             <p><span>Subtotal</span><span id="subtotal">Rs <%= total.toFixed(0)%></span></p>
-            <p id="couponCodeDisplay">Coupon Code: </p>
-            <p id="discount">Discount: </p>
-            <h4><span>Grand Total</span><span id="grandTotal">Rs <%= total.toFixed(0)%></span></h4>
+            <p id="couponCodeDisplay">Coupon Code:<%=couponCode%> </p>
+            <!-- <p id="discount">Discount: </p> -->
+            <p id="discount">Discount: Rs <%= discountAmount ? discountAmount.toFixed(0) : "0" %></p>
+           
+            <h4><span>Grand Total</span><span id="grandTotal">Rs <%= grandTotal.toFixed(0)%></span></h4>
             <a href="/checkout" class="btn border-btn">Proceed to Checkout</a>
           </div>
         </div>
@@ -166,34 +169,158 @@
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+
+
+
+
+
+
+
+
+
+
+
+
+    // async function updateQuantity(productId, newQuantity, maxStock) {
+    //   try {
+    //     const response = await axios.patch(
+    //       "http://localhost:3000/updateQuantity",
+    //       {
+    //         newQuantity,
+    //         productId,
+    //       }
+    //     );
+    //     window.location.reload();
+    //   } catch (error) {
+    //     alert(error?.response.data.message);
+    //   }
+
+    //   if (parseInt(newQuantity) > parseInt(maxStock)) {
+    //     Swal.fire({
+    //       icon: "error",
+    //       title: "Quantity Exceeded",
+    //       text: `Only ${maxStock} items are available for this product.`,
+    //       confirmButtonText: "OK",
+    //     });
+    //     document.querySelector(
+    //       `input[name="quantity"][data-product-id="${productId}"]`
+    //     ).value = maxStock;
+    //     return;
+    //   }
+    // }
     async function updateQuantity(productId, newQuantity, maxStock) {
-      try {
-        const response = await axios.patch(
-          "http://localhost:3000/updateQuantity",
-          {
+    let couponCode =  document.getElementById("couponCodeDisplay").textContent;
+    // Validate if the quantity exceeds available stock
+    if (parseInt(newQuantity) > parseInt(maxStock)) {
+        Swal.fire({
+            icon: "error",
+            title: "Quantity Exceeded",
+            text: `Only ${maxStock} items are available for this product.`,
+            confirmButtonText: "OK",
+        });
+
+        // Reset the quantity field to the max stock value
+        document.querySelector(
+            `input[name="quantity"][data-product-id="${productId}"]`
+        ).value = maxStock;
+
+        return; // Stop the function if the quantity exceeds max stock
+    }
+
+    try {
+        // Send updated quantity to the server
+        const response = await axios.patch("http://localhost:3000/updateQuantity", {
             newQuantity,
             productId,
-          }
-        );
-        window.location.reload();
-      } catch (error) {
-        alert(error?.response.data.message);
-      }
-
-      if (parseInt(newQuantity) > parseInt(maxStock)) {
-        Swal.fire({
-          icon: "error",
-          title: "Quantity Exceeded",
-          text: `Only ${maxStock} items are available for this product.`,
-          confirmButtonText: "OK",
         });
-        document.querySelector(
-          `input[name="quantity"][data-product-id="${productId}"]`
-        ).value = maxStock;
-        return;
-      }
+
+        // Assuming the server returns updated cart data
+        const { cartTotal, grandTotal, couponCode, discountAmount } = response.data;
+
+        // Update the UI with the new totals
+        document.getElementById("subtotal").textContent = `Rs ${cartTotal.toFixed(0)}`;
+        document.getElementById("grandTotal").textContent = `Rs ${grandTotal.toFixed(0)}`;
+
+        // If a coupon is applied, show the coupon code and discount
+        if (couponCode) {
+          document.getElementById("couponCodeDisplay").textContent  = `Coupon Code: ${couponCode}`;
+            document.getElementById("discount").textContent = `Discount: Rs ${discountAmount.toFixed(0)}`;
+        } else {
+            document.getElementById("couponCodeDisplay").textContent = 'Coupon Code: ';
+            document.getElementById("discount").textContent = 'Discount: ';
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error?.response?.data?.message || "Something went wrong",
+            confirmButtonText: "OK",
+        });
     }
+}
+
+
+
+async function removeCoupon(){
+  try {
+    Swal.close();
+    Swal.fire({
+      title: 'Removing coupon...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    const response=await axios.patch('http://localhost:3000/removeCoupon')
+
+    console.log("Response data:", response.data);
+
+    const {subTotal,grandTotal}=response.data
+
+    document.getElementById("subtotal").textContent = `Rs ${subTotal.toFixed(0)}`;
+        document.getElementById("grandTotal").textContent = `Rs ${grandTotal.toFixed(0)}`;
+        document.getElementById("couponCodeDisplay").textContent = 'Coupon Code:';
+        document.getElementById("discount").textContent = 'Discount:';
+
+        Swal.fire({
+      icon: 'success',
+      title: 'Coupon removed successfully',
+      confirmButtonText: 'OK'
+    });
+  } catch (error) {
+    Swal.fire({
+      icon:'error',
+      title:'error',
+      text:error?.response?.data?.message || 'something went wrong',
+      confirmButtonText:'OK'
+    })
+  }
+}
+
   </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <script>
     async function applyCoupon(){

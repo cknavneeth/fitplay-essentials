@@ -129,6 +129,10 @@ router.post('/applyCoupon',verifyUser,couponsController.applyCoupon)
 
 router.get('/coupons',verifyUser,couponsController.gettingCoupon)
 
+router.patch('/removeCoupon',verifyUser,couponsController.removeCoupon)
+
+
+
 
 
 

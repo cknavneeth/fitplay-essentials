@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const statusCodes = require("../../config/keys.js");
 const crypto = require("crypto");
 const Cart = require("../../models/cartModel.js");
+const Coupon = require("../../models/couponModel.js");
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -623,38 +624,133 @@ exports.resetPage = async (req, res) => {
   }
 };
 
+// exports.updateQuantity = async (req, res) => {
+//   try {
+//     const { newQuantity, productId } = req.body;
+//     const userId = req.user.id;
+//     console.log(newQuantity, productId, userId);
+
+//     const cart = await Cart.findOne({ userId });
+//     console.log(cart, "<<cart>>>");
+//     if (!cart) return res.status(400).json({ message: "cart not found " });
+
+//     // const existingItem = cart.items.findIndex(
+//     //   (item) => item._id.toString() == productId
+//     // );
+//     const existingItem = cart.items.findIndex(
+//       (item) => item._id.toString() == productId
+//     );
+//     if (existingItem == -1)
+//       return res.status(400).json({ message: "Product not found in cart" });
+
+//     cart.items[existingItem].quantity = newQuantity;
+//     cart.items[existingItem].totalPrice =
+//       newQuantity * cart.items[existingItem].price;
+
+   
+
+//     let cartTotal=0
+//     cart.items.forEach((item)=>{
+//       cartTotal+=item.totalPrice
+//     })
+//     // let cartTotal = cart.items.reduce((total, item) => total + item.totalPrice, 0);
+
+//     let discountAmount=0
+//     let couponCode=''
+    
+
+//     if(cart.couponCode){
+
+//       const coupon= await Coupon.findOne({code:cart.couponCode,isActive:true})
+//       if(coupon){
+//         if(coupon.discountType==='percentage'){
+//           discountAmount=(coupon.discountAmount/100)*cartTotal
+//         }else if(coupon.discountType==='fixed'){
+//           discountAmount=coupon.discountAmount
+//         }
+
+//         if(coupon.maxDiscount&&discountAmount>coupon.maxDiscount){
+//           discountAmount=coupon.maxDiscount
+//         }
+    
+//         cartTotal-=discountAmount
+//         couponCode=cart.couponCode
+//       }
+
+//     }
+      
+//    const grandTotal=cartTotal
+//     await cart.save();
+//     // return res.status(200).json({ message: "Quantity updated successfully" });
+//     return res.status(200).json({
+//       message: "Quantity updated successfully",
+//       cartTotal,
+//       grandTotal,
+//       couponCode,
+//       discountAmount
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
 exports.updateQuantity = async (req, res) => {
+  const { newQuantity, productId } = req.body;
+  const userId = req.user.id;
+
   try {
-    const { newQuantity, productId } = req.body;
-    const userId = req.user.id;
-    console.log(newQuantity, productId, userId);
+      const cart = await Cart.findOne({ userId });
+      if (!cart) return res.status(400).json({ message: "Cart not found" });
 
-    const cart = await Cart.findOne({ userId });
-    console.log(cart, "<<cart>>>");
-    if (!cart) return res.status(400).json({ message: "cart not found " });
+      const existingItemIndex = cart.items.findIndex(
+          item => item._id.toString() === productId
+      );
+      if (existingItemIndex === -1) {
+          return res.status(400).json({ message: "Product not found in cart" });
+      }
 
-    // const existingItem = cart.items.findIndex(
-    //   (item) => item._id.toString() == productId
-    // );
-    const existingItem = cart.items.findIndex(
-      (item) => item._id.toString() == productId
-    );
-    if (existingItem == -1)
-      return res.status(400).json({ message: "Product not found in cart" });
+      cart.items[existingItemIndex].quantity = newQuantity;
+      cart.items[existingItemIndex].totalPrice =
+          newQuantity * cart.items[existingItemIndex].price;
 
-    cart.items[existingItem].quantity = newQuantity;
-    cart.items[existingItem].totalPrice =
-      newQuantity * cart.items[existingItem].price;
+      const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+      cart.subTotal = subtotal;
 
-    console.log(
-      "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ",
-      cart.items[existingItem],
-      ">>>>>>>>>>>>>>>>>>"
-    );
-    await cart.save();
-    return res.status(200).json({ message: "Quantity updated successfully" });
+      let discountAmount = 0;
+      if (cart.couponCode) {
+          const coupon = await Coupon.findOne({ code: cart.couponCode, isActive: true });
+          if (coupon) {
+              if (coupon.discountType === 'percentage') {
+                  discountAmount = (coupon.discountAmount / 100) * subtotal;
+              } else if (coupon.discountType === 'fixed') {
+                  discountAmount = coupon.discountAmount;
+              }
+              if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
+                  discountAmount = coupon.maxDiscount;
+              }
+              cart.discount = discountAmount;
+          } else {
+              cart.isCouponApplied = false;
+              cart.couponCode = null;
+              cart.discount = 0;
+          }
+      }
+
+      cart.grandTotal = subtotal - discountAmount;
+
+      await cart.save();
+      res.json({
+          message: "Quantity updated successfully",
+          cartTotal: cart.subTotal,
+          grandTotal: cart.grandTotal,
+          couponCode: cart.couponCode,
+          discountAmount: cart.discount,
+          items: cart.items
+      });
   } catch (error) {
-    console.log(error);
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
   }
 };
+
                    

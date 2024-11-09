@@ -23,7 +23,8 @@ const cartItemSchema=new mongoose.Schema({
     totalPrice:{
         type:Number,
         required:true
-    }
+    },
+    
 })
 
 const cartSchema=new mongoose.Schema({
@@ -51,6 +52,10 @@ const cartSchema=new mongoose.Schema({
     },
     discount: { type: Number, default: 0 },           
     couponCode: { type: String, default: null }, 
+    // isCouponApplied: { 
+    //     type: Boolean, 
+    //     default: false 
+    // },
     updatedAt:{
         type:Date,
         default:Date.now
