@@ -287,22 +287,45 @@
 					</div>
 				</div> 
 					
-				<!-- Blog Pagination -->
+				
 				<div class="col-xs-12">
 					<div class="blog_pagination pgntn_mrgntp fix">
-						<div class="pagination text-center">
-							<ul>
-								<li><a href="#"><i class="fa fa-angle-left"></i></a></li>
-								<li><a href="#">1</a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#" class="active">3</a></li>
-								<li><a href="#">4</a></li>
-								<li><a href="#">5</a></li>
-								<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-							</ul>
-						</div>
+					  <div class="pagination text-center">
+						<ul>
+						  <!-- Previous Page Button -->
+						  <% if (currentPage > 1) { %>
+							<li><a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>&category=<%= query.category %>&minPrice=<%= query.minPrice %>&maxPrice=<%= query.maxPrice %>&rating=<%= query.rating %>&sort=<%= query.sort %>"><i class="fa fa-angle-left"></i></a></li>
+						  <% } else { %>
+							<li class="disabled"><a href="#"><i class="fa fa-angle-left"></i></a></li>
+						  <% } %>
+				  
+						  <!-- Page Numbers -->
+						  <% for (let i = 1; i <= totalPages; i++) { %>
+							<li>
+							  <a href="?page=<%= i %>&limit=<%= limit %>&category=<%= query.category %>&minPrice=<%= query.minPrice %>&maxPrice=<%= query.maxPrice %>&rating=<%= query.rating %>&sort=<%= query.sort %>"
+								 class="<%= currentPage === i ? 'active' : '' %>">
+								<%= i %>
+							  </a>
+							</li>
+						  <% } %>
+				  
+						  <!-- Next Page Button -->
+						  <% if (currentPage < totalPages) { %>
+							<li><a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&category=<%= query.category %>&minPrice=<%= query.minPrice %>&maxPrice=<%= query.maxPrice %>&rating=<%= query.rating %>&sort=<%= query.sort %>"><i class="fa fa-angle-right"></i></a></li>
+						  <% } else { %>
+							<li class="disabled"><a href="#"><i class="fa fa-angle-right"></i></a></li>
+						  <% } %>
+						</ul>
+					  </div>
 					</div>
-				</div>	
+				  </div>
+				  
+				  
+
+
+
+
+
 			</div>
 		</div>
 

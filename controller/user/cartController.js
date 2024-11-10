@@ -179,7 +179,7 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
 
 exports.deleteProductCart=async(req,res)=>{
     try {
-        const {id:productId}=req.params
+        const {id:itemId}=req.params
         const userId=req.user.id
 
         const cart=await Cart.findOne({userId})
@@ -189,7 +189,9 @@ exports.deleteProductCart=async(req,res)=>{
         }
       
 
-        cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+        // cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+
+        cart.items=cart.items.filter(item=>item._id.toString()!==itemId)
 
 
         cart.subTotal=cart.items.reduce((sum,items)=>sum+items.totalPrice,0)

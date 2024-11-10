@@ -399,10 +399,22 @@ exports.shopPage = async (req, res) => {
     if (req.query.search) {
       filter.productName = { $regex: new RegExp(".*" + req.query.search + ".*", "i") };
     }
+
+
+    const page=parseInt(req.query.page)||1
+    const limit=parseInt(req.query.limit)||10
+    const skip=(page-1)*limit
+
+    const totalDocuments=await Product.countDocuments(filter)
+
+    const totalPages=Math.ceil(totalDocuments/limit)
     
 
     // Fetch products with filters
-    let products = await Product.find(filter);
+    let products = await Product.find(filter)
+    .skip(skip)
+    .limit(limit)
+
 
     // Apply sorting options
     const sortOptions = req.query.sort || "popularity";
@@ -435,7 +447,8 @@ exports.shopPage = async (req, res) => {
         products = products.sort((a, b) => b.popularity - a.popularity);
     }
 
-    res.render("user/shop", { products, user, categories });
+    res.render("user/shop", { products, user, categories ,currentPage:page,totalPages,limit, 
+      query: req.query });
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while loading the shop page.");
