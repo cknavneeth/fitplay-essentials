@@ -1,0 +1,316 @@
+
+<%- include("../../views/layout/user/header",{user:user}) %>
+ <head>
+  <title>
+   Wallet Page
+  </title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+.wallet-page {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure the styles are scoped inside .wallet-page */
+.wallet-page .container2 {
+    display: flex;
+    padding: 20px;
+}
+
+/* Sidebar styling */
+.wallet-page .sidebar2 {
+    width: 250px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+    padding: 20px;
+}
+
+/* Profile inside the sidebar */
+.wallet-page .sidebar2 .profile {
+    background-color: #3f51b5;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* List items in sidebar */
+.wallet-page .sidebar2 ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wallet-page .sidebar2 ul li {
+    margin-bottom: 10px;
+}
+
+.wallet-page .sidebar2 ul li a {
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+/* Sidebar active item */
+.wallet-page .sidebar2 ul li a:hover, 
+.wallet-page .sidebar2 ul li a.active {
+    background-color: #e0e0e0;
+}
+
+/* Content styling */
+.wallet-page .content {
+    flex: 1;
+}
+
+/* Balance box styling */
+.wallet-page .content .balance,
+.wallet-page .content .transactions,
+.wallet-page .content .note {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Header for balance and transaction sections */
+.wallet-page .content .balance h3,
+.wallet-page .content .transactions h3 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Balance amount styling */
+.wallet-page .content .balance .amount {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Description under balance */
+.wallet-page .content .balance .description {
+    font-size: 14px;
+    color: #666;
+    margin: 10px 0;
+}
+
+/* Actions under balance section */
+.wallet-page .content .balance .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Individual action buttons */
+.wallet-page .content .balance .actions .action {
+    text-align: center;
+    flex: 1;
+    margin: 0 5px;
+}
+
+.wallet-page .content .balance .actions .action img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.wallet-page .content .balance .actions .action p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Gift card button */
+.wallet-page .content .balance .add-gift-card {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.wallet-page .content .balance .add-gift-card a {
+    color: #3f51b5;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Transactions section */
+.wallet-page .content .transactions .no-transactions {
+    text-align: center;
+    color: #666;
+}
+
+.wallet-page .content .transactions .no-transactions img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+/* Note section styling */
+.wallet-page .content .note h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.wallet-page .content .note ul {
+    list-style: none;
+}
+
+
+  </style>
+ </head>
+ <body class="wallet-page">
+    <div class="container2">
+        <div class="sidebar2">
+            <div class="profile">
+                <h2><%= user.username %></h2> <!-- Dynamic name from user -->
+                <p><%= user.email%></p>  <!-- Dynamic phone number from user -->
+            </div>
+            <ul>
+                <li><a href="#">Orders &amp; Returns</a></li>
+                <li><a href="#">My Profile</a></li>
+                <li class="active"><a href="#">Wallet <span>₹ <%= wallet.balance %></span></a></li> 
+                <li><a href="#">Sporty Rewards</a></li>
+                <li><a href="#">Address</a></li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <form action="/wallet" method="post">
+                <div class="balance">
+                    <h3>Cash Balance</h3>
+                    <p class="amount">₹ <%= wallet.balance %></p> 
+                    <p class="description">GiftCard top-ups and Refunds</p>
+
+                    <div class="actions">
+                        <button type="submit" name="action" value="quick_checkout" class="action">
+                            <img alt="Quick Checkout" height="40" src="https://storage.googleapis.com/a1aa/image/bSXxAnnfJen9OkHMuXIabO6xoZhXbcqle4bEMcheZTvPlOedC.jpg" width="40" />
+                            <p>Quick Checkout</p>
+                        </button>
+                        <button type="submit" name="action" value="consolidated_money" class="action">
+                            <img alt="Consolidated Money" height="40" src="https://storage.googleapis.com/a1aa/image/kKfCG8deIYqXJkOCHqHggDmb5efoa7YKMRkv4frPJmKMKd8dC.jpg" width="40" />
+                            <p>Consolidated Money</p>
+                        </button>
+                        <button type="submit" name="action" value="instant_refund" class="action">
+                            <img alt="Instant Refund" height="40" src="https://storage.googleapis.com/a1aa/image/DT4H3XvfOeif0oKY8zSim1Sr6XiujMnLzgFqWJ9thNplSHfOB.jpg" width="40" />
+                            <p>Instant Refund</p>
+                        </button>
+                    </div>
+
+                    <div class="add-money-to-wallet">
+                        <button type="button" onclick="showAddFundsModal()">ADD MONEY TO WALLET</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Transaction Section -->
+            <div class="transactions">
+                <h3>Transactions</h3>
+                <% if (wallet.transaction && wallet.transaction.length > 0) { %>
+                    <ul class="transaction-list">
+                        <% wallet.transaction.forEach(transaction => { %>
+                            <li class="transaction-item <%= transaction.transactionType %>">
+                                <span class="transaction-date"><%= transaction.date ? transaction.date.toDateString() : 'Date not available' %></span>
+                                <span class="transaction-description"><%= transaction.transactionType === 'credit' ? 'Money Added' : 'Money Spent' %></span>
+                                <span class="transaction-amount">
+                                    <%= transaction.transactionType === 'credit' ? '+' : '-' %>₹ <%= transaction.amount %>
+                                </span>
+                                <span class="transaction-status"><%= transaction.status %></span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <div class="no-transactions">
+                        <img alt="No Transactions" height="100" src="https://storage.googleapis.com/a1aa/image/wSfIN9SbtjWgP6eFwU2AmH7GKbyuckWevQtE0UiCyt3fkOedC.jpg" width="100" />
+                        <p>No transactions yet!<br />Add a gift card for faster checkout.</p>
+                    </div>
+                <% } %>
+            </div>
+            
+
+            <!-- Notes Section -->
+            <div class="note">
+                <h4>Please Note</h4>
+                <ul>
+                    <li>The Amount added in the Wallet cannot be transferred to any other user's Wallet or Bank Account.</li>
+                    <li>The amount in the Wallet cannot be withdrawn in the form of cash.</li>
+                    <li>The amount in Wallet can be utilized only to purchase products online and in-store.</li>
+                    <li>Any amount added to the wallet through Gift Card has an expiry of 1 year from the date of purchase.</li>
+                    <li>Any amount added to Gift Card upon return of an item will follow the respective policy.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function showAddFundsModal() {
+            Swal.fire({
+                title: 'Add Funds to Wallet',
+                input: 'number',
+                inputLabel: 'Amount (₹)',
+                inputPlaceholder: 'Enter amount',
+                inputAttributes: {
+                    min: 0,
+                    step: 0.01
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Add Funds',
+                cancelButtonText: 'Cancel',
+                showLoaderOnConfirm: true,
+                preConfirm: (amount) => {
+                    
+                    if (amount <= 0) {
+                        Swal.showValidationMessage('Please enter a valid amount');
+                        return false;
+                    }
+    
+                    
+                    return fetch('/addWallet', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            amount: parseFloat(amount),
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            return data; 
+                        } else {
+                            throw new Error('Failed to add funds');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.showValidationMessage(error.message); 
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    
+                    Swal.fire(
+                        'Success!',
+                        `₹ ${result.value.balance} added to your wallet.`,
+                        'success'
+                    );
+    
+                
+                    document.querySelector('.amount').textContent = `₹ ${result.value.balance}`;
+                }
+            });
+        }
+    </script>
+  <%- include("../../views/layout/user/footer") %>

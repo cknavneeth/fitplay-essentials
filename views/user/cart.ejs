@@ -184,7 +184,13 @@
   </div>
 
 
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" onclick="fetchCoupons()">View Coupons</button>
+  <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" onclick="fetchCoupons()">View Coupons</button> -->
+  <div class="d-flex justify-content-center my-4">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" onclick="fetchCoupons()">
+      View Coupons
+    </button>
+  </div>
+  
 
 <!-- Modal Structure -->
 <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
@@ -429,49 +435,99 @@ async function removeCoupon(){
 
 
 <script>
-  async function fetchCoupons(){
-    try {
-      const response=await fetch('/coupons')
-      const coupons=await response.json()
+  // async function fetchCoupons(){
+  //   try {
+  //     const response=await fetch('/coupons')
+  //     const coupons=await response.json()
 
-      const couponList=document.getElementById('couponList')
-      couponList.innerHTML=""
+  //     const couponList=document.getElementById('couponList')
+  //     couponList.innerHTML=""
 
 
-      if(coupons.length>0){
-        coupons.forEach(coupon => {
-          const listItem = document.createElement('li');
-          listItem.classList.add('list-group-item', 'bg-light', 'text-dark');
-          listItem.textContent = `${coupon.code} - ${coupon.discountType === 'percentage' ? coupon.discountAmount + '%' : '$' + coupon.discountAmount} off (Expires: ${new Date(coupon.expirationDate).toLocaleDateString()})`;
+  //     if(coupons.length>0){
+  //       coupons.forEach(coupon => {
+  //         const listItem = document.createElement('li');
+  //         listItem.classList.add('list-group-item', 'bg-light', 'text-dark');
+  //         listItem.textContent = `${coupon.code} - ${coupon.discountType === 'percentage' ? coupon.discountAmount + '%' : '$' + coupon.discountAmount} off (Expires: ${new Date(coupon.expirationDate).toLocaleDateString()})`;
           
 
 
-          // listItem.textContent = `${coupon.code} - ${coupon.discountType === 'percentage' 
-          //   ? Math.round(coupon.discountAmount) + '%' 
-          //   : '$' + Math.round(coupon.discountAmount)} off (Expires: ${new Date(coupon.expirationDate).toLocaleDateString()})`;
-          // Show max discount, usage limit, or other details if they exist
-          if (coupon.maxDiscount) {
-            listItem.textContent += `, Max Discount: RS${coupon.maxDiscount}`;
-          }
-          if (coupon.usageLimit) {
-            listItem.textContent += `, Usage Limit: ${coupon.usageLimit}`;
-          }
-          if (coupon.perUserLimit) {
-            listItem.textContent += `, Per User Limit: ${coupon.perUserLimit}`;
-          }
+        
+  //         if (coupon.maxDiscount) {
+  //           listItem.textContent += `, Max Discount: RS${coupon.maxDiscount}`;
+  //         }
+  //         if (coupon.usageLimit) {
+  //           listItem.textContent += `, Usage Limit: ${coupon.usageLimit}`;
+  //         }
+  //         if (coupon.perUserLimit) {
+  //           listItem.textContent += `, Per User Limit: ${coupon.perUserLimit}`;
+  //         }
 
-          couponList.appendChild(listItem); 
-        });
-      }else{
-        const noCouponItem = document.createElement('li');
-        noCouponItem.classList.add('list-group-item', 'text-center', 'bg-warning', 'text-dark');
-        noCouponItem.textContent = 'No available coupons';
-        couponList.appendChild(noCouponItem);
-      }
-    } catch (error) {
-      console.error(error)
+  //         couponList.appendChild(listItem); 
+  //       });
+  //     }else{
+  //       const noCouponItem = document.createElement('li');
+  //       noCouponItem.classList.add('list-group-item', 'text-center', 'bg-warning', 'text-dark');
+  //       noCouponItem.textContent = 'No available coupons';
+  //       couponList.appendChild(noCouponItem);
+  //     }
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
+
+
+  async function fetchCoupons() {
+  try {
+    const response = await fetch('/coupons');
+    const coupons = await response.json();
+
+    const couponList = document.getElementById('couponList');
+    couponList.innerHTML = ""; 
+
+    if (coupons.length > 0) {
+      coupons.forEach(coupon => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item', 'bg-light', 'text-dark', 'd-flex', 'justify-content-between', 'align-items-center');
+
+        
+        listItem.innerHTML = `
+          <span>
+            <strong>${coupon.code}</strong> - ${coupon.discountType === 'percentage' 
+              ? coupon.discountAmount + '%' 
+              : '$' + coupon.discountAmount} off (Expires: ${new Date(coupon.expirationDate).toLocaleDateString()})
+            ${coupon.maxDiscount ? `, Max Discount: RS${coupon.maxDiscount}` : ''}
+            ${coupon.usageLimit ? `, Usage Limit: ${coupon.usageLimit}` : ''}
+            ${coupon.perUserLimit ? `, Per User Limit: ${coupon.perUserLimit}` : ''}
+          </span>
+          <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('${coupon.code}')">Copy</button>
+        `;
+
+        couponList.appendChild(listItem);
+      });
+    } else {
+      const noCouponItem = document.createElement('li');
+      noCouponItem.classList.add('list-group-item', 'text-center', 'bg-warning', 'text-dark');
+      noCouponItem.textContent = 'No available coupons';
+      couponList.appendChild(noCouponItem);
     }
+  } catch (error) {
+    console.error('Error fetching coupons:', error);
   }
+}
+
+function copyToClipboard(code) {
+  navigator.clipboard.writeText(code).then(() => {
+    Swal.fire({
+      icon:'success',
+      title: 'Coupon code copied!',
+      text:'copied to clipboard'
+    })
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+  });
+}
+
 </script>
 </body>
 

@@ -9,6 +9,7 @@ const passport=require('passport')
 const jwt = require('jsonwebtoken');
 const wishlistController=require('../controller/user/wishlistController')
 const couponsController=require('../controller/user/couponsController')
+const walletController=require('../controller/user/walletController')
 
 console.log("hello")
 router.get("/",(req, res) => {
@@ -130,6 +131,10 @@ router.post('/applyCoupon',verifyUser,couponsController.applyCoupon)
 router.get('/coupons',verifyUser,couponsController.gettingCoupon)
 
 router.patch('/removeCoupon',verifyUser,couponsController.removeCoupon)
+
+router.get('/wallet',verifyUser,walletController.getWallet)
+
+router.post('/addWallet',verifyUser,walletController.addWallet)
 
 
 
