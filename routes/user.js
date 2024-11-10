@@ -136,6 +136,8 @@ router.get('/wallet',verifyUser,walletController.getWallet)
 
 router.post('/addWallet',verifyUser,walletController.addWallet)
 
+router.post('/returnProduct/:orderId',verifyUser,cartController.returnProduct)
+
 
 
 

@@ -399,8 +399,7 @@ exports.handleCod=async(req,res)=>{
         price:item.price,
         quantity:item.quantity,
         totalPrice:item.price*item.quantity,
-        
-
+        size: item.size 
     }))
 
         const orderId = await getNextOrderId();
@@ -470,90 +469,77 @@ exports.getmyOrders=async(req,res)=>{
 }
 
 //cancel order
-// exports.cancelOrder=async(req,res)=>{
-//     try {
-//         const orderId=req.params.orderId
-//         const updateOrder=await Order.findByIdAndUpdate(orderId,{orderStatus:'Cancelled'},{new:true})
-//         if(!updateOrder){
-//              return res.json({success:false,error:'order not found'})
-//         }
+exports.cancelOrder=async(req,res)=>{
+    try {
+        const orderId=req.params.orderId
+        const updateOrder=await Order.findByIdAndUpdate(orderId,{orderStatus:'Cancelled'},{new:true})
+        if(!updateOrder){
+             return res.json({success:false,error:'order not found'})
+        }
 
-//         for(let item of updateOrder.items){
-//             const product=await Product.findOne(item.product)
+        for(let item of updateOrder.items){
+            const product=await Product.findById(item.productId)
 
-//             if(product){
-//                 const sizeStock=product.sizes.findIndex(s=>s.size===item.size)
+            if(product){
+                const sizeStock=product.sizes.findIndex(s=>s.size===item.size)
 
-//                 if(sizeStock!==-1){
-//                     product.sizes[sizeStock].stock+=item.quantity
-//                     console.log(`Updated stock for size ${item.size} by ${item.quantity}`);
-//                 }
+                if(sizeStock!==-1){
+                    product.sizes[sizeStock].stock+=item.quantity
+                    console.log(`Updated stock for size ${item.size} by ${item.quantity}`);
+                }
     
-//                 await product.save()
-//             }
+                await product.save()
+            }
 
           
 
-//         }
-//         res.json({success:true,error:'order successfully cancelled!'})
-//     } catch (error) {
-//         res.json({success:false,error:'error cancelling order'})
-//     }
-// }
-
-
-exports.cancelOrder = async (req, res) => {
-    try {
-        const orderId = req.params.orderId;
-
-        // Find and update the order status to 'Cancelled'
-        const updateOrder = await Order.findByIdAndUpdate(
-            orderId,
-            { orderStatus: 'Cancelled' },
-            { new: true }
-        );
-
-        if (!updateOrder) {
-            return res.json({ success: false, error: 'Order not found' });
         }
-
-        // Loop through each item in the canceled order to restore stock
-        for (const item of updateOrder.items) {
-            console.log("Processing item:", item);  // Log item details for debugging
-
-            // Check if item.size is defined
-            if (!item.size) {
-                console.log(`Size is undefined for item with product ID: ${item.productId}`);
-                continue;
-            }
-
-            // Fetch the product by ID
-            const product = await Product.findById(item.productId);
-
-            if (product) {
-                // Find the specific size in the product's sizes array
-                const sizeIndex = product.sizes.findIndex(s => s.size === item.size);
-
-                if (sizeIndex !== -1) {
-                    // Increase the stock for this size by the quantity in the canceled order
-                    product.sizes[sizeIndex].stock += item.quantity;
-                } else {
-                    console.log(`Size ${item.size} not found in product ${item.productId}`);
-                }
-
-                // Save the updated product with the restored stock
-                await product.save();
-            } else {
-                console.log(`Product with ID ${item.productId} not found`);
-            }
-        }
-
-        res.json({ success: true, message: 'Order successfully cancelled and stock updated!' });
+        res.json({success:true,error:'order successfully cancelled!'})
     } catch (error) {
-        console.error('Error cancelling order:', error);
-        res.status(500).json({ success: false, error: 'Error cancelling order' });
+        res.json({success:false,error:'error cancelling order'})
     }
-};
+}
 
+
+exports.returnProduct=async(req,res)=>{
+    try {
+        const userId=req.user.id
+        const user=await User.findById(userId)
+
+        const orderId=req.params.orderId
+
+        const order=await Order.findById(orderId)
+
+        if(!order){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'order not found'})
+        }
+
+        if(order.orderStatus!=='Delivered'){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Only delivered items can returned'})
+        }
+
+       order.orderStatus='Returned'
+
+       for(let item of order.items){
+        const product=await Product.findById(item.productId)
+
+        if(product){
+            const sizeStock=product.sizes.find(s=>s.size===item.size)
+
+            if(sizeStock){
+                sizeStock.stock+=item.quantity
+            }
+            await product.save()
+        }
+       }
+
+       await order.save()
+
+
+
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 

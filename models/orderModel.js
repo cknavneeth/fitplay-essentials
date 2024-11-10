@@ -36,6 +36,10 @@ const orderSchema=new mongoose.Schema({
                 type:Number,
                 required:true
             },
+            size: {  // Add the size field here
+                type: String,
+                required: true
+            }
            
         }
     ],
