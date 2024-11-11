@@ -5,6 +5,8 @@ const dotenv=require("dotenv")
 const ejs=require("ejs")
 const express=require("express")
 const crypto=require("crypto")
+const Razorpay = require('razorpay');
+
 // const userRoute=require("./routes/user")
 const userRoute=require("./routes/user")
 const adminRoute=require("./routes/admin")
@@ -12,6 +14,11 @@ const passport=require('./config/passport')
 const cookieParser = require("cookie-parser")
 // const { urlencoded } = require("body-parser")
 const flash = require('connect-flash')
+
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_ID,
+    key_secret: process.env.RAZORPAY_SECRET
+  });
 
 
 dotenv.config({path:".env"})
