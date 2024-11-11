@@ -267,10 +267,11 @@
 
 
 <script>
-    document.addEventListener('DomContentLoaded',()=>{
-        document.querySelectorAll('.cancel-btn').forEach(button=>{
+    document.addEventListener('DOMContentLoaded',()=>{
+        document.querySelectorAll('.return-btn').forEach(button=>{
                button.addEventListener('click',async(event)=>{
                 const orderId=event.target.getAttribute('data-order-id')
+                console.log('Return button clicked for order:', orderId);
                    
                 try {
                     const response=await fetch(`/returnProduct/${orderId}`,{

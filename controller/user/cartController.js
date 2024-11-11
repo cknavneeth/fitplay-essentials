@@ -5,6 +5,7 @@ const Order=require('../../models/orderModel.js')
 const Product = require("../../models/productModel.js");
 const Category=require('../../models/categoryModel.js')
 const Coupon=require('../../models/couponModel.js')
+const Wallet=require('../../models/walletModel.js')
 const jwt = require("jsonwebtoken");
 const statusCodes=require('../../config/keys.js')
 
@@ -471,12 +472,29 @@ exports.getmyOrders=async(req,res)=>{
 //cancel order
 exports.cancelOrder=async(req,res)=>{
     try {
+        const userId=req.user.id
+
+        const user=await User.findById(userId)
+
+
+
         const orderId=req.params.orderId
         const updateOrder=await Order.findByIdAndUpdate(orderId,{orderStatus:'Cancelled'},{new:true})
         if(!updateOrder){
              return res.json({success:false,error:'order not found'})
         }
 
+        const wallet=await Wallet.findOne({userId})
+
+        if(!wallet){
+            return res.json({success:false,error:'wallet not found'})
+        }
+
+        wallet.balance+=updateOrder.totalAmount
+
+        await wallet.save()
+
+            
         for(let item of updateOrder.items){
             const product=await Product.findById(item.productId)
 
@@ -520,6 +538,19 @@ exports.returnProduct=async(req,res)=>{
 
        order.orderStatus='Returned'
 
+
+//for wallet
+       const wallet=await Wallet.findOne({userId})
+       if(!wallet){
+        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Wallet not found '})
+       }
+
+       wallet.balance+=order.totalAmount
+
+       await wallet.save()
+
+
+
        for(let item of order.items){
         const product=await Product.findById(item.productId)
 
@@ -535,7 +566,7 @@ exports.returnProduct=async(req,res)=>{
 
        await order.save()
 
-
+return res.status(statusCodes.OK).json({success:true,error:'product removed successfully'})
 
     } catch (error) {
         console.error(error)

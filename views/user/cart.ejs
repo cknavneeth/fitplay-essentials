@@ -252,29 +252,29 @@
             confirmButtonText: "OK",
         });
 
-        // Reset the quantity field to the max stock value
+       
         document.querySelector(
             `input[name="quantity"][data-product-id="${productId}"]`
         ).value = maxStock;
 
-        return; // Stop the function if the quantity exceeds max stock
+        return; 
     }
 
     try {
-        // Send updated quantity to the server
+        
         const response = await axios.patch("http://localhost:3000/updateQuantity", {
             newQuantity,
             productId,
         });
 
-        // Assuming the server returns updated cart data
+       
         const { cartTotal, grandTotal, couponCode, discountAmount } = response.data;
 
-        // Update the UI with the new totals
+       
         document.getElementById("subtotal").textContent = `Rs ${cartTotal.toFixed(0)}`;
         document.getElementById("grandTotal").textContent = `Rs ${grandTotal.toFixed(0)}`;
 
-        // If a coupon is applied, show the coupon code and discount
+        
         if (couponCode) {
           document.getElementById("couponCodeDisplay").textContent  = `Coupon Code: ${couponCode}`;
             document.getElementById("discount").textContent = `Discount: Rs ${discountAmount.toFixed(0)}`;
@@ -435,46 +435,7 @@ async function removeCoupon(){
 
 
 <script>
-  // async function fetchCoupons(){
-  //   try {
-  //     const response=await fetch('/coupons')
-  //     const coupons=await response.json()
 
-  //     const couponList=document.getElementById('couponList')
-  //     couponList.innerHTML=""
-
-
-  //     if(coupons.length>0){
-  //       coupons.forEach(coupon => {
-  //         const listItem = document.createElement('li');
-  //         listItem.classList.add('list-group-item', 'bg-light', 'text-dark');
-  //         listItem.textContent = `${coupon.code} - ${coupon.discountType === 'percentage' ? coupon.discountAmount + '%' : '$' + coupon.discountAmount} off (Expires: ${new Date(coupon.expirationDate).toLocaleDateString()})`;
-          
-
-
-        
-  //         if (coupon.maxDiscount) {
-  //           listItem.textContent += `, Max Discount: RS${coupon.maxDiscount}`;
-  //         }
-  //         if (coupon.usageLimit) {
-  //           listItem.textContent += `, Usage Limit: ${coupon.usageLimit}`;
-  //         }
-  //         if (coupon.perUserLimit) {
-  //           listItem.textContent += `, Per User Limit: ${coupon.perUserLimit}`;
-  //         }
-
-  //         couponList.appendChild(listItem); 
-  //       });
-  //     }else{
-  //       const noCouponItem = document.createElement('li');
-  //       noCouponItem.classList.add('list-group-item', 'text-center', 'bg-warning', 'text-dark');
-  //       noCouponItem.textContent = 'No available coupons';
-  //       couponList.appendChild(noCouponItem);
-  //     }
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
 
 
   async function fetchCoupons() {

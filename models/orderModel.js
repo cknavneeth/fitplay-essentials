@@ -46,7 +46,7 @@ const orderSchema=new mongoose.Schema({
     address:addressSchema,
     paymentMethod: { type: String, required: true },
     paymentStatus: { type: String, enum: ['Pending', 'Completed', 'Failed'], default: 'Pending' },
-    orderStatus: { type: String, enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'], default: 'Processing' },
+    orderStatus: { type: String, enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled','Returned'], default: 'Processing' },
     totalAmount: { type: Number, required: true },
     orderDate: { type: Date, default: Date.now }
 })
