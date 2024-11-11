@@ -391,6 +391,19 @@ exports.handleCod=async(req,res)=>{
         })
     }
 
+    //checking wallet
+    if(paymentMethod==='wallet'){
+        const wallet=await Wallet.findOne({userId})
+
+        if(!wallet||wallet.balance<totalAmount){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'your wallet has insufficient balance'})
+        }
+
+        wallet.balance-=totalAmount
+
+        await wallet.save()
+    }
+
     console.log("hashim aju",products)
 
     const items=cart.items.map(item=>({

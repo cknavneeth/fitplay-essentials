@@ -220,8 +220,18 @@
                     <ul class="transaction-list">
                         <% wallet.transaction.forEach(transaction => { %>
                             <li class="transaction-item <%= transaction.transactionType %>">
-                                <span class="transaction-date"><%= transaction.date ? transaction.date.toDateString() : 'Date not available' %></span>
-                                <span class="transaction-description"><%= transaction.transactionType === 'credit' ? 'Money Added' : 'Money Spent' %></span>
+                                <span class="transaction-date">
+                                    <%= transaction.date ? new Date(transaction.date).toLocaleDateString() : 'Date not available' %>
+                                </span>
+                                <span class="transaction-description">
+                                    <% if (transaction.transactionType === 'credit') { %>
+                                        Money Added
+                                    <% } else if (transaction.transactionType === 'debit') { %>
+                                        Money Debited
+                                    <% } else { %>
+                                        Unknown Transaction
+                                    <% } %>
+                                </span>
                                 <span class="transaction-amount">
                                     <%= transaction.transactionType === 'credit' ? '+' : '-' %>₹ <%= transaction.amount %>
                                 </span>
@@ -236,6 +246,9 @@
                     </div>
                 <% } %>
             </div>
+            
+            
+            
             
 
             <!-- Notes Section -->
