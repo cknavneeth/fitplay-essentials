@@ -409,10 +409,7 @@ exports.handleCod=async(req,res)=>{
 
     //for razorpay
 
-    if(paymentMethod==="Razorpay"){
-         
-
-    }
+   
     console.log("hashim aju",products)
 
     const items=cart.items.map(item=>({
