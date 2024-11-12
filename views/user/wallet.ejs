@@ -28,6 +28,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-right: 20px;
     padding: 20px;
+    height:500px
 }
 
 /* Profile inside the sidebar */
@@ -165,6 +166,219 @@
     list-style: none;
 }
 
+
+/*for transaction*/
+.transactions {
+        width: 100%;
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    /* Heading */
+    .transactions h3 {
+        font-size: 24px;
+        color: #333;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        text-align: center;
+    }
+
+    /* Transaction list and items */
+    .transaction-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .transaction-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Different styles for credit and debit transactions */
+    .transaction-item.credit {
+        border-left: 4px solid #28a745; /* Green for credit */
+    }
+
+    .transaction-item.debit {
+        border-left: 4px solid #dc3545; /* Red for debit */
+    }
+
+    /* Date styling */
+    .transaction-date {
+        font-size: 14px;
+        color: #666;
+        font-style: italic;
+    }
+
+    /* Description styling */
+    .transaction-description {
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    /* Amount styling */
+    .transaction-amount {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .transaction-item.credit .transaction-amount {
+        color: #28a745; /* Green for credit */
+    }
+
+    .transaction-item.debit .transaction-amount {
+        color: #dc3545; /* Red for debit */
+    }
+
+    /* Status styling */
+    .transaction-status {
+        font-size: 14px;
+        color: #888;
+        text-transform: capitalize;
+    }
+
+    /* No transactions message */
+    .no-transactions {
+        text-align: center;
+        color: #888;
+        font-size: 16px;
+    }
+
+
+    /*for button add to money*/
+    .add-money-to-wallet {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Button styling */
+    .add-money-to-wallet button {
+        background-color: #007bff; /* Blue background */
+        color: #ffffff; /* White text */
+        font-size: 16px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease; /* Smooth transition for hover and focus */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    }
+
+    /* Hover effect */
+    .add-money-to-wallet button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+    }
+
+    /* Focus effect */
+    .add-money-to-wallet button:focus {
+        outline: none; /* Remove default outline */
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.6); /* Blue outline when focused */
+    }
+
+    /* Active effect (when the button is pressed) */
+    .add-money-to-wallet button:active {
+        background-color: #004085; /* Even darker blue on click */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow on click */
+    }
+
+    /*for cash*/
+    .amount {
+        font-size: 30px;
+        color: #28a745; /* Green color for a positive, wallet-like feel */
+        font-weight: 700; /* Bold the amount for emphasis */
+        margin-top: 10px;
+        letter-spacing: 1px; /* Add some spacing between digits for clarity */
+        text-align: center; /* Center-align the text */
+        padding: 10px;
+        border-radius: 8px; /* Slightly rounded corners for a modern feel */
+        background-color: #f0f9f1; /* Light green background, subtle and clean */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow to make it stand out */
+        display: inline-block; /* Make it inline for better control */
+        transition: all 0.3s ease; /* Smooth transition for hover effect */
+    }
+
+    .amount:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
+        transform: translateY(-3px); /* Lift effect on hover */
+    }
+
+    /*for boxes*/
+    .actions {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+        gap: 20px;
+    }
+
+    .action {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 25px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 160px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .action img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .action p {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-top: 5px;
+        transition: color 0.3s ease;
+    }
+
+    .action:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .action:hover img {
+        transform: scale(1.1);
+    }
+
+    .action:hover p {
+        color: #007bff; /* Change text color on hover */
+    }
+
+    /* Optional: Add specific colors for different buttons */
+    .action:nth-child(1):hover {
+        background-color: #28a745;
+        color: #ffffff;
+    }
+
+    .action:nth-child(2):hover {
+        background-color: #ffc107;
+        color: #ffffff;
+    }
+
+    .action:nth-child(3):hover {
+        background-color: #dc3545;
+        color: #ffffff;
+    }
 
   </style>
  </head>

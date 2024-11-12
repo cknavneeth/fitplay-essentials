@@ -401,13 +401,20 @@ exports.handleCod=async(req,res)=>{
 
         wallet.balance-=totalAmount
 
+
+        wallet.transaction.push({
+            transactionType:'debit',
+            amount: totalAmount,
+            status:'completed'
+        })
+
         await wallet.save()
     }
 
 
 
 
-    //for razorpay
+    
 
    
     console.log("hashim aju",products)
@@ -511,6 +518,12 @@ exports.cancelOrder=async(req,res)=>{
 
         wallet.balance+=updateOrder.totalAmount
 
+        wallet.transaction.push({
+            transactionType:'credit',
+            amount:updateOrder.totalAmount,
+            status:'completed'
+        })
+
         await wallet.save()
 
             
@@ -565,6 +578,12 @@ exports.returnProduct=async(req,res)=>{
        }
 
        wallet.balance+=order.totalAmount
+
+       wallet.transaction.push({
+        transactionType:'credit',
+        amount:order.totalAmount,
+        status:'completed'
+    })
 
        await wallet.save()
 

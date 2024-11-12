@@ -93,7 +93,8 @@
 									</tr>
 									<tr>
 										<th>Grand Total</th>
-										<td>Rs <%= grandTotal %></td>
+										
+                                        <td id="grandTotal" data-grand-total="<%= grandTotal %>">Rs <%= grandTotal %></td>
 									</tr> 
 								</table>
 							</div>
@@ -152,7 +153,8 @@
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+       
+        
 
 		<script>
 
@@ -236,6 +238,7 @@
 //         }
 //     });
 // }
+
 
 
 
@@ -391,9 +394,9 @@ async function placeOrder(event) {
                             icon: 'success',
                             title: 'Order Placed Successfully',
                             text: data.message,
-                            confirmButtonText: 'View Order'
+                            confirmButtonText: 'Cart is empty'
                         }).then(() => {
-                            window.location.href = `/order/success/${data.orderId}`;
+                            window.location.href ='/cart';
                         });
                     } else {
                         Swal.fire({
@@ -415,6 +418,9 @@ async function placeOrder(event) {
         }
     });
 }
+ 
+ </script>
+
  </script>
 
 		<%- include("../../views/layout/user/footer") %>

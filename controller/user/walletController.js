@@ -7,28 +7,56 @@ const statusCodes = require("../../config/keys.js");
 const crypto = require("crypto");
 const { User } = require("../../models/userModel.js"); 
 
-exports.getWallet=async(req,res)=>{
+
+
+
+
+exports.getWallet = async (req, res) => {
     try {
-        const userId=req.user.id
-        const user=await User.findById(userId)
+        const userId = req.user.id;
+        const user = await User.findById(userId);
 
-        const wallet=await Wallet.findOne({userId})
+        let wallet = {  // Initialize wallet first
+            balance: 0,
+            transaction: []
+        };
 
-        if(!wallet){
-            wallet={
-                balance:0,
-                transaction:[]
-            }
+        const foundWallet = await Wallet.findOne({ userId });
+        if (foundWallet) {
+            wallet = foundWallet;  // Only assign if foundWallet exists
         }
 
-        res.render('user/wallet',{
-           user,
-           wallet
-        })
+        res.render('user/wallet', {
+            user,
+            wallet
+        });
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
-}
+};
+
+// exports.getWallet=async(req,res)=>{
+//     try {
+//         const userId=req.user.id
+//         const user=await User.findById(userId)
+
+//         const wallet=await Wallet.findOne({userId})
+
+//         if(!wallet){
+//             wallet={
+//                 balance:0,
+//                 transaction:[]
+//             }
+//         }
+
+//         res.render('user/wallet',{
+//            user,
+//            wallet
+//         })
+//     } catch (error) {
+//         console.error(error)
+//     }
+// }
 
 exports.addWallet=async(req,res)=>{
     try {
