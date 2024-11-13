@@ -1,0 +1,339 @@
+<%- include("../../views/layout/admin/header") %>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report Form</title>
+   
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .report-header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .stat-card {
+            border: none;
+            border-radius: 8px;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stat-card.sales { background-color: #28a745; }
+        .stat-card.revenue { background-color: #17a2b8; }
+        .stat-card.profit { background-color: #ffc107; }
+        .filter-buttons .btn {
+        transition: background-color 0.3s ease, color 0.3s ease;
+        border-radius: 4px;
+        margin: 0 4px;
+        border: 1px solid #ddd;
+    }
+
+    /* Active Button Styling */
+    .filter-buttons .btn.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+        box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.3);
+    }
+
+    /* Hover and Focus Animation */
+    .filter-buttons .btn:hover {
+        background-color: #0056b3;
+        color: #fff;
+        box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.3);
+    }
+    .styled-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    }
+
+    /* Hover Effect */
+    .styled-button:hover {
+        background-color: #0056b3;
+        box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* Active (Clicked) Effect */
+    .styled-button:active {
+        background-color: #004080;
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+        transform: translateY(1px);
+    }
+
+    /* Focus Effect */
+    .styled-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
+    }
+
+
+
+
+
+
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Apply custom font to the label and select */
+.filter-label, .styled-select {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+}
+
+/* Label Styling */
+.filter-label {
+    font-size: 16px;
+    color: #333;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Styled Select */
+.styled-select {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none; /* Removes default select arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+/* Hover and Focus effects */
+.styled-select:hover, .styled-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+    background-color: #fff;
+}
+
+/* Option styling */
+.styled-select option {
+    font-size: 16px;
+    padding: 10px;
+}
+
+/* Animation for select */
+.styled-select {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Small button with animation */
+.styled-button {
+    padding: 8px 14px; /* Smaller padding for a compact button */
+    font-size: 14px; /* Smaller text size */
+    border-radius: 4px; /* Rounded corners */
+    border: 2px solid #3498db; /* Blue border */
+    background-color: #3498db; /* Blue background */
+    color: white; /* White text color */
+    cursor: pointer; /* Pointer on hover */
+    transition: all 0.3s ease; /* Smooth transition for hover and focus effects */
+    width: 7rem;
+    margin-top: 2rem;
+}
+
+/* Hover effect - enlarge and change background */
+.styled-button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+    transform: scale(1.1); /* Slightly enlarge the button */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+}
+
+/* Focus effect - border and shadow */
+.styled-button:focus {
+    outline: none; /* Remove default focus outline */
+    border-color: #1abc9c; /* Change border color on focus */
+    box-shadow: 0 0 6px rgba(26, 188, 156, 0.8); /* Light green glow on focus */
+}
+
+
+    </style>
+</head>
+
+
+
+
+<body>
+    <div class="container my-5">
+        <!-- Report Header -->
+        <div class="report-header">
+            <h1>Sales Report Form</h1>
+            <p class="lead">Download and Submit Sales Data</p>
+        </div>
+
+        <!-- Display Message if No Report Data is Found -->
+        <% if (!report) { %>
+            <p class="alert alert-warning"><%= message %></p>
+        <% } else { %>
+            <!-- Sales Statistics Form -->
+            <form>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="stat-card sales">
+                            <h4>Total Orders</h4>
+                            <input type="number" name="total_orders" class="form-control" value="<%= report.totalOrders %>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card revenue">
+                            <h4>Total Amount</h4>
+                            <input type="text" name="total_amount" class="form-control" value="Rs<%= report.totalAmount %>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card profit">
+                            <h4>Total Coupon Discount</h4>
+                            <input type="text" name="total_coupon_discount" class="form-control" value="Rs<%= report.totalCoupondiscount %>">
+                        </div>
+                    </div>
+                    <!-- Add other fields here similarly -->
+                    <div class="col-md-4">
+                        <div class="stat-card profit">
+                            <h4>Total Delivered Orders</h4>
+                            <input type="number" name="total_delivered_orders" class="form-control" value="<%=report.totalCancelledOrders%>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card sales">
+                            <h4>Total Returned Orders</h4>
+                            <input type="number" name="total_returned_orders" class="form-control" value="<%=report.totalReturnedOrders%>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card revenue">
+                            <h4>Total Shipped Orders</h4>
+                            <input type="number" name="total_shipped_orders" class="form-control" value="<%=report.totalShippedOrders%>">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="stat-card sales">
+                            <h4>Product Offer</h4>
+                            <input type="text" name="product_offer" class="form-control" value="<%=report.totalProductOffers%>">
+                        </div>
+                    </div>
+                </div>
+                
+
+                <!-- Date Filters -->
+                <div id="customDateInputs" style="display: none;">
+                    <label for="start">Start Date:</label>
+                    <input type="date" name="start" id="start">
+                    
+                    <label for="end">End Date:</label>
+                    <input type="date" name="end" id="end">
+                </div>
+                <!-- Time Range Filters -->
+                <div class="row my-4">
+                    <!-- <div class="col-md-12 text-center">
+                        <button type="button" class="btn btn-outline-primary">Daily</button>
+                        <button type="button" class="btn btn-outline-secondary">Weekly</button>
+                        <button type="button" class="btn btn-outline-success">Monthly</button>
+                        <button type="button" class="btn btn-outline-info">Yearly</button>
+                    </div> -->
+                    <label for="filter" class="filter-label">Select Report Filter:</label>
+                    <form id="salesReportFilterForm" action="your-form-action-url" method="GET">
+                        <select name="filter" id="filter" class="styled-select" onchange="handleFilterChange()">
+                            <option value="daily" <%= filter === 'daily' ? 'selected' : '' %>>Daily</option>
+                            <option value="weekly" <%= filter === 'weekly' ? 'selected' : '' %>>Weekly</option>
+                            <option value="monthly" <%= filter === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                            <option value="yearly" <%= filter === 'yearly' ? 'selected' : '' %>>Yearly</option>
+                            <option value="custom" <%= filter === 'custom' ? 'selected' : '' %>>Custom Range</option>
+                        </select>
+                        
+                        <button type="submit" class="styled-button">Submit</button>
+                    </form>
+
+               
+
+
+                <!-- Submit Button -->
+                <!-- <div class="text-center my-4">
+                    <button id="downloadPdfButton" class="btn btn-primary">Download as PDF</button>
+                </div> -->
+                <div class="text-center my-4">
+                    <a href="/download-sales-report-pdf" class="btn btn-primary">Download as PDF</a>
+                  </div>
+            </form>
+        <% } %>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+<%- include("../../views/layout/admin/footer") %>
+
+
+
+
+
+
+
+
+
+<script>
+    // Example data fetching (replace this with actual data)
+    fetch('/sales/report?filter=daily')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalOrders').textContent = data.totalOrders;
+            document.getElementById('totalAmount').textContent = `$${data.totalAmount.toFixed(2)}`;
+            document.getElementById('totalCouponDiscount').textContent = `$${data.totalCouponDiscount.toFixed(2)}`;
+            document.getElementById('totalProductOffers').textContent = `$${data.totalProductOffers.toFixed(2)}`;
+            document.getElementById('totalOfferAppliedAmount').textContent = `$${data.totalOfferAppliedAmount.toFixed(2)}`;
+            document.getElementById('totalCancelledOrders').textContent = data.totalCancelledOrders;
+            document.getElementById('totalReturnedOrders').textContent = data.totalReturnedOrders;
+            document.getElementById('totalDeliveredOrders').textContent = data.totalDeliveredOrders;
+            document.getElementById('totalShippedOrders').textContent = data.totalShippedOrders;
+        })
+        .catch(error => console.log('Error fetching sales report:', error));
+
+
+
+
+        function handleFilterChange() {
+        const filterSelect = document.getElementById('filter').value;
+        const customDateInputs = document.getElementById('customDateInputs');
+        
+        // Show custom date inputs if "custom" is selected, otherwise hide them
+        if (filterSelect === 'custom') {
+            customDateInputs.style.display = 'block';
+        } else {
+            customDateInputs.style.display = 'none';
+        }
+        
+        // Submit the form after handling the filter change
+        document.getElementById('salesReportFilterForm').submit();
+    }
+</script>
+
+

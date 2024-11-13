@@ -367,20 +367,35 @@ exports.handleCod=async(req,res)=>{
         if(!cart||!cart.items||cart.items.length==0){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart is empty'})
         }
-        
+        let discount=0
+        let grandTotal = 0; 
+        let productOffer=0
+
         let totalAmount=0
         let totalQuantity=0
         const products=[]
 
         for(const item of cart.items){
            const{productId,size,price,quantity}=item;
+           const { regularPrice, salePrice } = productId;
+
+           if (typeof regularPrice !== 'number' || typeof salePrice !== 'number') {
+            return res.status(statusCodes.BAD_REQUEST).json({ success: false, error: 'Invalid price data for product' });
+        }
+
+        productOffer += (regularPrice - salePrice) * quantity;
+
+           
            const sizeStock=productId.sizes.find(s=>s.size===size)
 
            if(!sizeStock||sizeStock.stock<quantity){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:`${productId.productName} (${size}) has insufficient stock. Only ${sizeStock ? sizeStock.stock : 0} left.`})
            }
-        
 
+          
+        
+        
+        // grandTotal
         totalAmount+=price*quantity
         totalQuantity+=quantity
         products.push({
@@ -390,6 +405,8 @@ exports.handleCod=async(req,res)=>{
             price
         })
     }
+
+    
 
     //checking wallet
     if(paymentMethod==='wallet'){
@@ -413,11 +430,33 @@ exports.handleCod=async(req,res)=>{
 
 
 
-
     
 
+
+//for coupons
+let couponDiscount = 0;  
+if (cart.couponCode) {
+    const coupon = await Coupon.findOne({ code: cart.couponCode });
+    if (coupon) {
+        //
+        if (coupon.discountType === 'percentage') {
+            couponDiscount = (totalAmount * coupon.discountAmount) / 100;
+        } else if (coupon.discountType === 'fixed') {
+            couponDiscount = coupon.discountAmount;
+        }
+        
+        couponDiscount = Math.min(couponDiscount, coupon.maxDiscount || totalAmount);
+    }
+}
+
+grandTotal = totalAmount - couponDiscount; 
+    
+discount=totalAmount-grandTotal
+
+
+
    
-    console.log("hashim aju",products)
+    
 
     const items=cart.items.map(item=>({
         productId:item.productId._id,
@@ -426,7 +465,7 @@ exports.handleCod=async(req,res)=>{
         price:item.price,
         quantity:item.quantity,
         totalPrice:item.price*item.quantity,
-        size: item.size 
+        size: item.size ,
     }))
 
         const orderId = await getNextOrderId();
@@ -434,8 +473,11 @@ exports.handleCod=async(req,res)=>{
         const newOrder=new Order({
             user:userId,
             oid:orderId,
-            items,
+            items,      
+            productOffer,                                                                                                                                                                                                                                                                                                
             totalAmount,
+            grandTotal,
+            discount,
             paymentMethod,
             status:'Processing',
             totalQuantity,

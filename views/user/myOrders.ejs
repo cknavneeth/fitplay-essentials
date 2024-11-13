@@ -215,7 +215,7 @@
                                         </td>
                                         <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
                                         <td>₹<%= order.items.reduce((acc, item) => acc + item.totalPrice, 0).toFixed(2) %></td>
-                                        <td>₹<%= order.totalAmount.toFixed(2) %></td>
+                                        <td>₹<%= order.grandTotal %></td>
                                         <td><span><%= order.paymentMethod || 'N/A' %></span></td>
                                         <td><span><%= order.orderStatus || 'N/A' %></span></td>
                                         <td>

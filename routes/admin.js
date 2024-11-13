@@ -16,6 +16,7 @@ const categoryController=require("../controller/admin/categoryController")
 const productController=require("../controller/admin/productController")
 const orderController=require('../controller/admin/orderController')
 const couponController=require('../controller/admin/couponController')
+const salesController=require('../controller/admin/salesController')
 const {adminLoggedIn}=require('../middleware/adminMiddleware')
 
 
@@ -103,5 +104,9 @@ router.delete('/deleteCoupon/:couponId',couponController.deleteCoupon)
 router.get('/editCoupon/:couponId',couponController.editCoupon)
 
 router.post('/editCoupon/:couponId',couponController.postEditCoupon)
+
+router.get('/salesreport',salesController.getsalesReport)
+
+router.get('/download-sales-report-pdf',salesController. downloadSalesReportPdf);
 
 module.exports=router

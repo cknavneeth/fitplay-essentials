@@ -44,6 +44,9 @@ const orderSchema=new mongoose.Schema({
         }
     ],
     address:addressSchema,
+    productOffer:{type:Number,required:true},
+    grandTotal: { type: Number, required: true },
+    discount:{type:Number,required:true},
     paymentMethod: { type: String, required: true },
     paymentStatus: { type: String, enum: ['Pending', 'Completed', 'Failed'], default: 'Pending' },
     orderStatus: { type: String, enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled','Returned'], default: 'Processing' },
