@@ -216,6 +216,14 @@ app.post(
         const address = user.addresses[addressIndex];
 
         console.log(req.body);
+        const productOffer = req.body.productOffer || 0;
+        const grandTotal = req.body.grandTotal || req.body.totalAmount; 
+        const discount = req.body.discount || 0;
+
+
+
+
+
 
         const newOrder = new Order({
           user: req.body.userId,
@@ -227,15 +235,23 @@ app.post(
           paymentStatus: "Completed",
           totalAmount: req.body.totalAmount,
           orderDate: new Date(),
+
+          productOffer,
+          grandTotal,
+          discount
         });
 
         const savedOrder = await newOrder.save();
         console.log("Order saved successfully:", savedOrder);
 
+        await Cart.findByIdAndDelete(cart._id);
+
         return res.json({
           status: "ok",
           message: "Payment verified successfully",
           orderId: paymentData.razorpayOrderId, //
+          items: savedOrder.items,   // Array of ordered items
+          grandTotal: savedOrder.grandTotal || savedOrder.totalAmount,
         });
       } else {
         console.log("Signature verification failed");
