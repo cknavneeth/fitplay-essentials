@@ -97,7 +97,7 @@ app.post("/order", async (req, res) => {
   // setting up options for razorpay order.
 
   const options = {
-    amount: req.body.amount,
+    amount: req.body.amount*100,
     currency: req.body.currency,
     receipt: "unique_receipt_" + Date.now(),
     payment_capture: 1,

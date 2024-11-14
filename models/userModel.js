@@ -49,6 +49,18 @@ const userSchema=new mongoose.Schema({
     addresses: [addressSchema],
     defaultAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' },
 
+    // referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    // referralCode: { type: String, unique: true },
+    // referralBonusReceived: { type: Boolean, default: false } ,
+    referalCode: {
+      type: String,
+    },
+    appliedReferalCode:{
+      type:Boolean,
+      default:false,
+    },
+
+
     couponsUsed: [
       {
         coupon: {

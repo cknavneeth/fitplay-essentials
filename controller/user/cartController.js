@@ -552,21 +552,27 @@ exports.cancelOrder=async(req,res)=>{
              return res.json({success:false,error:'order not found'})
         }
 
-        const wallet=await Wallet.findOne({userId})
 
-        if(!wallet){
-            return res.json({success:false,error:'wallet not found'})
+        //for wallet
+        if(updateOrder.paymentStatus==='Completed'){
+                 
+            const wallet=await Wallet.findOne({userId})
+
+            if(!wallet){
+                return res.json({success:false,error:'wallet not found'})
+            }
+    
+            wallet.balance+=updateOrder.totalAmount
+    
+            wallet.transaction.push({
+                transactionType:'credit',
+                amount:updateOrder.totalAmount,
+                status:'completed'
+            })
+    
+            await wallet.save()
         }
-
-        wallet.balance+=updateOrder.totalAmount
-
-        wallet.transaction.push({
-            transactionType:'credit',
-            amount:updateOrder.totalAmount,
-            status:'completed'
-        })
-
-        await wallet.save()
+       
 
             
         for(let item of updateOrder.items){
@@ -611,6 +617,10 @@ exports.returnProduct=async(req,res)=>{
         }
 
        order.orderStatus='Returned'
+
+       if(order.paymentMethod==='COD'&&order.paymentStatus==='Pending'){
+        order.paymentStatus='Completed'
+       }
 
 
 //for wallet

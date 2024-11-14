@@ -142,6 +142,8 @@ router.post('/returnProduct/:orderId',verifyUser,cartController.returnProduct)
 
 // router.post('/createOrder',verifyUser,razorpayController.createOrder)
 
+router.post('/applyReferral',verifyUser,userController.referralOffer)
+
 
 
 module.exports = router;

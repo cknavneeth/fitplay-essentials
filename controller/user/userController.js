@@ -9,6 +9,7 @@ const statusCodes = require("../../config/keys.js");
 const crypto = require("crypto");
 const Cart = require("../../models/cartModel.js");
 const Coupon = require("../../models/couponModel.js");
+const Wallet=require("../../models/walletModel.js")
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -42,6 +43,12 @@ async function sendVerificationEmail(email, otp) {
   }
 }
 
+
+
+
+function generateReferralCode() {
+  return crypto.randomBytes(4).toString('hex'); // Generates an 8-character code
+}
 exports.signupRedirect = async (req, res) => {
   try {
     console.log(req.body);
@@ -55,6 +62,23 @@ exports.signupRedirect = async (req, res) => {
       return res.render("user/signup", { error: "EMAIL ALREADY EXISTS" });
     }
 
+    //for referral offer
+    // let referredBy = null;
+    // if (refferalCode) {
+    //   const referrer = await User.findOne({ refferalCode });
+    //   if (referrer) {
+    //     referredBy = referrer._id;
+    //   } else {
+    //     return res.render("user/signup", { error: "Invalid referral code" });
+    //   }
+    // }
+
+    const newReferralCode = generateReferralCode();
+    console.log('puthiya referal code',newReferralCode)
+
+    //for refferal offer
+
+
     const otp = generateOtp();
     const emailSent = await sendVerificationEmail(email, otp);
     console.log(emailSent);
@@ -64,7 +88,7 @@ exports.signupRedirect = async (req, res) => {
     }
     req.session.userOtp = otp;
     req.session.otpExpires = Date.now() + 1000 * 60 * 2;
-    req.session.userData = { username, email, password };
+    req.session.userData = { username, email, password,newReferralCode };
     console.log(req.session.userData);
     res.render("user/otpVerification.ejs");
 
@@ -110,7 +134,8 @@ exports.otppage = async (req, res) => {
     const saveUserData = new User({
       username: user.username,
       email: user.email,
-      password: passwordHash,
+      password: passwordHash, 
+      referalCode:user.newReferralCode
     });
 
     await saveUserData.save();
@@ -118,6 +143,8 @@ exports.otppage = async (req, res) => {
     req.session.user = saveUserData.id;
 
     req.session.userOtp = null;
+
+    res.clearCookie("token");
 
     return res.status(200).json({
       success: true,
@@ -766,4 +793,129 @@ exports.updateQuantity = async (req, res) => {
   }
 };
 
+// exports.referralOffer=async(req,res)=>{
+
+//   try {
+//     const {referralCode}=req.body
+
+//   const user=await User.findOne({referalCode:referralCode})
+//   if(!user){
+//     return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'invalid refereal code'})
+//   }
+//   const userId=req.user.id
+//   const currentUser=await User.findById(userId)
+
+//   currentUser.appliedReferalCode=true
+
+//   await currentUser.save()
+
+//   const currentUserWallet=await Wallet.findOne({userId:userId})
+
+//   const userWallet =await Wallet.findOne({userId:user._id})
+
+//   const amount=500
+
+//   currentUserWallet.balance+=amount
+
+//   currentUserWallet.transaction.push({
+//     transactionType:'Credit',
+//     amount,
+//     status:'completed'
+
+    
+//   })
+
+//   await currentUserWallet.save()
+
+//   userWallet.balance+=amount
+
+//   userWallet.transaction.push({
+//     transactionType:'Credit',
+//     amount,
+//     status:'completed'
+//   })
+
+//   await userWallet.save()
+
+//   return res.status(statusCodes.OK).json({success:true,error:'refferal amount added to wallet'})
+// }
+// catch (error) {
+//     console.error(error)
+//   }
+// }
+  
+
                    
+ // Define these if not already defined
+
+ exports.referralOffer = async (req, res) => {
+  try {
+      const { referralCode } = req.body;
+
+     
+      const user = await User.findOne({ referalCode: referralCode });
+      if (!user) {
+          return res.status(400).json({ success: false, error: 'Invalid referral code' });
+      }
+
+     
+      const userId = req.user.id;
+      const currentUser = await User.findById(userId);
+
+      
+      if (currentUser.appliedReferalCode) {
+          return res.status(400).json({ success: false, error: 'Referral code already applied' });
+      }
+
+      
+      currentUser.appliedReferalCode = true;
+      await currentUser.save();
+
+      const amount = 500;
+
+     
+      let currentUserWallet = await Wallet.findOne({ userId });
+      if (!currentUserWallet) {
+          currentUserWallet = new Wallet({
+              userId,
+              balance: 0,
+              transaction: []
+          });
+      }
+
+     
+      currentUserWallet.balance += amount;
+      currentUserWallet.transaction.push({
+          transactionType: 'credit',
+          amount,
+          status: 'completed',
+          
+      });
+      await currentUserWallet.save();
+
+      let userWallet = await Wallet.findOne({ userId: user._id });
+      if (!userWallet) {
+          userWallet = new Wallet({
+              userId: user._id,
+              balance: 0,
+              transaction: []
+          });
+      }
+
+      
+      userWallet.balance += amount;
+      userWallet.transaction.push({
+          transactionType: 'credit',
+          amount,
+          status: 'completed',
+      });
+      await userWallet.save();
+
+      
+      return res.status(200).json({ success: true, message: 'Referral amount added to wallet' });
+  } catch (error) {
+      console.error('Unexpected error:', error);
+      return res.status(500).json({ success: false, error: 'An unexpected error occurred' });
+  }
+};
+

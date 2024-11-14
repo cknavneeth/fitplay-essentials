@@ -39,6 +39,7 @@ exports.userLoggedIn = (req, res, next) => {
         return res.redirect('/index');
       }
     } catch (error) {
+      res.clearCookie("token");
       return next();
     }
   } else {
