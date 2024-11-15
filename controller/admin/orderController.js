@@ -23,7 +23,8 @@ exports.getOrderPage = async (req, res) => {
             .populate('user')
             .populate('items.productId')
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({orderDate:-1});
 
         
         res.render('admin/orders', { orders, currentPage: page, totalPages, limit });

@@ -64,6 +64,13 @@ exports.addToCart = async (req, res) => {
     const userId = req.user.id;
 
     try {
+        //for blocked user
+
+        const user=await User.findById(userId)
+        if(user.isBlocked==true){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'You have no access'})
+        }
+
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(400).json({ success: false, error: 'Product not found' });

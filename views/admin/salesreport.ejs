@@ -216,6 +216,36 @@
   transform: scale(0.95); /* Slight shrink on click */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+.text-center.my-4 {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+}
+
+.animated-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#downloadPdfButton {
+    background-color: #007bff;
+    color: white;
+}
+
+#downloadExcelButton {
+    background-color: #28a745;
+    color: white;
+}
+
+.animated-button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
 
 
     </style>
@@ -322,10 +352,14 @@
                 <!-- <div class="text-center my-4">
                     <button id="downloadPdfButton" class="btn btn-primary">Download as PDF</button>
                 </div> -->
-                <div class="text-center my-4">
-                    <button id="downloadPdfButton" class="animated-button">Download PDF</button>
-                  </div>
-                  
+                <div class="text-center my-4 d-flex justify-content-center">
+                    <button id="downloadPdfButton" class="animated-button me-2">Download PDF</button>
+                    <button id="downloadExcelButton" class="animated-button">Download Excel</button>
+                </div>
+                
+                
+                
+
             </form>
         <% } %>
     </div>
@@ -377,6 +411,36 @@
 </script>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    document.getElementById('downloadExcelButton').addEventListener('click', function () {
+        // Get data from the form or HTML structure
+        const reportData = [
+            ['Field', 'Value'], // Header row
+            ['Total Orders', document.querySelector('input[name="total_orders"]').value],
+            ['Total Amount', document.querySelector('input[name="total_amount"]').value],
+            ['Total Coupon Discount', document.querySelector('input[name="total_coupon_discount"]').value],
+            ['Total Delivered Orders', document.querySelector('input[name="total_delivered_orders"]').value],
+            ['Total Returned Orders', document.querySelector('input[name="total_returned_orders"]').value],
+            ['Total Shipped Orders', document.querySelector('input[name="total_shipped_orders"]').value],
+            ['Product Offer', document.querySelector('input[name="product_offer"]').value],
+        ];
+
+        // Create a worksheet
+        const worksheet = XLSX.utils.aoa_to_sheet(reportData);
+
+        // Create a workbook and append the worksheet
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Report');
+
+        // Save the workbook as an Excel file
+        XLSX.writeFile(workbook, 'sales-report.xlsx');
+    });
+</script>
+
+
+
+
 </body>
 <%- include("../../views/layout/admin/footer") %>
 
@@ -412,16 +476,15 @@
         const filterSelect = document.getElementById('filter').value;
         const customDateInputs = document.getElementById('customDateInputs');
         
-        // Show custom date inputs if "custom" is selected, otherwise hide them
+        
         if (filterSelect === 'custom') {
             customDateInputs.style.display = 'block';
         } else {
             customDateInputs.style.display = 'none';
         }
         
-        // Submit the form after handling the filter change
+    
         document.getElementById('salesReportFilterForm').submit();
     }
 </script>
-
 
