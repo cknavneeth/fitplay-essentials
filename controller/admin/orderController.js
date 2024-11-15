@@ -2,6 +2,7 @@ const Product=require('../../models/productModel.js')
 const Category=require('../../models/categoryModel.js')
 const Order=require('../../models/orderModel.js')
 const User=require('../../models/userModel.js')
+const Wallet=require('../../models/walletModel.js')
 const fs=require("fs")
 const path=require("path")
 const sharp=require("sharp")
@@ -74,5 +75,61 @@ exports.updateStatus=async(req,res)=>{
     } catch (error) {
         console.error("error ahnello",error)
         return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'error occured do something immidiately'})
+    }
+}
+
+
+
+exports.returnRequest=async(req,res)=>{
+    try {
+        const orderId=req.params.orderId
+        const {action}=req.body
+
+        const order=await Order.findById(orderId)
+
+    if(!order||!order.returnRequest){
+        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'order not found or invalid return'})
+    }
+
+
+    if(action=='accept'){
+        order.orderStatus = 'Returned';
+
+        order.returnRequest=false
+
+        const wallet=await Wallet.findOne({userId:order.user})
+
+        if(wallet){
+            wallet.balance+=order.grandTotal
+
+            wallet.transaction.push({
+                transactionType:'credit',
+                amount:order.grandTotal,
+                status:'completed'
+            })
+            await wallet.save()
+        }
+
+        for(const item of order.items){
+            const product=await Product.findById(item.productId)
+
+           
+            if(product){
+                const sizeStock=product.sizes.find(s=>s.size===item.size)
+                if(sizeStock){
+                    sizeStock.stock+=item.quantity
+                }
+            }
+            await product.save()
+           
+
+        }
+    }else if(action=='reject'){
+          order.returnRequest=false
+    }
+    await order.save()
+    return res.status(statusCodes.OK).json({success:true,error:'request ${action}ed successfully'})
+    } catch (error) {
+        console.error(error)
     }
 }

@@ -91,12 +91,15 @@
                         <button type="button" class="btn btn-primary cancel-btn" data-order-id="<%= order._id %>">Cancel</button>
                     <% } else if (order.orderStatus === 'Cancelled') { %>
                         <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
+                    <% } else if (order.orderStatus === 'Delivered' && order.returnRequest) { %>
+                        <button type="button" class="btn btn-warning return-request-btn" data-order-id="<%= order._id %>">Return Request</button>
                     <% } else if (order.orderStatus === 'Delivered') { %>
                         <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Delivered</button>
                     <% } else if (order.orderStatus === 'Returned') { %>
                         <button type="button" class="btn btn-secondary" disabled>Returned</button>
                     <% } %>
                 </td>
+                
             </tr>
         <% }) %>
     </tbody>
@@ -218,6 +221,75 @@
             })
         })
     })
+</script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+        document.querySelectorAll('.return-request-btn').forEach(button=>{
+            button.addEventListener('click',async function(){
+                const orderId = this.dataset.orderId;
+                const result=await Swal.fire({
+                    
+                    title: 'Return Request',
+                    text: 'Do you want to accept or reject this return request?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Accept',
+                    cancelButtonText: 'Reject'
+                })
+
+                if(result.isConfirmed){
+                    handleReturnRequest(orderId,'accept')
+                }else if(result.dismiss === Swal.DismissReason.cancel){
+                    handleReturnRequest(orderId,'reject')
+                }
+            })
+        })
+    })
+
+
+
+
+    function handleReturnRequest(orderId,action){
+        fetch(`/returnRequest/${orderId}`,{
+            method:'post',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({action})
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            if(data.success){
+                // Swal.fire('success','return request has been handled successfully','success')
+                if (action === 'accept') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Return Accepted',
+                    text: 'You have accepted the return request for order #' + orderId,
+                    confirmButtonText: 'OK'
+                });
+            } else if (action === 'reject') {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Return Rejected',
+                    text: 'You have rejected the return request for order #' + orderId,
+                    confirmButtonText: 'OK'
+                });
+            }
+            }else{
+                 Swal.fire('error',data.error,'error occured ayitund')
+            }
+        })
+        .catch((err)=>{
+            console.error(err)
+            Swal.fire('Error', 'Something went wrong', 'error');
+
+        })
+    }
 </script>
 
 

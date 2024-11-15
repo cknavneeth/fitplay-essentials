@@ -109,4 +109,7 @@ router.get('/salesreport',salesController.getsalesReport)
 
 router.get('/download-sales-report-pdf',salesController. downloadSalesReportPdf);
 
+
+router.post('/returnRequest/:orderId',orderController.returnRequest)
+
 module.exports=router

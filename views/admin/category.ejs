@@ -128,15 +128,21 @@
                     <td>
                     </td>
 
-
-                    <td class="text-start">
-                      <button class="btn btn-info" style="width: 100px" onclick="addOffer('<%= category._id %>')">
-                        Add Offer
-                      </button>
-                      <button class="btn btn-info" style="width: 100px" onclick="removeOffer('<%= category._id %>')">
-                        Remove Offer
-                      </button>
-                    </td>
+                    <% if (category.categoryOffer == 0) { %>
+                      <td class="text-start">
+                        <button class="btn btn-info" style="width: 100px" onclick="addOffer('<%= category._id %>')">
+                          Add Offer
+                        </button>
+                      </td>
+                    <% } else { %>
+                      <td class="text-start">
+                        <button class="btn btn-info" style="width: 100px" onclick="removeOffer('<%= category._id %>')">
+                          Remove Offer
+                        </button>
+                      </td>
+                    <% } %>
+                    
+                    
                     
 
 
@@ -387,7 +393,7 @@
               if(response.success){
                 console.log(response.success)
                 $('#category-'+categoryId).remove()
-                // alert("successfully deleted")
+                
                 
                 Swal.fire({
                   icon:'success',
@@ -464,36 +470,51 @@
 }
 
 
-
-async function removeOffer(categoryId){
-  $.ajax({
-    method:'POST',
-    url:'/removeCategoryOffer',
-    data:{
-      categoryId: categoryId
-    },
- 
-  success:(response)=>{
-    if(response.success){
+async function removeOffer(categoryId) {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Are you sure?',
+    text: 'Remove the offer now?',
+    showCancelButton: true, 
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
       
-        Swal.fire({
-          title: 'Offer Removed ayitund,sredhikuka',
-          text: 'The offer has been removed from this category.',
-          icon: 'success'
-        }).then(() => {
-          location.reload();
-        });
+      $.ajax({
+        method: 'POST',
+        url: '/removeCategoryOffer',
+        data: {
+          categoryId: categoryId
+        },
+        success: (response) => {
+          if (response.success) {
+            Swal.fire({
+              title: 'Offer Removed Successfully',
+              text: 'The offer has been removed from this category.',
+              icon: 'success'
+            }).then(() => {
+              location.reload(); 
+            });
+          } else {
+            Swal.fire('Error', response.error, 'error');
+          }
+        },
+        error: (xhr, status, error) => {
+          console.error('AJAX error:', error);
+          Swal.fire('Error', 'Failed to remove offer.', 'error');
+        }
+      });
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
       
-    }else{
-      Swal.fire('Error', response.error, 'error');
+      Swal.fire('Cancelled', 'Offer removal cancelled.', 'info');
     }
-  },
-  error: (xhr, status, error) => { // Adding error handling
-      console.error('AJAX error:', error);
-      Swal.fire('Error', 'Failed to remove offer.', 'error');
-    }
-  })
+  });
 }
+
+
+
+
   </script>
 
 <%- include("../../views/layout/admin/footer") %>

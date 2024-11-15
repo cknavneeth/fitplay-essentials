@@ -599,68 +599,99 @@ exports.cancelOrder=async(req,res)=>{
 }
 
 
-exports.returnProduct=async(req,res)=>{
+// exports.returnProduct=async(req,res)=>{
+//     try {
+//         const userId=req.user.id
+//         const user=await User.findById(userId)
+
+//         const orderId=req.params.orderId
+
+//         const order=await Order.findById(orderId)
+
+//         if(!order){
+//             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'order not found'})
+//         }
+
+//         if(order.orderStatus!=='Delivered'){
+//             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Only delivered items can returned'})
+//         }
+
+//         order.returnRequest = true;
+
+//        order.orderStatus='Returned'
+
+//        if(order.paymentMethod==='COD'&&order.paymentStatus==='Pending'){
+//         order.paymentStatus='Completed'
+//        }
+
+
+// //for wallet
+//        const wallet=await Wallet.findOne({userId})
+//        if(!wallet){
+//         return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Wallet not found '})
+//        }
+
+//        wallet.balance+=order.totalAmount
+
+//        wallet.transaction.push({
+//         transactionType:'credit',
+//         amount:order.totalAmount,
+//         status:'completed'
+//     })
+
+//        await wallet.save()
+
+
+
+//        for(let item of order.items){
+//         const product=await Product.findById(item.productId)
+
+//         if(product){
+//             const sizeStock=product.sizes.find(s=>s.size===item.size)
+
+//             if(sizeStock){
+//                 sizeStock.stock+=item.quantity
+//             }
+//             await product.save()
+//         }
+//        }
+
+//        await order.save()
+
+// return res.status(statusCodes.OK).json({success:true,error:'product removed successfully'})
+
+//     } catch (error) {
+//         console.error(error)
+//     }
+// }
+
+
+
+
+exports.returnProduct = async (req, res) => {
     try {
-        const userId=req.user.id
-        const user=await User.findById(userId)
+        const userId = req.user.id;
+        const user = await User.findById(userId);
 
-        const orderId=req.params.orderId
+        const orderId = req.params.orderId;
 
-        const order=await Order.findById(orderId)
+        const order = await Order.findById(orderId);
 
-        if(!order){
-            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'order not found'})
+        if (!order) {
+            return res.status(statusCodes.BAD_REQUEST).json({ success: false, error: 'Order not found' });
         }
 
-        if(order.orderStatus!=='Delivered'){
-            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Only delivered items can returned'})
+        if (order.orderStatus !== 'Delivered') {
+            return res.status(statusCodes.BAD_REQUEST).json({ success: false, error: 'Only delivered items can be returned' });
         }
 
-       order.orderStatus='Returned'
+        order.returnRequest = true;
 
-       if(order.paymentMethod==='COD'&&order.paymentStatus==='Pending'){
-        order.paymentStatus='Completed'
-       }
+        await order.save();
 
-
-//for wallet
-       const wallet=await Wallet.findOne({userId})
-       if(!wallet){
-        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Wallet not found '})
-       }
-
-       wallet.balance+=order.totalAmount
-
-       wallet.transaction.push({
-        transactionType:'credit',
-        amount:order.totalAmount,
-        status:'completed'
-    })
-
-       await wallet.save()
-
-
-
-       for(let item of order.items){
-        const product=await Product.findById(item.productId)
-
-        if(product){
-            const sizeStock=product.sizes.find(s=>s.size===item.size)
-
-            if(sizeStock){
-                sizeStock.stock+=item.quantity
-            }
-            await product.save()
-        }
-       }
-
-       await order.save()
-
-return res.status(statusCodes.OK).json({success:true,error:'product removed successfully'})
-
+        return res.status(statusCodes.OK).json({ success: true, message: 'Return request submitted successfully' });
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Server error' });
     }
-}
-
-
+};

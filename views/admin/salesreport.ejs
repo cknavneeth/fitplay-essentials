@@ -175,6 +175,49 @@
 }
 
 
+/*for pdf*/
+
+.animated-button {
+  background-color: #007bff; /* Primary color */
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  transform: scale(1.05); /* Slight zoom on hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.animated-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: left 0.3s ease;
+}
+
+.animated-button:hover::before {
+  left: 100%; /* Slide from left to right */
+}
+
+.animated-button:active {
+  transform: scale(0.95); /* Slight shrink on click */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
     </style>
 </head>
 
@@ -280,10 +323,9 @@
                     <button id="downloadPdfButton" class="btn btn-primary">Download as PDF</button>
                 </div> -->
                 <div class="text-center my-4">
-                    <!-- <a href="/download-sales-report-pdf" class="btn btn-primary downloadPdfButton">Download as PDF</a> -->
-                    <button id="downloadPdfButton">Download PDF</button>
-
+                    <button id="downloadPdfButton" class="animated-button">Download PDF</button>
                   </div>
+                  
             </form>
         <% } %>
     </div>
