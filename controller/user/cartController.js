@@ -34,12 +34,16 @@ exports.getCartPage=async(req,res)=>{
              cartEmpty:true} )
         }
 
-        const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
+        // const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
 
 
-        const discountAmount=cart.discountAmount||0
-        const couponCode=cart.couponCode||''
-        const grandTotal=cartTotal-discountAmount
+        // const discountAmount=cart.discountAmount||0
+        // const couponCode=cart.couponCode||''
+        // const grandTotal=cartTotal-discountAmount
+        const cartTotal = cart.items.reduce((total, item) => total + item.totalPrice, 0);
+        const discountAmount = cart.discountAmount || 0; 
+        const couponCode = cart.couponCode || ''; 
+        const grandTotal = cartTotal - discountAmount;
        
         console.log("babloo",cart.items)
         res.render('user/cart', { user,
@@ -47,10 +51,9 @@ exports.getCartPage=async(req,res)=>{
               total: cartTotal,
                discountAmount,
                couponCode,
-               grandTotal:cart.grandTotal,
+            //    grandTotal:cart.grandTotal,
+                grandTotal,
                cartEmpty:false});
-               console.log('jijo shibu',grandTotal)
-
     } catch (error) {
         console.error(error)
     }
@@ -160,6 +163,9 @@ console.log("Cart Items:", cart.items.map(item => ({ id: item.productId.toString
                     discountAmount = coupon.maxDiscount;
                 }
                 cart.discount = discountAmount;
+                //try
+                cart.couponCode = couponCode;
+                //try
             } else {
                 
                 cart.isCouponApplied = false;
@@ -377,6 +383,7 @@ exports.handleCod=async(req,res)=>{
         let discount=0
         let grandTotal = 0; 
         let productOffer=0
+        let categoryOffer=0
 
         let totalAmount=0
         let totalQuantity=0
@@ -391,6 +398,8 @@ exports.handleCod=async(req,res)=>{
         }
 
         productOffer += (regularPrice - salePrice) * quantity;
+
+        categoryOffer += (regularPrice - salePrice) * quantity;
 
            
            const sizeStock=productId.sizes.find(s=>s.size===size)
@@ -412,6 +421,8 @@ exports.handleCod=async(req,res)=>{
             price
         })
     }
+
+    
 
     
 
@@ -481,11 +492,13 @@ discount=totalAmount-grandTotal
             user:userId,
             oid:orderId,
             items,      
-            productOffer,                                                                                                                                                                                                                                                                                                
+            productOffer,  
+            categoryOffer,                                                                                                                                                                                                                                                                                              
             totalAmount,
             grandTotal,
             discount,
             paymentMethod,
+            paymentStatus: paymentMethod === 'wallet' ? 'Completed' : 'Pending',
             status:'Processing',
             totalQuantity,
             address: {

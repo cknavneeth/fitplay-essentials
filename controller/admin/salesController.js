@@ -68,8 +68,14 @@ const getSalesReport=async(filter, start, end)=>{
                     totalShippedOrders:{
                         $sum:{$cond:[{$eq:['$orderStatus','Shipped']},1,0]}
                     },
+                    totalDeliveredOrders:{
+                         $sum:{$cond:[{$eq:['$orderStatus','Delivered']},1,0]}
+                    },
                     totalProductOffers:{
                         $sum:'$productOffer'
+                    },
+                    totalCategoryOffer:{
+                        $sum:'$categoryOffer'
                     }
                 }
             }

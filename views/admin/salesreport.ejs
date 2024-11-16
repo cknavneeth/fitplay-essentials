@@ -284,33 +284,45 @@
                     <div class="col-md-4">
                         <div class="stat-card profit">
                             <h4>Total Coupon Discount</h4>
-                            <input type="text" name="total_coupon_discount" class="form-control" value="Rs<%= report.totalCoupondiscount %>">
+                            <input type="text" name="total_coupon_discount" min="Rs<%= report.totalCoupondiscount %>" max="Rs<%= report.totalCoupondiscount %>" disabled class="form-control" value="Rs<%= report.totalCoupondiscount %>">
                         </div>
                     </div>
                     <!-- Add other fields here similarly -->
                     <div class="col-md-4">
-                        <div class="stat-card profit">
-                            <h4>Total Delivered Orders</h4>
-                            <input type="number" name="total_delivered_orders" class="form-control" value="<%=report.totalCancelledOrders%>">
+                        <div class="stat-card profit bg-danger">
+                            <h4>Total Cancelled Orders</h4>
+                            <input type="number" name="total_delivered_orders" min="<%=report.totalCancelledOrders%>" max="<%=report.totalCancelledOrders%>" disabled class="form-control" value="<%=report.totalCancelledOrders%>">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="stat-card sales">
                             <h4>Total Returned Orders</h4>
-                            <input type="number" name="total_returned_orders" class="form-control" value="<%=report.totalReturnedOrders%>">
+                            <input type="number" name="total_returned_orders" disabled min="<%=report.totalReturnedOrders%>" max="<%=report.totalReturnedOrders%>" class="form-control" value="<%=report.totalReturnedOrders%>">
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="stat-card revenue">
+                        <div class="stat-card revenue bg-secondary">
                             <h4>Total Shipped Orders</h4>
-                            <input type="number" name="total_shipped_orders" class="form-control" value="<%=report.totalShippedOrders%>">
+                            <input type="number" name="total_shipped_orders" class="form-control" min="<%=report.totalShippedOrders%>" max="<%=report.totalShippedOrders%>" disabled value="<%=report.totalShippedOrders%>">
                         </div>
                     </div>
 
                     <div class="col-md-4">
+                        <div class="stat-card sales bg-primary">
+                            <h4>Total Product Offer</h4>
+                            <input type="text" name="product_offer" class="form-control" min="<%=report.totalProductOffers%>" max="<%=report.totalProductOffers%>" disabled value="<%=report.totalProductOffers%>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card sales bg-dark .text-white">
+                            <h4>Total Category Offer</h4>
+                            <input type="text" name="product_offer" class="form-control" min="<%=report.totalProductOffers%>" max="<%=report.totalProductOffers%>" disabled value="<%=report.totalProductOffers%>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="stat-card sales">
-                            <h4>Product Offer</h4>
-                            <input type="text" name="product_offer" class="form-control" value="<%=report.totalProductOffers%>">
+                            <h4>Total Delivered Orders</h4>
+                            <input type="text" name="product_offer" class="form-control" min="<%=report.totalDeliveredOrders%>" max="<%=report.totalDeliveredOrders%>" disabled value="<%=report.totalDeliveredOrders%>">
                         </div>
                     </div>
                 </div>
@@ -357,9 +369,6 @@
                     <button id="downloadExcelButton" class="animated-button">Download Excel</button>
                 </div>
                 
-                
-                
-
             </form>
         <% } %>
     </div>
@@ -382,7 +391,7 @@
         const pdfContent = document.getElementById('salesReports');
 
         html2canvas(pdfContent, {
-            scale: 2,  // Adjust this for better resolution
+            scale: 3,  // Adjust this for better resolution
         }).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF('p', 'pt', 'a4');  // Create PDF in A4 portrait

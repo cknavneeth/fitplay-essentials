@@ -19,6 +19,7 @@ const { send } = require("process");
 const Order = require("./models/orderModel");
 const { User } = require("./models/userModel");
 const Cart = require("./models/cartModel");
+const Product = require("./models/productModel");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_ID,
@@ -242,6 +243,23 @@ app.post(
         });
 
         const savedOrder = await newOrder.save();
+
+        //for quantity
+       
+
+        const handleQuantity=newOrder.items.map(async(item)=>{
+          const product=await Product.findById(item.productId)
+          if(product){
+            const sizeStock=product.sizes.find(s=>s.size===item.size)
+            if(sizeStock){
+              sizeStock.stock-=item.quantity
+            }
+            await product.save()
+          }
+        })
+        await Promise.all(handleQuantity)
+
+        //for quantity
         console.log("Order saved successfully:", savedOrder);
 
         await Cart.findByIdAndDelete(cart._id);

@@ -65,6 +65,27 @@
     .error-message {
       color: red;
     }
+
+    table {
+  font-family: 'Roboto', sans-serif; /* Apply font style for table content */
+  font-size: 14px; /* Table font size */
+  color: #333; /* Change text color */
+}
+.form-label {
+  font-family: 'Verdana', sans-serif; /* Font for labels */
+  font-size: 14px; /* Label font size */
+  font-weight: bold; /* Bold text for labels */
+}
+.form-control {
+  font-family: 'Arial', sans-serif; /* Font for input fields */
+  font-size: 14px; /* Input field font size */
+}
+.content-main {
+  font-family: 'Arial', sans-serif; /* Example font, you can choose your preferred font */
+  font-size: 16px; /* Adjust the font size */
+  font-weight: normal; /* Adjust font weight, could be bold, normal, etc. */
+  line-height: 1.6; /* Adjust line spacing for better readability */
+}
   </style>
 </head>
 <body>
@@ -88,7 +109,7 @@
           <div class="col-md-3">
             <form method="post" action="/addCategory" onsubmit="return handleFormSubmit(event)">
               <div class="mb-4">
-                <label for="product_name" class="form-label">Name</label>
+                <label for="product_name" class="form-label ">Name</label>
                 <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required/>
                 <div id="name-error" class="error-message"></div>
               </div>
@@ -130,13 +151,13 @@
 
                     <% if (category.categoryOffer == 0) { %>
                       <td class="text-start">
-                        <button class="btn btn-info" style="width: 100px" onclick="addOffer('<%= category._id %>')">
+                        <button class="btn btn-dark btn-info" style="width: 100px" onclick="addOffer('<%= category._id %>')">
                           Add Offer
                         </button>
                       </td>
                     <% } else { %>
                       <td class="text-start">
-                        <button class="btn btn-info" style="width: 100px" onclick="removeOffer('<%= category._id %>')">
+                        <button class="btn btn-danger btn-info" style="width: 100px" onclick="removeOffer('<%= category._id %>')">
                           Remove Offer
                         </button>
                       </td>
@@ -168,7 +189,7 @@
                       </button>
                     </td> -->
                     <td class="text-start">
-                      <a href="/editCategory?id=<%=category._id%>" class="btn btn-info text-white">Edit</a>
+                      <a href="/editCategory?id=<%=category._id%>" class="btn btn-dark text-white">Edit</a>
                     </td>
                   </tr>
                   <%})%>

@@ -56,12 +56,17 @@ exports.addtoWishlist=async(req,res)=>{
         const productId=req.params.productId
         const { size, salePrice } = req.body;
 
-        console.log("Product ID:", productId);  // Log the productId
-  // Log the fetched product document
-  console.log("Selected Size:", size); 
+        console.log("Product ID:", productId); 
+  
+        console.log("Selected Size:", size); 
 
-  console.log("arshan kutti",salePrice)
-  console.log("Type of salePrice:", typeof salePrice);  // Should log "number"
+       
+        console.log("Type of salePrice:", typeof salePrice);  
+
+        const user=await User.findById(userId)
+        if(user.isBlocked===true){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'you have no access'})
+        }
 
 
 

@@ -24,7 +24,8 @@ exports.listCustomers = async (req, res) => {
       
       const users = await User.find(searchCondition)
         .skip((perPage * page) - perPage) 
-        .limit(perPage); 
+        .limit(perPage)
+        .sort({ _id: -1 }); 
   
       
       res.render('admin/users', {

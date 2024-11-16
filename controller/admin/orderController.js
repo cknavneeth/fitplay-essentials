@@ -52,6 +52,11 @@ exports.cancelOrderAdmin=async(req,res)=>{
         if(!updateOrder){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'order not found'})
         }
+
+
+        ///wallet 
+       
+        //wallet
         res.json({success:true,error:'Order cancelled ayitund'})
     } catch (error) {
         console.error(error)
@@ -72,6 +77,45 @@ exports.updateStatus=async(req,res)=>{
         if(!order){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'status not found'})
         }
+
+        //wallet
+        
+        if(status==='cancelled'&&order.paymentMethod==='wallet'){
+            console.log('User ID:', order.user); 
+            const wallet=await Wallet.findById(mongoose.Types.ObjectId(order.user))
+
+            console.log('laluchayan',wallet)
+
+            if(!wallet){
+                return res.json({success:false,error:'wallet not found'})
+            }
+    
+            wallet.balance+=order.grandTotal
+            wallet.transaction.push({
+                transactionType:'credit',
+                amount:order.grandTotal,
+                status:'completed'
+            })
+            await wallet.save()    
+        }
+       
+
+        for(let item of order.items){
+            const product =await Product.findById(item.productId)
+
+            if(product){
+                const sizeStock=product.sizes.find(s=>s.size===item.size)
+
+                if(sizeStock){
+                    sizeStock.stock+=item.quantity
+                }
+            }
+            await product.save()
+            
+        }
+
+        //wallet
+
         res.json({success:true,error:'Status updated successfully'})
     } catch (error) {
         console.error("error ahnello",error)

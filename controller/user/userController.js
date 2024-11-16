@@ -9,7 +9,8 @@ const statusCodes = require("../../config/keys.js");
 const crypto = require("crypto");
 const Cart = require("../../models/cartModel.js");
 const Coupon = require("../../models/couponModel.js");
-const Wallet=require("../../models/walletModel.js")
+const Wallet=require("../../models/walletModel.js");
+const order = require("../../models/orderModel.js");
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -271,12 +272,21 @@ exports.shopPage = async (req, res) => {
 
     let filter = { isBlocked: false };
 
-    // Apply category filter
+    // if (req.query.search) {
+    //   filter.productName = { $regex: new RegExp(".*" + req.query.search + ".*", "i") };
+    // }
+    if (req.query.search) {
+      const searchTerm = req.query.search.trim(); 
+      filter.productName = { $regex: new RegExp("^" + searchTerm, "i") }; 
+    }
+    
+    
+
     if (req.query.category) {
       filter.category = req.query.category;
     }
 
-    // Apply price range filter
+   
     if (req.query.minPrice && req.query.maxPrice) {
       filter.salePrice = {
         $gte: Number(req.query.minPrice),
@@ -284,17 +294,15 @@ exports.shopPage = async (req, res) => {
       };
     }
 
-    // Apply rating filter
+   
     if (req.query.rating) {
       filter.rating = {
         $gte: Number(req.query.rating),
       };
     }
 
-    // Apply search filter
-    if (req.query.search) {
-      filter.productName = { $regex: new RegExp(".*" + req.query.search + ".*", "i") };
-    }
+    
+    
 
 
     const page=parseInt(req.query.page)||1
@@ -306,13 +314,27 @@ exports.shopPage = async (req, res) => {
     const totalPages=Math.ceil(totalDocuments/limit)
     
 
-    // Fetch products with filters
+    
     let products = await Product.find(filter)
     .skip(skip)
     .limit(limit)
 
+    //for popularity iam doing this
+    const recentOrders=await order.find({orderDate:{$gte:new Date(Date.now()-30*24*60*60*1000)}})
 
-    // Apply sorting options
+    const productPopularity={}
+    recentOrders.forEach(order=>{
+      order.items.forEach(item=>{
+        const productId=item.productId.toString()
+        if(!productPopularity[productId]){
+          productPopularity[productId]=0
+        }
+        productPopularity[productId]+=item.quantity
+      })
+    })
+
+
+    
     const sortOptions = req.query.sort || "popularity";
     switch (sortOptions) {
       case "priceLowToHigh":
@@ -339,8 +361,19 @@ exports.shopPage = async (req, res) => {
         products.sort((a, b) => b.productName.localeCompare(a.productName));
         break;
 
-      default:
-        products = products.sort((a, b) => b.popularity - a.popularity);
+        case "popularity":
+          products.sort((a, b) => {
+            const popularityA = productPopularity[a._id.toString()] || 0; 
+            const popularityB = productPopularity[b._id.toString()] || 0;
+            return popularityB - popularityA;
+          });
+          break;
+
+      
+        default:
+          products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break; 
+        
     }
 
     res.render("user/shop", { products, user, categories ,currentPage:page,totalPages,limit, 
