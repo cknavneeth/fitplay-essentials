@@ -159,14 +159,14 @@
     <div class="dashboard">
     <div class="container">
         <div class="sidebar">
-            <h2><%= user.name %></h2>
-            <p><%= user.phoneNumber %></p> <!-- Replace with the actual field for phone number -->
+            <h2><%= user.username %></h2>
+            <p><%= user.email %></p> <!-- Replace with the actual field for phone number -->
             <ul>
                 <li><a href="#"><i class="fas fa-box"></i> <span>Orders & Returns</span></a></li>
                 <li><a href="/contact"><i class="fas fa-user"></i> <span>My Profile</span></a></li>
-                <li><a href="#"><i class="fas fa-wallet"></i> <span>Wallet</span> <span class="amount">₹ 0</span></a></li>
+                <li><a href="/wallet"><i class="fas fa-wallet"></i> <span>Wallet</span> <span class="amount">₹ 0</span></a></li>
                 <li><a href="#"><i class="fas fa-gift"></i> <span>Sporty Rewards</span> <span class="amount">-</span></a></li>
-                <li><a href="#"><i class="fas fa-map-marker-alt"></i> <span>Address</span></a></li>
+                <li><a href="/address"><i class="fas fa-map-marker-alt"></i> <span>Address</span></a></li>
                 <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>

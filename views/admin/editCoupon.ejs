@@ -130,27 +130,28 @@ form button[type="submit"]:hover {
 
 </style>
 
-
 <h2>Edit Coupon</h2>
 
-<form action="/editCoupon/<%= coupon._id %>" method="POST">
+<div id="errorContainer" style="color: red; margin-top: 10px; text-align: center;"></div>
+
+<form action="/editCoupon/<%= coupon._id %>" method="POST" id="editCouponForm">
   <label for="code">Coupon Code:</label>
-  <input type="text" name="code" id="code" value="<%= coupon.code %>" required>
+  <input type="text" name="code" id="code" value="<%= coupon.code %>">
 
   <label for="discountType">Discount Type:</label>
-  <select name="discountType" id="discountType" required>
+  <select name="discountType" id="discountType" >
     <option value="percentage" <%= coupon.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
     <option value="fixed" <%= coupon.discountType === 'fixed' ? 'selected' : '' %>>Fixed</option>
   </select>
 
   <label for="discountAmount">Discount Amount:</label>
-  <input type="number" name="discountAmount" id="discountAmount" value="<%= coupon.discountAmount %>" required>
+  <input type="number" name="discountAmount" id="discountAmount" value="<%= coupon.discountAmount %>" >
 
   <label for="minPurchaseAmount">Min Purchase Amount:</label>
   <input type="number" name="minPurchaseAmount" id="minPurchaseAmount" value="<%= coupon.minPurchaseAmount %>">
 
   <label for="expirationDate">Expiration Date:</label>
-  <input type="date" name="expirationDate" id="expirationDate" value="<%= coupon.expirationDate.toISOString().split('T')[0] %>" required>
+  <input type="date" name="expirationDate" id="expirationDate" value="<%= coupon.expirationDate.toISOString().split('T')[0] %>" >
 
   <label for="maxDiscount">Max Discount (Optional):</label>
   <input type="number" name="maxDiscount" id="maxDiscount" value="<%= coupon.maxDiscount %>">
@@ -167,7 +168,100 @@ form button[type="submit"]:hover {
     <option value="false" <%= !coupon.isActive ? 'selected' : '' %>>Inactive</option>
   </select>
 
-  <button type="submit">Save Changes</button>
+  <button type="submit" id="saveChangesBtn">Save Changes</button>
 </form>
     
 <%- include("../../views/layout/admin/footer") %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  // Check if there's an error message in the URL query parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const errorMessage = urlParams.get('error');
+
+  // If there's an error, show it in SweetAlert
+  if (errorMessage) {
+    Swal.fire({
+      title: 'Error',
+      text: errorMessage,
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+ const form = document.getElementById('editCouponForm');
+const errorContainer = document.getElementById('errorContainer');
+
+form.addEventListener('submit', (e) => {
+  // Clear previous errors
+  errorContainer.innerHTML = '';
+  let errors = [];
+
+  const code = document.getElementById('code').value.trim();
+  const discountType = document.getElementById('discountType').value;
+  const discountAmount = parseFloat(document.getElementById('discountAmount').value);
+  const minPurchaseAmount = parseFloat(document.getElementById('minPurchaseAmount').value);
+  const expirationDate = new Date(document.getElementById('expirationDate').value);
+  const maxDiscount = document.getElementById('maxDiscount').value;
+  const currentDate = new Date();
+
+  // Validate required fields
+  if (!code) {
+    errors.push('Coupon code is required.');
+  } else if (!/^[A-Za-z0-9]{3,10}$/.test(code)) {
+    errors.push('Coupon code must be 3-10 alphanumeric characters.');
+  }
+
+  if (!discountType) {
+    errors.push('Discount type is required.');
+  }
+
+  if (isNaN(discountAmount) || discountAmount <= 0) {
+    errors.push('Discount amount must be greater than 0.');
+  }
+
+  if (minPurchaseAmount && minPurchaseAmount < 0) {
+    errors.push('Minimum purchase amount must be a positive number.');
+  }
+
+  if (expirationDate <= currentDate) {
+    errors.push('Expiration date must be in the future.');
+  }
+
+  if (discountType === 'percentage' && maxDiscount && maxDiscount < discountAmount) {
+    errors.push('Maximum discount must not be less than the discount amount for percentage discounts.');
+  }
+
+  // If there are validation errors, display them and prevent form submission
+  if (errors.length > 0) {
+    e.preventDefault();  // Prevent form submission immediately
+    errors.forEach((error) => {
+      const errorElement = document.createElement('div');
+      errorElement.textContent = error;
+      errorContainer.appendChild(errorElement);
+    });
+    return;
+  }
+
+
+  const confirmEdit = confirm('Are you sure you want to save these changes?');
+  
+    if (!confirmEdit) {
+      e.preventDefault();
+    }
+const padachone=confirm('edited successfully')
+});
+
+</script>

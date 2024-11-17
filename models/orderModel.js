@@ -46,6 +46,7 @@ const orderSchema=new mongoose.Schema({
     address:addressSchema,
     returnRequest: { type: Boolean, default: false },
     productOffer:{type:Number,required:true},
+    categoryOffer:{type:Number,required:true},
     grandTotal: { type: Number, required: true },
     discount:{type:Number,required:true},
     paymentMethod: { type: String, required: true },

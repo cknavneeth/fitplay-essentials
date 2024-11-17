@@ -1,12 +1,12 @@
 <%- include("../../views/layout/admin/header") %>
-
 <h2 class="form-title">Create a New Coupon</h2>
-<form action="/admin/coupons" method="POST" class="coupon-form"  id="couponForm">
+<form id="couponForm" class="coupon-form">
   <label for="code">Coupon Code:</label>
   <input type="text" id="code" name="code" required>
 
   <label for="discountType">Discount Type:</label>
   <select id="discountType" name="discountType" required>
+    <option value="">Select a type</option>
     <option value="percentage">Percentage</option>
     <option value="fixed">Fixed Amount</option>
   </select>
@@ -21,7 +21,7 @@
   <input type="date" id="expirationDate" name="expirationDate" required>
 
   <label for="maxDiscount">Maximum Discount (for percentage discounts):</label>
-  <input type="number" id="maxDiscount" name="maxDiscount">
+  <input type="number" id="maxDiscount" name="maxDiscount" disabled>
 
   <label for="usageLimit">Total Usage Limit:</label>
   <input type="number" id="usageLimit" name="usageLimit">
@@ -32,107 +32,203 @@
   <label for="isActive">Active:</label>
   <input type="checkbox" id="isActive" name="isActive" checked>
 
-  <button type="button" class="submit-btn" onclick="submitCouponForm()">Create Coupon</button>
+  <button type="submit" class="submit-btn">Create Coupon</button>
 </form>
+<div id="errorContainer" style="color:red; margin-top: 10px;"></div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!--form validation-->
+
+
+
+
+
 <script>
-    async function submitCouponForm(){
-        const form=document.getElementById('couponForm')
-        const formData=new FormData(form)
-        const data=Object.fromEntries(formData.entries())
+//     async function submitCouponForm(){
+//         const form=document.getElementById('couponForm')
+//         const formData=new FormData(form)
+//         const data=Object.fromEntries(formData.entries())
 
-        data.isActive = document.getElementById('isActive').checked;
+//         data.isActive = document.getElementById('isActive').checked;
 
-        console.log("Data being sent to server:", data);
+//         console.log("Data being sent to server:", data);
 
-        // try {
-        //     const response=await fetch('/adminAddCoupon',{
-        //         method:'POST',
-        //         headers:{
-        //             'Content-Type':'application/json'
-        //         },
-        //         body:JSON.stringify(data)
-        //     })
-        //     const result=await response.json()
-        //     if(result.success){
-        //         Swal.fire({
-        //           title: 'Success!',
-        //           text: 'Coupon created successfully!',
-        //           icon: 'success',
-        //          confirmButtonText: 'OK'
-        //          }).then(() => {
-        //            window.location.href = '/adminCoupons'; 
-        //          });
-        //     }else{
-        //         Swal.fire({
-        //         title: 'Error!',
-        //         text: result.message || 'Failed to create coupon',
-        //         icon: 'error',
-        //         confirmButtonText: 'OK'
-        //          });
-        //     }
-        // } catch (error) {
-        //     console.error('Error creating coupon:', error);
-        //        Swal.fire({
-        //           title: 'Error!',
-        //           text: 'An error occurred while creating the coupon',
-        //           icon: 'error',
-        //           confirmButtonText: 'OK'
-        //        });
-        // }
-        try {
-    const response = await fetch('/adminAddCoupon', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    });
+        
+//         try {
+//     const response = await fetch('/adminAddCoupon', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(data)
+//     });
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error from server:', errorText);
-        Swal.fire({
-            title: 'Error!',
-            text: `An error occurred: ${errorText}`,
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
+//     if (!response.ok) {
+//         const errorText = await response.text();
+//         console.error('Error from server:', errorText);
+//         Swal.fire({
+//             title: 'Error!',
+//             text: 'Please fill out all required fields',
+//             icon: 'error',
+//             confirmButtonText: 'OK'
+//         });
+//         return;
+//     }
 
-    const result = await response.json();
-    if (result.success) {
-        Swal.fire({
-            title: 'Success!',
-            text: 'Coupon created successfully!',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            window.location.href = '/adminCoupons'; 
-        });
-    } else {
-        Swal.fire({
-            title: 'Error!',
-            text: result.message || 'Failed to create coupon',
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    }
-} catch (error) {
-    console.error('Error creating coupon:', error);
-    Swal.fire({
-        title: 'Error!',
-        text: 'An error occurred while creating the coupon',
-        icon: 'error',
-        confirmButtonText: 'OK'
-    });
-}
+//     const result = await response.json();
+//     if (result.success) {
+//         Swal.fire({
+//             title: 'Success!',
+//             text: 'Coupon created successfully!',
+//             icon: 'success',
+//             confirmButtonText: 'OK'
+//         }).then(() => {
+//             window.location.href = '/adminCoupons'; 
+//         });
+//     } else {
+//         Swal.fire({
+//             title: 'Error!',
+//             text: result.message || 'Failed to create coupon',
+//             icon: 'error',
+//             confirmButtonText: 'OK'
+//         });
+//     }
+// } catch (error) {
+//     console.error('Error creating coupon:', error);
+//     Swal.fire({
+//         title: 'Error!',
+//         text: 'An error occurred while creating the coupon',
+//         icon: 'error',
+//         confirmButtonText: 'OK'
+//     });
+// }
+//  }
 
-    }
-</script>
+
+
+
+
+
+
+document.getElementById('couponForm').addEventListener('submit', function (e) {
+  e.preventDefault(); // Prevent default form submission
+
+  // Clear any previous error messages
+  const errorContainer = document.getElementById('errorContainer');
+  errorContainer.innerHTML = '';
+
+  // Get form values
+  const code = document.getElementById('code').value.trim();
+  const discountType = document.getElementById('discountType').value;
+  const discountAmount = parseFloat(document.getElementById('discountAmount').value);
+  const minPurchaseAmount = parseFloat(document.getElementById('minPurchaseAmount').value);
+  const expirationDate = document.getElementById('expirationDate').value;
+  const maxDiscount = parseFloat(document.getElementById('maxDiscount').value);
+  const usageLimit = parseInt(document.getElementById('usageLimit').value);
+  const perUserLimit = parseInt(document.getElementById('perUserLimit').value);
+
+  const errors = [];
+
+  // Validate coupon code
+  if (!code) errors.push('Coupon Code is required.');
+  if (!/^[A-Za-z0-9]{3,10}$/.test(code)) {
+    errors.push('Coupon Code must contain valid characters.');
+  }
+
+  // Validate discount type and related fields
+  if (!discountType) errors.push('Discount Type is required.');
+  if (discountType === 'percentage' && (isNaN(maxDiscount) || maxDiscount <= 0)) {
+    errors.push('Maximum Discount must be greater than 0 for percentage discounts.');
+  }
+  if (discountAmount <= 0 || isNaN(discountAmount)) {
+    errors.push('Discount Amount must be greater than 0.');
+  }
+
+  // Validate minimum purchase amount
+  if (minPurchaseAmount <= 0 || isNaN(minPurchaseAmount)) {
+    errors.push('Minimum Purchase Amount must be greater than 0.');
+  }
+
+  // Validate expiration date
+  const today = new Date();
+  const expDate = new Date(expirationDate);
+  if (!expirationDate) {
+    errors.push('Expiration Date is required.');
+  } else if (expDate <= today) {
+    errors.push('Expiration Date must be in the future.');
+  }
+
+  // Display errors or submit form
+  if (errors.length > 0) {
+    errorContainer.innerHTML = errors.map((err) => `<p>${err}</p>`).join('');
+  } else {
+    // Submit form data using fetch
+    const formData = {
+      code,
+      discountType,
+      discountAmount,
+      minPurchaseAmount,
+      expirationDate,
+      maxDiscount: maxDiscount || null,
+      usageLimit: usageLimit || null,
+      perUserLimit: perUserLimit || null,
+      isActive: document.getElementById('isActive').checked,
+    };
+
+    console.log('Form Data:', formData); // Debugging purpose
+
+    // Submit form data to server
+    fetch('/adminAddCoupon', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          Swal.fire({
+            icon:'success',
+            title:'coupon added successfully',
+            text:'You created It'
+          })
+          .then(()=>{
+            window.location.href = '/adminCoupons';
+          })
+         
+        } else {
+          errorContainer.innerHTML = `<p>${result.error || 'Failed to create coupon.'}</p>`;
+        }
+      })
+      .catch((error) => {
+        console.error('Error submitting form:', error);
+        errorContainer.innerHTML = `<p>An unexpected error occurred.</p>`;
+      });
+  }
+});
+
+// Enable/disable maxDiscount based on discountType
+document.getElementById('discountType').addEventListener('change', function () {
+  const maxDiscountField = document.getElementById('maxDiscount');
+  if (this.value === 'percentage') {
+    maxDiscountField.disabled = false;
+    maxDiscountField.required = true;
+  } else {
+    maxDiscountField.disabled = true;
+    maxDiscountField.required = false;
+    maxDiscountField.value = ''; // Clear value if not applicable
+  }
+});
+
+
+// </script>
 
 <%- include("../../views/layout/admin/footer") %>
+
+
 
 
 
@@ -223,4 +319,14 @@
       font-size: 0.9em;
     }
   }
+
+  #errorContainer {
+  color: red;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  text-align: center;
+  min-height: 50px; 
+}
 </style>

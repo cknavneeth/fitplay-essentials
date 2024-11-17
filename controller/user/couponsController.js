@@ -34,7 +34,7 @@ exports.applyCoupon = async (req, res) => {
 
         
         if (cart.couponCode) {
-            return res.status(400).json({ success: false, error: 'You have already used a coupon for this cart. Please add new products to apply a coupon again.' });
+            return res.status(400).json({ success: false, error: 'You have already used a coupon for this cart.You cant again' });
         }
         console.log("bbruuhh",cart.couponCode)
         console.log('balalu',cart.couponCode)

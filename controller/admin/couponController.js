@@ -11,7 +11,7 @@ const { error } = require('console')
 
 exports.getCoupons=async(req,res)=>{
     try {
-        const coupons=await Coupon.find()
+        const coupons=await Coupon.find().sort({_id:-1})
         res.render('admin/coupon',{coupons})
     } catch (error) {
         console.error(error)
@@ -130,6 +130,14 @@ exports.postEditCoupon=async(req,res)=>{
             perUserLimit,
             isActive
         }=req.body
+
+
+        const existingCoupon=await Coupon.findOne({code,_id:{$ne:couponId}})
+        if(existingCoupon){
+            // return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'This coupon already exists,please add another'})
+            return res.redirect(`/editCoupon/${couponId}?error=This coupon already exists, please add another`);
+
+        }
 
         await Coupon.findByIdAndUpdate(couponId,{
             code,
