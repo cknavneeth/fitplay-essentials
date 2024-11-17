@@ -137,7 +137,7 @@
                     <th>Offer</th>
                     <th>Status</th>
                     <th class="text-start">Edit</th>
-                    <th>List/Unlist</th>
+                    <!-- <th>List/Unlist</th> -->
                   </tr>
                 </thead>
                 <tbody>
@@ -174,9 +174,9 @@
                       </button>
                       
                       
-                      <button class="btn btn-success" style="width: 70px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                      <!-- <button class="btn btn-success" style="width: 70px; height: 30px; display: flex; align-items: center; justify-content: center;">
                         <a href="/restoreCategory/<%= category._id %>/restore" class="text-white" style="text-decoration: none;">Restore</a>
-                      </button>
+                      </button> -->
                       
                       
                     </td>
@@ -293,25 +293,6 @@
 
 
 
-    // function validateForm(){
-    //     const name=document.getElementsByName("name")[0].value.trim()
-    //     const description=document.getElementById("descriptionId").value.trim()
-    //     isValid=true
-    //     const namePattern = /^[A-Za-z\s]+$/;
-
-
-    //     if(name===""){
-    //         displayErrorMessage("name-error","name cant be empty")
-    //         isValid=false
-    //     }else if(!namePattern.test(name)){
-    //         displayErrorMessage("name-error","category name should contain alphabetic characters")
-    //     }
-
-    //     if(description===""){
-    //         displayErrorMessage("description-error","descripton cant be empty!")
-    //         isValid=false
-    //     }
-    //     return isValid
     // }
     function validateForm() {
     const name = document.getElementsByName("name")[0].value.trim();

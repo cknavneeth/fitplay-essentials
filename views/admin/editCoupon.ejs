@@ -204,7 +204,7 @@ form button[type="submit"]:hover {
  const form = document.getElementById('editCouponForm');
 const errorContainer = document.getElementById('errorContainer');
 
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit',async (e) => {
   // Clear previous errors
   errorContainer.innerHTML = '';
   let errors = [];
@@ -256,12 +256,33 @@ form.addEventListener('submit', (e) => {
   }
 
 
-  const confirmEdit = confirm('Are you sure you want to save these changes?');
-  
-    if (!confirmEdit) {
-      e.preventDefault();
-    }
-const padachone=confirm('edited successfully')
+
+
+
+
+    e.preventDefault(); // Prevent form submission to handle it manually
+  const confirmEdit = await Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you want to save these changes?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, save changes!'
+  });
+
+  if (confirmEdit.isConfirmed) {
+    // Show success SweetAlert after confirmation
+    Swal.fire({
+      title: 'Edited Successfully!',
+      text: 'Your changes have been saved.',
+      icon: 'success',
+      confirmButtonColor: '#3085d6'
+    }).then(() => {
+      // Submit the form after SweetAlert success
+      form.submit();
+    });
+  }
 });
 
 </script>

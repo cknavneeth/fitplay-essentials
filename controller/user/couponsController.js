@@ -112,7 +112,7 @@ exports.applyCoupon = async (req, res) => {
         await coupon.save();
         await user.save();
 
-        res.json({ success: true, discountAmount, grandTotal: cart.grandTotal, items: cart.items });
+        res.json({ success: true, discountAmount, grandTotal: cart.grandTotal, items: cart.items ,   couponCode: cart.couponCode,   discount:cart.discount});
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: 'Internal server error' });

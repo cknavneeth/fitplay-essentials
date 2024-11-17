@@ -237,57 +237,74 @@ exports.addToCart = async (req, res) => {
 //     }
 // }
 
+
+
+
 exports.deleteProductCart = async (req, res) => {
-  try {
-    const { id: itemId } = req.params;
-    const userId = req.user.id;
-
-    const cart = await Cart.findOne({ userId });
-
-    if (!cart) {
-      return res.status(400).json({ success: false, error: "Cart not found" });
-    }
-
-    
-    cart.items = cart.items.filter((item) => item._id.toString() !== itemId);
-
-    
-    cart.subTotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-    cart.grandTotal = cart.subTotal;
-    if (cart.couponCode) {
-      const coupon = await Coupon.findOne({ code: cart.couponCode });
-      if (coupon) {
-        console.log(coupon, "COUPON");
-        console.log(cart.grandTotal, "GRAND TOTAL");
-
-        if (cart.grandTotal < coupon.minPurchaseAmount) {
-          cart.couponCode = null; 
-          cart.discount = 0;
-        } else {
-          let discountAmount = cart.grandTotal * (coupon.discountAmount / 100);
-          if (discountAmount > coupon.maxDiscount) {
-            discountAmount = coupon.maxDiscount;
+    try {
+      const { id: itemId } = req.params;
+      const userId = req.user.id;
+  
+      
+      const cart = await Cart.findOne({ userId });
+  
+      if (!cart) {
+        return res.status(400).json({ success: false, error: "Cart not found" });
+      }
+  
+      cart.items = cart.items.filter((item) => item._id.toString() !== itemId);
+      cart.subTotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+      cart.grandTotal = cart.subTotal;
+  
+     
+      if (cart.couponCode) {
+        const coupon = await Coupon.findOne({ code: cart.couponCode });
+  
+        if (coupon) {
+          console.log(coupon, "COUPON");
+          console.log(cart.grandTotal, "GRAND TOTAL");
+  
+         
+          if (cart.grandTotal < coupon.minPurchaseAmount) {
+            cart.couponCode = null;
+            cart.discount = 0;
+          } else {
+            
+            let discountAmount = cart.grandTotal * (coupon.discountAmount / 100);
+            if (discountAmount > coupon.maxDiscount) {
+              discountAmount = coupon.maxDiscount;
+            }
+            cart.discount = discountAmount;
+            cart.grandTotal = cart.subTotal - discountAmount;
           }
-          cart.discount = discountAmount;
-          cart.totalPrice = cart.subTotal; 
+        } else {
+          cart.couponCode = null;
+          cart.discount = 0;
         }
       } else {
-        cart.couponCode = null;
+        cart.discount = 0;
+        cart.grandTotal = cart.subTotal;
       }
+  
+      
+      await cart.save();
+  
+      res.json({
+        success: true,
+        cart: {
+          items: cart.items,
+          subTotal: cart.subTotal,
+          discount: cart.discount,
+          grandTotal: cart.grandTotal,
+          couponCode: cart.couponCode,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
     }
-
-    await cart.save();
-
-    // Respond with updated cart data
-    res.json({
-      success: true,
-      cart,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, error: "Server error" });
-  }
-};
+  };
+  
 
 //for check out page
 exports.checkoutPage = async (req, res) => {
