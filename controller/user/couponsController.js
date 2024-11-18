@@ -85,16 +85,6 @@ exports.applyCoupon = async (req, res) => {
         console.log("Discount applied:", discountAmount);
         console.log("Updated grand total:", cart.grandTotal);
       
-        // const updatedItems = cart.items.map(item => {
-        //     const updatedPrice = item.price - discountPerItem / item.quantity;
-        //     const updatedTotalPrice = updatedPrice * item.quantity;
-        //     return {
-        //         ...item.toObject(),
-        //         // price: updatedPrice,
-        //         totalPrice: updatedTotalPrice
-        //     };
-        // });
-        // cart.items = updatedItems;
 
         console.log('thingss',cart.items)
 

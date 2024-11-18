@@ -125,92 +125,7 @@ exports.addCategory = async (req, res) => {
 
   //adding offer
 
-  // exports.addCategoryOffer=async(req,res)=>{
-  //   try {
-  //     const {categoryId,percentage}=req.body
-  //     const category=await Category.findById(categoryId)
-
-  //     if(!category){
-  //       return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'category not found'})
-  //     }
-
-  //     category.categoryOffer=percentage
-  //     await category.save()
-
-  //     const products=await Product.find({category:categoryId})
-  //     console.log("Before applying offer:", products.salePrice);
-  //     for(let product of products){
-
-  //      if(!product.regularPrice){
-  //       product.regularPrice=product.salePrice
-  //      }
-
-
-
-
-  //       console.log("mygood",product.salePrice)
-  //       const discountAmount=Math.floor(product.regularPrice*(percentage/100))
-  //       product.salePrice=product.regularPrice-discountAmount
-  //       console.log("Regular Price:", product.regularPrice);
-  //       console.log("Discount Amount:", discountAmount);
-  //       console.log("Updated Sale Price:", product.salePrice);
-  //       console.log("thankan",product.salePrice)
-  //       product.productOffer=percentage
-  //       await product.save()
-  //       console.log('offer add ayitund',product)
-  //     }
-      
-
-
-
-  //     res.json({ status: true, message: `Offer of ${percentage}% applied to category and products.` });
-  //   } catch (error) {
-  //     console.error(error);
-  //   res.status(500).json({ success: false, error: 'Internal server error' });
-  //   }
-  // }
-
-
-  // exports.removeCategoryOffer=async(req,res)=>{
-  //   try {
-  //     const {categoryId}=req.body
-
-  //     const category=await Category.findById(categoryId)
-  //     if(!category){
-  //       return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'category not found'})
-  //     }
-
-  //     const percentage=category.categoryOffer
-  //     category.categoryOffer=0
-  //     await category.save()
-
-  //     const products=await Product.find({categoryId: categoryId})
-
-  //     for(const product of products){
-  //     //   const discountAmount=Math.floor(product.salePrice*(percentage/100))
-  //     //  product.salePrice = product.salePrice + discountAmount;
-  //     if(product.regularPrice){
-  //       product.salePrice=product.regularPrice
-  //     }else {
-  //       console.error(`Product ${product._id} is missing regularPrice!`);
-  //     }
-     
-      
-  //       product.productOffer=0
-  //       await product.save()
-  //     }
-
-  //     res.status(statusCodes.OK).json({success:true,error:'offer deleted successfully'})
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
-
-
-
-
-
-
+  
 
   ///revide add category offer
 
@@ -236,7 +151,7 @@ exports.addCategory = async (req, res) => {
   
         
         const discountAmount = Math.floor(product.regularPrice * (percentage / 100));
-        product.salePrice = product.regularPrice - discountAmount;
+        product.salePrice = product.salePrice - discountAmount;
         product.productOffer = percentage;
         await product.save();
       }
@@ -267,7 +182,11 @@ exports.addCategory = async (req, res) => {
       for (const product of products) {
         
         if (product.regularPrice) {
-          product.salePrice = product.regularPrice;
+          const discountAmount=product.regularPrice*(product.productOffer/100)
+          product.salePrice=product.salePrice+discountAmount
+
+
+          // product.salePrice = product.regularPrice;
         } else {
           console.error(`Product ${product._id} is missing regularPrice!`);
         }

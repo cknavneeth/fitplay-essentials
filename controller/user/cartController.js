@@ -34,10 +34,6 @@ exports.getCartPage = async (req, res) => {
       });
     }
 
-    // const cartTotal=cart.items.reduce((total,item)=>total+item.totalPrice,0)
-
-    // const discountAmount=cart.discountAmount||0
-    // const couponCode=cart.couponCode||''
     // const grandTotal=cartTotal-discountAmount
     const cartTotal = cart.items.reduce(
       (total, item) => total + item.totalPrice,
@@ -171,9 +167,9 @@ exports.addToCart = async (req, res) => {
           discountAmount = coupon.maxDiscount;
         }
         cart.discount = discountAmount;
-        //try
+        
         cart.couponCode = couponCode;
-        //try
+        
       } else {
         cart.isCouponApplied = false;
         cart.couponCode = null;
@@ -192,53 +188,6 @@ exports.addToCart = async (req, res) => {
       .json({ success: false, error: "Internal server error" });
   }
 };
-
-// exports.deleteProductCart=async(req,res)=>{
-//     try {
-//         const {id:itemId}=req.params
-//         const userId=req.user.id
-
-//         const cart=await Cart.findOne({userId})
-
-//         if(!cart){
-//             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart not found'})
-//         }
-
-//         // cart.items = cart.items.filter(item => item.productId.toString() !== productId);
-
-//         cart.items=cart.items.filter(item=>item._id.toString()!==itemId)
-
-//         cart.subTotal=cart.items.reduce((sum,items)=>sum+items.totalPrice,0)
-//         cart.grandTotal=cart.subTotal
-
-//         if(cart.couponCode){
-//             const coupon=await Coupon.findOne({code:cart.couponCode})
-//             if(coupon){
-//                 if(cart.grandTotal<coupon.minPurchaseAmount){
-//                     // return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'minimum purchase amount not met'})
-//                     cart.couponCode=null
-//                 }else{
-//                     const discountAmount=cart.grandTotal*(coupon.discountAmount/100)
-//                     if(discountAmount>coupon.maxDiscount){
-//                         discountAmount=coupon.maxDiscount
-//                     }
-//                     cart.grandTotal=cart.grandTotal-discountAmount
-//                 }
-//             }
-//             else{
-//                 return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'coupon not found'})
-//             }
-//         }
-
-//         await cart.save();
-//         res.redirect('/cart')
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
-
-
-
 
 exports.deleteProductCart = async (req, res) => {
     try {
