@@ -566,78 +566,73 @@ exports.resetPage = async (req, res) => {
   }
 };
 
+
+
 // exports.updateQuantity = async (req, res) => {
+//   let { newQuantity, productId } = req.body;
+//   const userId = req.user.id;
+
 //   try {
-//     const { newQuantity, productId } = req.body;
-//     const userId = req.user.id;
-//     console.log(newQuantity, productId, userId);
+//       const cart = await Cart.findOne({ userId });
+//       if (!cart) return res.status(400).json({ message: "Cart not found" });
 
-//     const cart = await Cart.findOne({ userId });
-//     console.log(cart, "<<cart>>>");
-//     if (!cart) return res.status(400).json({ message: "cart not found " });
-
-//     // const existingItem = cart.items.findIndex(
-//     //   (item) => item._id.toString() == productId
-//     // );
-//     const existingItem = cart.items.findIndex(
-//       (item) => item._id.toString() == productId
-//     );
-//     if (existingItem == -1)
-//       return res.status(400).json({ message: "Product not found in cart" });
-
-//     cart.items[existingItem].quantity = newQuantity;
-//     cart.items[existingItem].totalPrice =
-//       newQuantity * cart.items[existingItem].price;
-
-   
-
-//     let cartTotal=0
-//     cart.items.forEach((item)=>{
-//       cartTotal+=item.totalPrice
-//     })
-//     // let cartTotal = cart.items.reduce((total, item) => total + item.totalPrice, 0);
-
-//     let discountAmount=0
-//     let couponCode=''
-    
-
-//     if(cart.couponCode){
-
-//       const coupon= await Coupon.findOne({code:cart.couponCode,isActive:true})
-//       if(coupon){
-//         if(coupon.discountType==='percentage'){
-//           discountAmount=(coupon.discountAmount/100)*cartTotal
-//         }else if(coupon.discountType==='fixed'){
-//           discountAmount=coupon.discountAmount
-//         }
-
-//         if(coupon.maxDiscount&&discountAmount>coupon.maxDiscount){
-//           discountAmount=coupon.maxDiscount
-//         }
-    
-//         cartTotal-=discountAmount
-//         couponCode=cart.couponCode
+//       const existingItemIndex = cart.items.findIndex(
+//           item => item._id.toString() === productId
+//       );
+//       if (existingItemIndex === -1) {
+//           return res.status(400).json({ message: "Product not found in cart" });
 //       }
 
-//     }
-      
-//    const grandTotal=cartTotal
-//     await cart.save();
-//     // return res.status(200).json({ message: "Quantity updated successfully" });
-//     return res.status(200).json({
-//       message: "Quantity updated successfully",
-//       cartTotal,
-//       grandTotal,
-//       couponCode,
-//       discountAmount
-//     });
+//       if(newQuantity<0){
+//         newQuantity=1
+//         return res.status(400).json({success:false, message: "Quantity cannot be negative" });
+//       }
+
+//       cart.items[existingItemIndex].quantity = newQuantity;
+//       cart.items[existingItemIndex].totalPrice =
+//           newQuantity * cart.items[existingItemIndex].price;
+
+//       const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+//       cart.subTotal = subtotal;
+
+//       let discountAmount = 0;
+//       if (cart.couponCode) {
+//           const coupon = await Coupon.findOne({ code: cart.couponCode, isActive: true });
+//           if (coupon) {
+//               if (coupon.discountType === 'percentage') {
+//                   discountAmount = (coupon.discountAmount / 100) * subtotal;
+//               } else if (coupon.discountType === 'fixed') {
+//                   discountAmount = coupon.discountAmount;
+//               }
+//               if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
+//                   discountAmount = coupon.maxDiscount;
+//               }
+//               cart.discount = discountAmount;
+//           } else {
+//               cart.isCouponApplied = false;
+//               cart.couponCode = null;
+//               cart.discount = 0;
+//           }
+//       }
+
+//       cart.grandTotal = subtotal - discountAmount;
+
+//       await cart.save();
+//       res.json({
+//           message: "Quantity updated successfully",
+//           cartTotal: cart.subTotal,
+//           grandTotal: cart.grandTotal,
+//           couponCode: cart.couponCode,
+//           discountAmount: cart.discount,
+//           items: cart.items
+//       });
 //   } catch (error) {
-//     console.log(error);
+//       console.error(error);
+//       return res.status(500).json({ message: "Internal server error" });
 //   }
 // };
-
 exports.updateQuantity = async (req, res) => {
-  const { newQuantity, productId } = req.body;
+  let { newQuantity, productId } = req.body;
   const userId = req.user.id;
 
   try {
@@ -650,6 +645,53 @@ exports.updateQuantity = async (req, res) => {
       if (existingItemIndex === -1) {
           return res.status(400).json({ message: "Product not found in cart" });
       }
+
+      //for negative quantity
+      if(newQuantity<0){
+        newQuantity=1
+
+        cart.items[existingItemIndex].quantity=newQuantity
+        cart.items[existingItemIndex].totalPrice=newQuantity*cart.items[existingItemIndex].price
+
+        const subtotal=cart.items.reduce((sum,item)=> sum+item.totalPrice,0)
+        cart.subTotal=subtotal
+
+        let discountAmount = 0
+        
+        if(cart.couponCode){
+          const coupon=await Coupon.findOne({couponCode:couponCode})
+          if(coupon){
+            if(discountType==='percentage'){
+              discountAmount=cart.subTotal*(coupon.discountAmount/100)
+            }else if(discountType==='fixed'){
+              discountAmount=coupon.discountAmount
+            }
+            if(coupon.maxDiscount&&discountAmount>coupon.maxDiscount){
+              discountAmount=coupon.maxDiscount
+            }
+            cart.discount=discountAmount
+          }else{
+          cart.couponCode=null
+          cart.discountAmount=0
+        }
+      }
+
+        cart.grandTotal=cart.grandTotal-discountAmount
+
+        await cart.save()
+
+        return res.status(400).json({
+          success: false,
+          message: "Quantity cannot be negative. Reset to 1.",
+          cartTotal: cart.subTotal,
+          grandTotal: cart.grandTotal,
+          couponCode: cart.couponCode,
+          discountAmount: cart.discount,
+          items: cart.items,
+        });
+        
+      }
+      //for negative quantity
 
       cart.items[existingItemIndex].quantity = newQuantity;
       cart.items[existingItemIndex].totalPrice =
@@ -694,60 +736,7 @@ exports.updateQuantity = async (req, res) => {
       return res.status(500).json({ message: "Internal server error" });
   }
 };
-
-// exports.referralOffer=async(req,res)=>{
-
-//   try {
-//     const {referralCode}=req.body
-
-//   const user=await User.findOne({referalCode:referralCode})
-//   if(!user){
-//     return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'invalid refereal code'})
-//   }
-//   const userId=req.user.id
-//   const currentUser=await User.findById(userId)
-
-//   currentUser.appliedReferalCode=true
-
-//   await currentUser.save()
-
-//   const currentUserWallet=await Wallet.findOne({userId:userId})
-
-//   const userWallet =await Wallet.findOne({userId:user._id})
-
-//   const amount=500
-
-//   currentUserWallet.balance+=amount
-
-//   currentUserWallet.transaction.push({
-//     transactionType:'Credit',
-//     amount,
-//     status:'completed'
-
-    
-//   })
-
-//   await currentUserWallet.save()
-
-//   userWallet.balance+=amount
-
-//   userWallet.transaction.push({
-//     transactionType:'Credit',
-//     amount,
-//     status:'completed'
-//   })
-
-//   await userWallet.save()
-
-//   return res.status(statusCodes.OK).json({success:true,error:'refferal amount added to wallet'})
-// }
-// catch (error) {
-//     console.error(error)
-//   }
-// }
-  
-
-                   
+               
  // Define these if not already defined
 
  exports.referralOffer = async (req, res) => {
@@ -820,4 +809,7 @@ exports.updateQuantity = async (req, res) => {
       return res.status(500).json({ success: false, error: 'An unexpected error occurred' });
   }
 };
+
+
+
 

@@ -11,6 +11,7 @@ const wishlistController=require('../controller/user/wishlistController')
 const couponsController=require('../controller/user/couponsController')
 const walletController=require('../controller/user/walletController')
 const razorpayController=require('../controller/user/razorpayController')
+const invoiceController=require('../controller/user/invoiceController')
 
 console.log("hello")
 router.get("/",(req, res) => {
@@ -143,6 +144,8 @@ router.post('/returnProduct/:orderId',verifyUser,cartController.returnProduct)
 // router.post('/createOrder',verifyUser,razorpayController.createOrder)
 
 router.post('/applyReferral',verifyUser,userController.referralOffer)
+
+router.get('/invoice/:orderId',verifyUser,invoiceController.getInvoice)
 
 
 

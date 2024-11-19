@@ -435,6 +435,11 @@ exports.handleCod = async (req, res) => {
     ]);
     console.log("ithan ente cart", cart.items);
 
+    //for cash on limit
+    if(cart.grandTotal>1000){
+      return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cash on delivery is possible only for orders below 1000'})
+    }
+
     const selectedAddress = user.addresses.find(
       (address) => address._id.toString() === selectedAddressId
     );
