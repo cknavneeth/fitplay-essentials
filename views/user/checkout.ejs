@@ -331,7 +331,7 @@
 // let grandtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 // console.log('Grandtotal:', grandtotal);
 
-console.log('lllll',cartItems)
+
 
 async function placeOrder(event) {
     event.preventDefault(); // Prevent form submission
@@ -401,7 +401,7 @@ async function placeOrder(event) {
                                         razorpaySignature: response.razorpay_signature,
                                         address: address,
                                         // items: cartItems,  
-                                        userId,    // Include user ID if available
+                                        userId, 
                                         paymentMethod: paymentMethod,
                                         totalAmount: grandTotal
                                     })
@@ -425,15 +425,10 @@ async function placeOrder(event) {
 
       // Show the modal with order details
       $('#orderDetailsModal').modal('show');  
-     
+                            });
 
-
-
-
-
-
-                                        });
                                     } else {
+                                        alert('bow bow')
                                         Swal.fire({
                                             icon: 'error',
                                             title: 'Order Failed',
@@ -457,7 +452,57 @@ async function placeOrder(event) {
 
                         const rzp = new Razorpay(razorpayOptions);
                         rzp.open();
+                        //for payment failures
+                        rzp.on('payment.failed', function (response) {
+                            console.error('Payment failed:', response.error);
+                            const paymentId = response.error?.metadata?.payment_id || "Missing Payment ID";
+                            const orderId = response.error?.metadata?.order_id || "Missing Order ID";
+                            // Save the failed order details
+                            fetch('/saveFailedOrder', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    razorpayPaymentId: paymentId,
+                                    razorpayOrderId: orderId,
+                                    razorpaySignature: response.razorpay_signature || "Missing Signature",
+                                        address: address,
+                                        // items: cartItems,  
+                                        userId, 
+                                        paymentMethod: paymentMethod,
+                                        totalAmount: grandTotal
+                                })
+                            })
+                                .then(res => res.json())
+                                .then(saveResponse => {
+                                    console.log("Save Response:", saveResponse);
+                                    if (saveResponse.success) {
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: 'Payment Failed',
+                                            text: 'Order saved with failed payment status. Please try again.'
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Order Save Failed',
+                                            text: saveResponse.error
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error saving failed order:', error);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'Could not save order details. Please contact support.'
+                                    });
+                                });
+                        });
+                        //for payment failures
                     } else {
+                        alert('myavu')
                         Swal.fire({
                             icon: 'error',
                             title: 'Order Creation Failed',
@@ -465,6 +510,7 @@ async function placeOrder(event) {
                         });
                     }
                 } catch (error) {
+                    alert('kaaaa')
                     console.error('Error creating Razorpay order:', error);
                     Swal.fire({
                         icon: 'error',
@@ -496,6 +542,7 @@ async function placeOrder(event) {
                             window.location.href ='/cart';
                         });
                     } else {
+                
                         Swal.fire({
                             icon: 'error',
                             title: 'Order Failed',

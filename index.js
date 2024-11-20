@@ -118,25 +118,6 @@ app.post("/order", async (req, res) => {
 
 // const secret_key = process.env.RAZORPAY_SECRET;
 
-// app.post('/paymentCapture', express.raw({ type: 'application/json' }), (req, res) => {
-//     // Validate signature
-//     const data = crypto.createHmac('sha256', secret_key);
-//     data.update(req.body);
-//     const digest = data.digest('hex');
-
-//     // Compare the calculated digest with the signature in the headers
-//     if (digest === req.headers['x-razorpay-signature']) {
-//         console.log('Request is legit');
-
-//         // Process the payment and store info in the database
-//         res.json({
-//             status: 'ok',
-//         });
-//     } else {
-//         console.error('Invalid signature:', req.headers['x-razorpay-signature']);
-//         res.status(400).send('Invalid signature');
-//     }
-// });
 
 app.use((req, res, next) => {
   if (req.path === "/paymentCapture") {
@@ -177,20 +158,6 @@ app.post(
         // Parse the webhook payload
         const paymentData = req.body;
 
-        // Process the verified payment
-        // You should implement your order completion logic here
-        // For example, update order status, send confirmation email, etc.
-
-        // {
-        //     razorpayPaymentId: 'pay_PKNgLu3ALQ5ZAJ',
-        //     razorpayOrderId: 'order_PKNgGrd6lLxQuf',
-        //     razorpaySignature: '4d210c6a5bff9fec3f24155a12eafe50553f43b6334d9424832118a5fdb7e170',
-        //     address: '67291c5f11afa16b74e151a1',
-        //     items: [ { price: 200, quantity: 2 }, { price: 100, quantity: 1 } ],
-        //     userId: '6728a1ecff33e425dec6a64f',
-        //     paymentMethod: 'razorpay',
-        //     totalAmount: 500
-        //   }
         const items = [];
         const cart = await Cart.findOne({ userId: req.body.userId }).populate(
           "items.productId"
@@ -277,6 +244,7 @@ app.post(
           status: "error",
           error: "Invalid signature",
         });
+       
       }
     } catch (error) {
       console.error("Payment verification error:", error);
@@ -288,77 +256,218 @@ app.post(
   }
 );
 
-// app.post('/paymentCapture', express.raw({ type: 'application/json' }), async (req, res) => {
+
+
+
+
+
+
+
+
+// app.post(
+//   "/paymentCapture",
+//   express.raw({ type: "application/json" }),
+//   async (req, res) => {
 //     try {
-//         const razorpaySignature = req.body.razorpaySignature // Typically in headers for webhooks
-//         if (!razorpaySignature) {
-//             console.log('Signature not found in headers');
-//             return res.status(400).json({ error: 'No signature provided' });
+//       const razorpaySignature = req.body.razorpaySignature;
+
+//       if (!razorpaySignature) {
+//         console.log("No Razorpay signature found in headers");
+//         return res.status(400).json({ error: "No signature provided" });
+//       }
+
+//       // Get the raw body as a string
+//       const rawBody = req.body;
+//       console.log(rawBody, "ASDF<<<>>>");
+//       // Debug logs
+//       console.log("Received webhook payload:", rawBody);
+//       console.log("Received signature:", razorpaySignature);
+
+//       // Calculate expected signature
+//       const expectedSignature = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_SECRET)
+//       .update(req.body.razorpayOrderId + "|" + req.body.razorpayPaymentId)
+//       .digest("hex");
+
+//       console.log("Calculated signature:", expectedSignature);
+
+//       // Verify signature
+//       if (expectedSignature === razorpaySignature) {
+//         // Parse the webhook payload
+//         console.log('lalluuu',razorpaySignature)
+//         if(req.body.paymentStatus==='failed'){
+//           console.log('payment failed')
+//         }else{
+//         const paymentData = req.body;
+
+//         const items = [];
+//         const cart = await Cart.findOne({ userId: req.body.userId }).populate(
+//           "items.productId"
+//         );
+//         console.log(cart,"<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>");
+//         for (let i = 0; i < cart.items.length; i++) {
+//           const item = {
+//             productId: cart.items[i].productId._id,
+//             productName: cart.items[i].productId.productName,
+//             image: cart.items[i].productId.productImage[0],
+//             quantity: cart.items[i].quantity,
+//             price: cart.items[i].price,
+//             totalPrice: cart.items[i].totalPrice,
+//             size: cart.items[i].size,
+//           };
+//           items.push(item);
 //         }
+//         console.log(items);
+//         const user = await User.findById(req.body.userId);
+//         const addressIndex = user.addresses.findIndex(
+//           (address) => address._id.toString() == req.body.address
+//         );
+//         if (addressIndex == -1) console.log("Address not found");
+//         const address = user.addresses[addressIndex];
 
-//         const rawBody = req.body; // Raw payload for signature verification
-//         console.log('Received webhook raw payload:', rawBody);
+//         console.log(req.body);
+//         const productOffer = req.body.productOffer || 0;
+//         const grandTotal = req.body.grandTotal || req.body.totalAmount; 
+//         const discount = req.body.discount || 0;
 
-//         // Parse raw body to JSON if necessary
-//         let paymentData;
-//         try {
-//             paymentData = JSON.parse(rawBody.toString());
-//         } catch (parseError) {
-//             console.error('Failed to parse JSON from rawBody:', parseError);
-//             return res.status(400).json({ error: 'Invalid JSON in webhook payload' });
-//         }
 
-//         console.log('Parsed payment data:', paymentData);
 
-//         // Calculate expected signature
-//         const expectedSignature = crypto
-//             .createHmac('sha256', process.env.RAZORPAY_SECRET)
-//             .update(paymentData.razorpayOrderId + "|" + paymentData.razorpayPaymentId)
-//             .digest('hex');
 
-//         console.log('Calculated signature:', expectedSignature);
 
-//         // Verify signature
-//         if (expectedSignature === razorpaySignature) {
-//             console.log('Signature verified successfully.');
 
-//             // Create a new order in the Order collection with the verified payment details
-//             const newOrder = new Order({
-//                 user: paymentData.userId,
-//                 oid: paymentData.razorpayOrderId,
-//                 items: paymentData.items,
-//                 address: paymentData.address,
-//                 paymentMethod: 'razorpay',
-//                 paymentStatus: 'Completed',
-//                 orderStatus: 'Processing',
-//                 totalAmount: paymentData.totalAmount,
-//                 orderDate: new Date()
-//             });
+//         const newOrder = new Order({
+//           user: req.body.userId,
+//           oid: paymentData.razorpayOrderId,
+//           paymentId: paymentData.razorpayPaymentId,
+//           items,
+//           address,
+//           paymentMethod: "razorpay",
+//           paymentStatus: "Completed",
+//           totalAmount: req.body.totalAmount,
+//           orderDate: new Date(),
 
-//             // Save the new order
-//             const savedOrder = await newOrder.save();
-//             console.log('Order saved successfully:', savedOrder);
-
-//             return res.json({
-//                 status: 'ok',
-//                 message: 'Payment verified and order saved successfully',
-//                 orderId: paymentData.razorpayOrderId
-//             });
-//         } else {
-//             console.log('Signature verification failed');
-//             return res.status(400).json({
-//                 status: 'error',
-//                 error: 'Invalid signature'
-//             });
-//         }
-//     } catch (error) {
-//         console.error('Payment verification error:', error);
-//         return res.status(500).json({
-//             status: 'error',
-//             error: 'Internal server error'
+//           productOffer,
+//           grandTotal,
+//           discount
 //         });
+
+//         const savedOrder = await newOrder.save();
+
+//         //for quantity
+       
+
+//         const handleQuantity=newOrder.items.map(async(item)=>{
+//           const product=await Product.findById(item.productId)
+//           if(product){
+//             const sizeStock=product.sizes.find(s=>s.size===item.size)
+//             if(sizeStock){
+//               sizeStock.stock-=item.quantity
+//             }
+//             await product.save()
+//           }
+//         })
+//         await Promise.all(handleQuantity)
+
+//         //for quantity
+//         console.log("Order saved successfully:", savedOrder);
+
+//         await Cart.findByIdAndDelete(cart._id);
+
+//         return res.json({
+//           status: "ok",
+//           message: "Payment verified successfully",
+//           orderId: paymentData.razorpayOrderId, //
+//           items: savedOrder.items,   // Array of ordered items
+//           grandTotal: savedOrder.grandTotal || savedOrder.totalAmount,
+//         });
+//       }
+//       } else {
+//         // console.log("Signature verification failed");
+//         // return res.status(400).json({
+//         //   status: "error",
+//         //   error: "Invalid signature",
+//         // });
+//         console.log('Signature verification failed');
+    
+
+//       }
+//     } catch (error) {
+//       console.error("Payment verification error:", error);
+      
+//       const paymentData = req.body;
+    
+//       const items = [];
+//       const cart = await Cart.findOne({ userId: req.body.userId }).populate("items.productId");
+//       console.log(cart, "<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>");
+      
+//       for (let i = 0; i < cart.items.length; i++) {
+//           const item = {
+//               productId: cart.items[i].productId._id,
+//               productName: cart.items[i].productId.productName,
+//               image: cart.items[i].productId.productImage[0],
+//               quantity: cart.items[i].quantity,
+//               price: cart.items[i].price,
+//               totalPrice: cart.items[i].totalPrice,
+//               size: cart.items[i].size,
+//           };
+//           items.push(item);
+//       }
+      
+//       console.log(items);
+//       const user = await User.findById(req.body.userId);
+//       const addressIndex = user.addresses.findIndex((address) => address._id.toString() == req.body.address);
+//       if (addressIndex == -1) console.log("Address not found");
+//       const address = user.addresses[addressIndex];
+  
+//       console.log(req.body);
+//       const productOffer = req.body.productOffer || 0;
+//       const grandTotal = req.body.grandTotal || req.body.totalAmount; 
+//       const discount = req.body.discount || 0;
+  
+//       const newOrder = new Order({
+//           user: req.body.userId,
+//           oid: paymentData.razorpayOrderId,
+//           paymentId: paymentData.razorpayPaymentId,
+//           items,
+//           address,
+//           paymentMethod: "razorpay",
+//           paymentStatus: "failed",
+//           totalAmount: req.body.totalAmount,
+//           orderDate: new Date(),
+//           productOffer,
+//           grandTotal,
+//           discount
+//       });
+  
+//       // Save the new order regardless of payment success
+//       const savedOrder = await newOrder.save();
+  
+//       return res.json({
+//           success: false,
+//           message: "Payment failed successfully",
+//           orderId: savedOrder.oid, // Use savedOrder.oid to get the order ID
+//           items: savedOrder.items,   // Array of ordered items
+//           grandTotal: savedOrder.grandTotal || savedOrder.totalAmount,
+//       });
+
+
+
+
+
+
+
+//       // return res.status(500).json({
+//       //   status: "error",
+//       //   error: "Internal server error",
+//       // });
 //     }
-// });
+//   }
+// );
+
+
+
+   
+
 // //everything for razorpay
 
 app.listen(PORT, function () {

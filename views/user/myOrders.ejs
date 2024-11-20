@@ -231,6 +231,7 @@ td .btn {
                                         <td>₹<%= order.items.reduce((acc, item) => acc + item.totalPrice, 0).toFixed(2) %></td>
                                         <td>₹<%= order.grandTotal %></td>
                                         <td><span><%= order.paymentMethod || 'N/A' %></span></td>
+                                        <td><span><%=order.paymentStatus|| 'N/A'%> </span></td>
                                         <td><span><%= order.orderStatus || 'N/A' %></span></td>
                                         <td>
                                             <input type="hidden" name="orderId" value="<%= order._id %>">
@@ -244,7 +245,9 @@ td .btn {
                                                 <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
                                             <% } else if (order.orderStatus === 'Returned') { %>
                                                 <button type="button" class="btn btn-secondary" disabled>Returned</button>
-                                            <% } else { %>
+                                                <% } else if (order.paymentStatus === 'Failed') { %>
+                                                    <button type="button" class="btn btn-secondary pay-again-btn" data-order-id="<%= order._id %>">Pay again</button>
+                                                <%} else { %>
                                                 <span>N/A</span>
                                             <% } %>
                                         </td>

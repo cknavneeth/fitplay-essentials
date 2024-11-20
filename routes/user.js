@@ -12,6 +12,9 @@ const couponsController=require('../controller/user/couponsController')
 const walletController=require('../controller/user/walletController')
 const razorpayController=require('../controller/user/razorpayController')
 const invoiceController=require('../controller/user/invoiceController')
+const Order=require('../models/orderModel')
+const Cart=require('../models/cartModel')
+const {User}=require('../models/userModel')
 
 console.log("hello")
 router.get("/",(req, res) => {
@@ -146,6 +149,75 @@ router.post('/returnProduct/:orderId',verifyUser,cartController.returnProduct)
 router.post('/applyReferral',verifyUser,userController.referralOffer)
 
 router.get('/invoice/:orderId',verifyUser,invoiceController.getInvoice)
+
+router.post('/saveFailedOrder',verifyUser,async(req,res)=>{
+  const { razorpayOrderId, address, userId, paymentMethod, totalAmount, failureReason, items, productOffer, grandTotal, discount } = req.body;
+
+    try {
+      const paymentData = req.body;
+      console.log('gerbil',paymentData)
+      const items = [];
+      const cart = await Cart.findOne({ userId: req.body.userId }).populate(
+        "items.productId"
+      );
+      console.log(cart,"<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>");
+      for (let i = 0; i < cart.items.length; i++) {
+        const item = {
+          productId: cart.items[i].productId._id,
+          productName: cart.items[i].productId.productName,
+          image: cart.items[i].productId.productImage[0],
+          quantity: cart.items[i].quantity,
+          price: cart.items[i].price,
+          totalPrice: cart.items[i].totalPrice,
+          size: cart.items[i].size,
+        };
+        items.push(item);
+      }
+      console.log(items);
+      const user = await User.findById(req.body.userId);
+      const addressIndex = user.addresses.findIndex(
+        (address) => address._id.toString() == req.body.address
+      );
+      if (addressIndex == -1) console.log("Address not found");
+      const address = user.addresses[addressIndex];
+
+      console.log(req.body);
+      const productOffer = req.body.productOffer || 0;
+      const grandTotal = req.body.grandTotal || req.body.totalAmount; 
+      const discount = req.body.discount || 0;
+
+
+
+
+
+
+      const newOrder = new Order({
+        user: req.body.userId,
+        oid: paymentData.razorpayOrderId || "N/A",
+        paymentId: paymentData.razorpayPaymentId,
+        items,
+        address,
+        paymentMethod: "razorpay",
+        paymentStatus: "Failed",
+        totalAmount: req.body.totalAmount,
+        orderDate: new Date(),
+
+        productOffer,
+        grandTotal,
+        discount
+      });
+
+      const savedOrder = await newOrder.save();
+
+
+        // Save the failed order to the database
+
+        res.json({ success: true, message: 'Failed order details saved successfully.' });
+    } catch (error) {
+        console.error('Error saving failed order:', error);
+        res.status(500).json({ success: false, message: 'Failed to save failed order details.' });
+    }
+})
 
 
 
