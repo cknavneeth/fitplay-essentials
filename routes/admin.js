@@ -18,6 +18,7 @@ const orderController=require('../controller/admin/orderController')
 const couponController=require('../controller/admin/couponController')
 const salesController=require('../controller/admin/salesController')
 const {adminLoggedIn}=require('../middleware/adminMiddleware')
+const dashboardController=require('../controller/admin/dashboardController')
 
 
 router.get("/admin",AdminLoggedIn,(req,res)=>{
@@ -27,7 +28,7 @@ router.get("/admin",AdminLoggedIn,(req,res)=>{
 
 router.post("/adminLogin",adminController.loginRedirect)
 
-router.get("/dashboard",adminController.dashboardRedirect)
+// router.get("/dashboard",adminController.dashboardRedirect)
 
 
 router.get('/users',verifyAdmin, customerController.listCustomers);
@@ -111,5 +112,7 @@ router.get('/download-sales-report-pdf',salesController. downloadSalesReportPdf)
 
 
 router.post('/returnRequest/:orderId',orderController.returnRequest)
+
+router.get('/dashboard',dashboardController.getDashboard)
 
 module.exports=router

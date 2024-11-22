@@ -428,7 +428,7 @@ async function placeOrder(event) {
                             });
 
                                     } else {
-                                        alert('bow bow')
+                                    
                                         Swal.fire({
                                             icon: 'error',
                                             title: 'Order Failed',
@@ -502,7 +502,7 @@ async function placeOrder(event) {
                         });
                         //for payment failures
                     } else {
-                        alert('myavu')
+                        
                         Swal.fire({
                             icon: 'error',
                             title: 'Order Creation Failed',
@@ -510,7 +510,7 @@ async function placeOrder(event) {
                         });
                     }
                 } catch (error) {
-                    alert('kaaaa')
+                    
                     console.error('Error creating Razorpay order:', error);
                     Swal.fire({
                         icon: 'error',

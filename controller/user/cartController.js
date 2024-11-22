@@ -630,7 +630,19 @@ exports.getmyOrders = async (req, res) => {
     const orders = await Order.find({ user: userId }).populate(
       "items.productId"
     );
-    res.render("user/myOrders", { user, orders });
+
+
+
+     const ordersWithAddress = orders.map(order => {
+      // Check if order has an address object and safely build the full address
+      const fullAddress = order.address ? 
+        `${order.address.name}, ${order.address.city}, ${order.address.state}, ${order.address.
+          pincode}` : 
+        'No address available';
+      
+      return { ...order.toObject(), fullAddress, items: order.items };
+    });
+    res.render("user/myOrders", { user ,orders:ordersWithAddress});
   } catch (error) {
     console.error(error);
   }

@@ -1,16 +1,85 @@
 
 <%- include('../../views/layout/admin/header')%>
+
+<script>
+    
+    const salesData = <%- JSON.stringify(report) %>;
+    console.log('Sales Data:', salesData);
+</script>
 <section class="content-main">
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Dashboard</h2>
         </div>
     </div>
+
+
+    <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+    </div>
 </section>
-
-
-
 <%- include('../../views/layout/admin/footer') %>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    
+
+
+
+ <script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+
+    // const salesData = {
+    //     totalOrders: 100,
+    //     totalAmount: 50000,
+    //     totalDeliveredOrders: 20,
+    //     totalCancelledOrders: 5,
+    //     totalReturnedOrders: 2
+    // };
+
+  
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Orders', 'Total Revenue', 'Delivered', 'Cancelled', 'Returned'],
+            datasets: [{
+                label: 'Sales Metrics',
+                data: [
+                    salesData.totalOrders,
+                    salesData.totalAmount,
+                    salesData.totalDeliveredOrders,
+                    salesData.totalCancelledOrders,
+                    salesData.totalReturnedOrders
+                ],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script> 
 
 
 

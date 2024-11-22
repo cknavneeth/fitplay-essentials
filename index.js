@@ -20,6 +20,7 @@ const Order = require("./models/orderModel");
 const { User } = require("./models/userModel");
 const Cart = require("./models/cartModel");
 const Product = require("./models/productModel");
+const cart = require("./models/cartModel");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_ID,
@@ -133,10 +134,51 @@ app.post(
     try {
       const razorpaySignature = req.body.razorpaySignature;
 
+      //for failed saved orders
+      //for failed saved orders
+    
+     
+
+      //for failed saved orders
+      //for failed saved orders
+      //for failed savede orders
+
       if (!razorpaySignature) {
         console.log("No Razorpay signature found in headers");
         return res.status(400).json({ error: "No signature provided" });
       }
+      //failed orders
+      //failed
+
+
+      console.log("User ID :", req.body.userId);
+      const cart = await Cart.findOne({ userId:req.body.userId}).populate("items.productId");
+
+      console.log('allahhhyu',cart)
+
+      const retry = req.body.retry;
+      console.log(req.body);
+      if(retry){
+        const orderId = req.body.orderId;
+        const order = await Order.findById(orderId);
+
+        if(!order){
+          return res.status(400).json({error:"Order not found"});
+        }else{
+          order.paymentStatus = "Completed";
+          await order.save();
+          return res.status(200).json({error:"Payment Success",success:true})
+        }
+      }
+
+      if (!retry &&(!cart || cart.items.length === 0)) {
+        return res.status(400).json({
+          success: false,
+          error: "Your cart is empty! Add this product to the cart from the shop.",
+        });
+      }
+
+      //failed orders
 
       // Get the raw body as a string
       const rawBody = req.body;

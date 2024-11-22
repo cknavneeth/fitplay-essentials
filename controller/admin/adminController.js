@@ -24,7 +24,7 @@ exports.loginRedirect = async (req, res) => {
           console.log("Login successful");
 
  
-          const adminToken=jwt.sign({id:admin._id},process.env.ADMIN_SECRET_KEY,{expiresIn:"12d"})
+          const adminToken=jwt.sign({id:admin._id},process.env.ADMIN_SECRET_KEY,{expiresIn:"30d"})
 
           res.cookie("adminToken",adminToken,{
               httpOnly:true,
@@ -49,7 +49,7 @@ exports.adminLogout=async (req,res)=>{
 }
 
 
-exports.dashboardRedirect = (req, res) => {
-  return res.render("admin/dashboard");
-};
+// exports.dashboardRedirect = (req, res) => {
+//   return res.render("admin/dashboard");
+// };
    
