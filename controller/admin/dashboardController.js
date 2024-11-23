@@ -55,6 +55,36 @@ const getTopSellingCategories=async()=>{
     ])
 }
 const getTopSellingProducts=async()=>{
+    const result = await Order.aggregate([
+        { $unwind: "$items" },
+        { 
+            $group: {
+                _id: "$items.productId",
+                totalSales: { $sum: "$items.quantity" }
+            }
+        },
+        {
+            $lookup: {
+                from: "products",
+                localField: "_id",
+                foreignField: "_id",
+                as: "productDetails"
+            }
+        },
+        { $unwind: "$productDetails" },
+        {
+            $project: {
+                _id: 0, 
+                productName: "$productDetails.productName", 
+                totalSales: 1 
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 }
+    ]);
+
+    console.log("Top Selling Products:", result);
+    return result;
 
 }
 
@@ -164,6 +194,7 @@ exports.getDashboard = async (req, res) => {
             startDate,
             endDate,
             categories: topSellingCategories,
+            products: topSellingProducts
         });
     } catch (error) {
         console.error(error);
