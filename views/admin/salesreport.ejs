@@ -422,18 +422,39 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    document.getElementById('downloadExcelButton').addEventListener('click', function () {
+    document.getElementById('downloadExcelButton').addEventListener('click',async function () {
         // Get data from the form or HTML structure
+        const response = await fetch('/forOrders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch order details');
+        }
+
+        const orders = await response.json();
+
+        // Format the orders for Excel
         const reportData = [
-            ['Field', 'Value'], // Header row
-            ['Total Orders', document.querySelector('input[name="total_orders"]').value],
-            ['Total Amount', document.querySelector('input[name="total_amount"]').value],
-            ['Total Coupon Discount', document.querySelector('input[name="total_coupon_discount"]').value],
-            ['Total Delivered Orders', document.querySelector('input[name="total_delivered_orders"]').value],
-            ['Total Returned Orders', document.querySelector('input[name="total_returned_orders"]').value],
-            ['Total Shipped Orders', document.querySelector('input[name="total_shipped_orders"]').value],
-            ['Product Offer', document.querySelector('input[name="product_offer"]').value],
+            ['Order ID', 'Username', 'Email', 'Product Name', 'Quantity', 'Total Price', 'Order Date', 'Order Status', 'Total Amount'] // Header row
         ];
+
+        orders.forEach(order => {
+            order.items.forEach(item => {
+                reportData.push([
+                    order.oid,
+                    order.user?.username || 'N/A',
+                    order.user?.email || 'N/A',
+                    item.productId?.productName || 'N/A',
+                    item.quantity,
+                    item.totalPrice,
+                    new Date(order.orderDate).toLocaleDateString(),
+                    order.orderStatus,
+                    order.totalAmount
+                ]);
+            });
+        });
 
         // Create a worksheet
         const worksheet = XLSX.utils.aoa_to_sheet(reportData);

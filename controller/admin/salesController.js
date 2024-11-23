@@ -167,3 +167,12 @@ exports.downloadSalesReportPdf = async (req, res) => {
       res.status(500).send('Error generating PDF');
     }
   };
+
+
+
+  //for excel file 
+
+  
+
+
+  //for excel file

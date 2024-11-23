@@ -453,6 +453,7 @@ async function placeOrder(event) {
                         const rzp = new Razorpay(razorpayOptions);
                         rzp.open();
                         //for payment failures
+                        
                         rzp.on('payment.failed', function (response) {
                             console.error('Payment failed:', response.error);
                             const paymentId = response.error?.metadata?.payment_id || "Missing Payment ID";

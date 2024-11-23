@@ -221,5 +221,22 @@ router.post('/saveFailedOrder',verifyUser,async(req,res)=>{
 
 
 
+//for excel saving order
+
+router.post('/forOrders',async(req,res)=>{
+  try {
+    const orders=await Order.find()
+    .populate('user', 'username email')
+    .populate('items.productId', 'productName')
+    .exec()
+
+    res.json(orders)
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+
+
 module.exports = router;
 
