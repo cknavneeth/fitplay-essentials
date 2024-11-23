@@ -11,6 +11,54 @@ const statusCodes=require('../../config/keys.js')
 const moment=require('moment')
 
 
+
+const getTopSellingCategories=async()=>{
+    return await Order.aggregate([
+        {
+            $unwind:"$items"
+        },
+        {
+            $lookup:{
+                from:"products",
+                localField:"items.productId",
+                foreignField:"_id",
+                as:'productDetails'
+            }
+        },
+        {
+            $unwind:"$productDetails"
+        },
+        {
+            $group:{
+                _id:"$productDetails.category",
+                totalSales:{$sum:"$items.quantity"},
+            }
+        },
+        {
+            $lookup: {
+                from: "categories",
+                localField: "_id",
+                foreignField: "_id",
+                as: "categoryDetails"
+            }
+        },
+        { $unwind: "$categoryDetails" },
+        {
+            $project: {
+                _id: 0,
+                categoryName: "$categoryDetails.name",
+                totalSales: 1
+            }
+        },
+        {$sort:{totalSales:-1}},
+        {$limit:10}
+    ])
+}
+const getTopSellingProducts=async()=>{
+
+}
+
+
 const getSalesReport=async(filter, start, end)=>{
     let startDate, endDate;
 
@@ -91,9 +139,16 @@ exports.getDashboard = async (req, res) => {
     console.log('arshad')
     try {
         console.log('IVDE')
-        const filter = 'yearly';
+        const filter=req.query.filter||'daily'
+        const startDate = req.query.start || null;
+        const endDate = req.query.end || null;
 
-        const report = await getSalesReport(filter);
+        const report = await getSalesReport(filter, startDate, endDate);
+
+        //for top selloing category and products
+        const topSellingCategories = await getTopSellingCategories();
+        const topSellingProducts = await getTopSellingProducts();
+        //for top selling category and products
 
         console.log('Report:', report); // Debug log
 
@@ -105,6 +160,10 @@ exports.getDashboard = async (req, res) => {
                 totalCancelledOrders: 0,
                 totalReturnedOrders: 0,
             },
+            filter,
+            startDate,
+            endDate,
+            categories: topSellingCategories,
         });
     } catch (error) {
         console.error(error);

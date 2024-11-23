@@ -1,5 +1,178 @@
 
 <%- include('../../views/layout/admin/header')%>
+<style>
+/* General Container */
+.filter-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 2rem auto;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Label Styling */
+.filter-label {
+    display: block;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #4e73df;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Styled Select */
+.styled-select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    color: #333;
+    background: linear-gradient(to right, #f9fafc, #e3e7f3);
+    border: 2px solid #4e73df;
+    border-radius: 12px;
+    appearance: none;
+    outline: none;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Arrow Icon for Select */
+.styled-select::after {
+    content: '';
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #4e73df;
+    pointer-events: none;
+}
+
+/* Hover and Focus States */
+.styled-select:hover,
+.styled-select:focus {
+    border-color: #2e59d9;
+    background: linear-gradient(to right, #e3e7f3, #d4d9f6);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+}
+
+/* Styled Button */
+.styled-button {
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(to right, #4e73df, #2e59d9);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.styled-button:hover {
+    background: linear-gradient(to right, #2e59d9, #224abe);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.styled-button:active {
+    background: #1e4cb6;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(2px);
+}
+
+/* Animation for Button Hover */
+@keyframes button-hover {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    100% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.styled-button:hover {
+    animation: button-hover 0.3s ease-in-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .filter-container {
+        width: 90%;
+    }
+    .styled-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+/*for category*/
+.dashboard-section {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    margin-bottom: 20px;
+}
+
+.top-categories {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.top-categories thead tr {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.top-categories th, .top-categories td {
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.top-categories tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.top-categories tbody tr:hover {
+    background-color: #d9fdd3;
+    cursor: pointer;
+    transform: scale(1.01);
+    transition: transform 0.2s;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+</style>
 
 <script>
     
@@ -13,10 +186,67 @@
         </div>
     </div>
 
+    <!--for filter-->
+    <div id="customDateInputs" style="display: none;">
+        <label for="start">Start Date:</label>
+        <input type="date" name="start" id="start">
+        
+        <label for="end">End Date:</label>
+        <input type="date" name="end" id="end">
+    </div>
+
+    <div class="filter-container">
+        <label for="filter" class="filter-label">Select Report Filter:</label>
+        <form id="dashboardFilterForm" action="/dashboard" method="GET">
+            <select name="filter" id="filter" class="styled-select" onchange="handleFilterChange()">
+                <option value="daily" <%= filter === 'daily' ? 'selected' : '' %>>Daily</option>
+                <option value="weekly" <%= filter === 'weekly' ? 'selected' : '' %>>Weekly</option>
+                <option value="monthly" <%= filter === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                <option value="yearly" <%= filter === 'yearly' ? 'selected' : '' %>>Yearly</option>
+                <option value="custom" <%= filter === 'custom' ? 'selected' : '' %>>Custom Range</option>
+            </select>
+            <button type="submit" class="styled-button">Submit</button>
+        </form>
+    </div>
+     <!--for filter-->
+
+
+
+    
+
 
     <div class="chart-container">
         <canvas id="salesChart"></canvas>
     </div>
+
+
+
+
+
+
+     <!--top selling category-->
+     <div class="dashboard-section">
+        <h2>Top Selling Categories</h2>
+        <table class="top-categories">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Units Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% categories.forEach(category => { %>
+                    <tr>
+                        <td><strong><%= category.categoryName %></strong></td>
+                        <td><%= category.totalSales %> units</td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    
+
+     <!--top selling brands-->
 </section>
 <%- include('../../views/layout/admin/footer') %>
 
@@ -29,29 +259,21 @@
 
  <script>
     const ctx = document.getElementById('salesChart').getContext('2d');
-
-    // const salesData = {
-    //     totalOrders: 100,
-    //     totalAmount: 50000,
-    //     totalDeliveredOrders: 20,
-    //     totalCancelledOrders: 5,
-    //     totalReturnedOrders: 2
-    // };
-
-  
-
     const chart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Total Orders', 'Total Revenue', 'Delivered', 'Cancelled', 'Returned'],
+            labels: ['Total Orders', 'Delivered', 'Cancelled', 'Returned','Shipped','Total coupon discount',],
             datasets: [{
                 label: 'Sales Metrics',
                 data: [
                     salesData.totalOrders,
-                    salesData.totalAmount,
                     salesData.totalDeliveredOrders,
                     salesData.totalCancelledOrders,
-                    salesData.totalReturnedOrders
+                    salesData.totalReturnedOrders,
+                    salesData.totalShippedOrders,
+                    // salesData.totalProductOffers,
+                    salesData.totalCoupondiscount,
+                    
                 ],
                 backgroundColor: [
                     'rgba(75, 192, 192, 0.2)',
@@ -81,6 +303,33 @@
     });
 </script> 
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const filterSelect = document.getElementById('filter');
+    const customDateInputs = document.getElementById('customDateInputs');
+
+    // Show/hide custom date inputs on page load based on the selected filter
+    if (filterSelect.value === 'custom') {
+        customDateInputs.style.display = 'block';
+    } else {
+        customDateInputs.style.display = 'none';
+    }
+});
+    function handleFilterChange() {
+        const filterSelect = document.getElementById('filter').value;
+        const customDateInputs = document.getElementById('customDateInputs');
+        
+        
+        if (filterSelect === 'custom') {
+            customDateInputs.style.display = 'block';
+        } else {
+            customDateInputs.style.display = 'none';
+        }
+        
+    
+        document.getElementById('dashboardFilterForm').submit();
+    }
+</script>
 
 
     

@@ -166,7 +166,7 @@ app.post(
           return res.status(400).json({error:"Order not found"});
         }else{
           order.paymentStatus = "Completed";
-          await order.save();
+          await order.save()
           return res.status(200).json({error:"Payment Success",success:true})
         }
       }
