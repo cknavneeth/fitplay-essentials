@@ -139,8 +139,8 @@ document.getElementById('couponForm').addEventListener('submit', function (e) {
 
   // Validate discount type and related fields
   if (!discountType) errors.push('Discount Type is required.');
-  if (discountType === 'percentage' && (isNaN(maxDiscount) || maxDiscount <= 0)) {
-    errors.push('Maximum Discount must be greater than 0 for percentage discounts.');
+  if (discountType === 'percentage' && (isNaN(maxDiscount) || maxDiscount <= 0||maxDiscount>=100)) {
+    errors.push('Please enter a valid maximum discount that is applicable');
   }
   if (discountAmount <= 0 || isNaN(discountAmount)) {
     errors.push('Discount Amount must be greater than 0.');

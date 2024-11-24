@@ -169,7 +169,7 @@ exports.getDashboard = async (req, res) => {
     console.log('arshad')
     try {
         console.log('IVDE')
-        const filter=req.query.filter||'daily'
+        const filter=req.query.filter||'yearly'
         const startDate = req.query.start || null;
         const endDate = req.query.end || null;
 

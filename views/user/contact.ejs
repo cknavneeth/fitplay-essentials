@@ -469,6 +469,11 @@ function validateForm() {
         isValid = false;
     }
 
+	if(currentPassword==newPassword){
+		document.getElementById('new-password-error').innerText="You cant provide newpassword same as current password"
+		isValid=false
+	}
+
     if (newPassword !== '' || confirmPassword !== '') {
         if (newPassword !== confirmPassword) {
             document.getElementById('confirm-password-error').innerText = 'Passwords do not match';

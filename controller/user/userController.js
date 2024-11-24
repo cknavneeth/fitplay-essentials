@@ -272,9 +272,6 @@ exports.shopPage = async (req, res) => {
 
     let filter = { isBlocked: false };
 
-    // if (req.query.search) {
-    //   filter.productName = { $regex: new RegExp(".*" + req.query.search + ".*", "i") };
-    // }
     if (req.query.search) {
       const searchTerm = req.query.search.trim(); 
       filter.productName = { $regex: new RegExp("^" + searchTerm, "i") }; 
@@ -318,9 +315,13 @@ exports.shopPage = async (req, res) => {
     let products = await Product.find(filter)
     .skip(skip)
     .limit(limit)
+    .sort({createdAt:-1})
 
     //for popularity iam doing this
     const recentOrders=await order.find({orderDate:{$gte:new Date(Date.now()-30*24*60*60*1000)}})
+
+    console.log("Recent Orders:", recentOrders);
+
 
     const productPopularity={}
     recentOrders.forEach(order=>{
@@ -332,6 +333,10 @@ exports.shopPage = async (req, res) => {
         productPopularity[productId]+=item.quantity
       })
     })
+
+    console.log("Product Popularity:", productPopularity);
+    console.log("Product IDs in Products Array:", products.map(p => p._id.toString()));
+
 
 
     
@@ -361,13 +366,13 @@ exports.shopPage = async (req, res) => {
         products.sort((a, b) => b.productName.localeCompare(a.productName));
         break;
 
-        case "popularity":
+      case "popularity":
           products.sort((a, b) => {
             const popularityA = productPopularity[a._id.toString()] || 0; 
             const popularityB = productPopularity[b._id.toString()] || 0;
             return popularityB - popularityA;
           });
-          break;
+      break;
 
       
         default:
@@ -567,70 +572,6 @@ exports.resetPage = async (req, res) => {
 };
 
 
-
-// exports.updateQuantity = async (req, res) => {
-//   let { newQuantity, productId } = req.body;
-//   const userId = req.user.id;
-
-//   try {
-//       const cart = await Cart.findOne({ userId });
-//       if (!cart) return res.status(400).json({ message: "Cart not found" });
-
-//       const existingItemIndex = cart.items.findIndex(
-//           item => item._id.toString() === productId
-//       );
-//       if (existingItemIndex === -1) {
-//           return res.status(400).json({ message: "Product not found in cart" });
-//       }
-
-//       if(newQuantity<0){
-//         newQuantity=1
-//         return res.status(400).json({success:false, message: "Quantity cannot be negative" });
-//       }
-
-//       cart.items[existingItemIndex].quantity = newQuantity;
-//       cart.items[existingItemIndex].totalPrice =
-//           newQuantity * cart.items[existingItemIndex].price;
-
-//       const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-//       cart.subTotal = subtotal;
-
-//       let discountAmount = 0;
-//       if (cart.couponCode) {
-//           const coupon = await Coupon.findOne({ code: cart.couponCode, isActive: true });
-//           if (coupon) {
-//               if (coupon.discountType === 'percentage') {
-//                   discountAmount = (coupon.discountAmount / 100) * subtotal;
-//               } else if (coupon.discountType === 'fixed') {
-//                   discountAmount = coupon.discountAmount;
-//               }
-//               if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
-//                   discountAmount = coupon.maxDiscount;
-//               }
-//               cart.discount = discountAmount;
-//           } else {
-//               cart.isCouponApplied = false;
-//               cart.couponCode = null;
-//               cart.discount = 0;
-//           }
-//       }
-
-//       cart.grandTotal = subtotal - discountAmount;
-
-//       await cart.save();
-//       res.json({
-//           message: "Quantity updated successfully",
-//           cartTotal: cart.subTotal,
-//           grandTotal: cart.grandTotal,
-//           couponCode: cart.couponCode,
-//           discountAmount: cart.discount,
-//           items: cart.items
-//       });
-//   } catch (error) {
-//       console.error(error);
-//       return res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 exports.updateQuantity = async (req, res) => {
   let { newQuantity, productId } = req.body;
   const userId = req.user.id;
