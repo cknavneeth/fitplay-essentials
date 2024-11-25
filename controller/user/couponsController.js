@@ -131,6 +131,9 @@ exports.removeCoupon=async(req,res)=>{
         if(!cart){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'cart not found'})
         }
+        if(!cart.couponCode){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'No coupon is there to remove'})
+        }
         cart.couponCode=null
         cart.discount=0
        

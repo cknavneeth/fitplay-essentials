@@ -147,8 +147,7 @@ app.post(
         console.log("No Razorpay signature found in headers");
         return res.status(400).json({ error: "No signature provided" });
       }
-      //failed orders
-      //failed
+      
 
 
       console.log("User ID :", req.body.userId);
@@ -167,6 +166,19 @@ app.post(
         }else{
           order.paymentStatus = "Completed";
           await order.save()
+
+          const handleQuantity=order.items.map(async(item)=>{
+            const product=await Product.findById(item.productId)
+            if(product){
+              const sizeStock=product.sizes.find(s=>s.size===item.size)
+              if(sizeStock){
+                sizeStock.stock-=item.quantity
+              }
+              await product.save()
+            }
+          })
+          await Promise.all(handleQuantity)
+          
           return res.status(200).json({error:"Payment Success",success:true})
         }
       }
@@ -226,9 +238,21 @@ app.post(
         const address = user.addresses[addressIndex];
 
         console.log(req.body);
-        const productOffer = req.body.productOffer || 0;
+        let categoryOffer=0
+        let productOffer =0;
         const grandTotal = req.body.grandTotal || req.body.totalAmount; 
         const discount = req.body.discount || 0;
+
+        //for category and product offer
+        
+        for(let item of cart.items){
+          const { productId, quantity } = item;
+          const { regularPrice, salePrice } = productId;
+
+          productOffer+=(regularPrice-salePrice)*quantity
+          categoryOffer+=(regularPrice-salePrice)*quantity
+        }
+        //for catgeory and productOffer
 
 
 
@@ -248,7 +272,8 @@ app.post(
 
           productOffer,
           grandTotal,
-          discount
+          discount,
+          categoryOffer
         });
 
         const savedOrder = await newOrder.save();

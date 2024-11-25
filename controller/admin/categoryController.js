@@ -183,10 +183,10 @@ exports.addCategory = async (req, res) => {
         
         if (product.regularPrice) {
           const discountAmount=product.regularPrice*(product.productOffer/100)
-          product.salePrice=product.salePrice+discountAmount
+          product.salePrice=Math.floor(product.salePrice+discountAmount)
 
 
-          // product.salePrice = product.regularPrice;
+          
         } else {
           console.error(`Product ${product._id} is missing regularPrice!`);
         }

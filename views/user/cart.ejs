@@ -115,6 +115,7 @@
                         size="2"
                         type="number"
                         onchange="updateQuantity('<%= item._id %>', this.value, this.max)"
+                      
                       />
                     </div>
                   </td>
@@ -291,7 +292,7 @@
         Swal.fire({
             icon: "error",
             title: "Error",
-            text: error?.response?.data?.message || "Something went wrong",
+            text: error?.response?.data?.error || "Something went wrong",
             confirmButtonText: "OK",
         });
     }
@@ -328,8 +329,8 @@ async function removeCoupon(){
   } catch (error) {
     Swal.fire({
       icon:'error',
-      title:'error',
-      text:error?.response?.data?.message || 'something went wrong',
+      title:'Error',
+      text:error?.response?.data?.error || 'something went wrong',
       confirmButtonText:'OK'
     })
   }

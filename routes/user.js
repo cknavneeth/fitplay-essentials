@@ -182,11 +182,22 @@ router.post('/saveFailedOrder',verifyUser,async(req,res)=>{
       const address = user.addresses[addressIndex];
 
       console.log(req.body);
-      const productOffer = req.body.productOffer || 0;
+      let productOffer =  0;
+      let categoryOffer=0
       const grandTotal = req.body.grandTotal || req.body.totalAmount; 
       const discount = req.body.discount || 0;
 
 
+
+      //for catgoryOffer and product offer
+      for(let item of cart.items){
+        const { productId, quantity } = item;
+        const { regularPrice, salePrice } = productId;
+
+        productOffer+=(regularPrice-salePrice)*quantity
+        categoryOffer+=(regularPrice-salePrice)*quantity
+      }
+      //for catgroy Offer and productOffer
 
 
 
@@ -204,7 +215,8 @@ router.post('/saveFailedOrder',verifyUser,async(req,res)=>{
 
         productOffer,
         grandTotal,
-        discount
+        discount,
+        categoryOffer
       });
 
       const savedOrder = await newOrder.save();

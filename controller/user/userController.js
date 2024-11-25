@@ -587,6 +587,12 @@ exports.updateQuantity = async (req, res) => {
           return res.status(400).json({ message: "Product not found in cart" });
       }
 
+      //for no quantity
+      if(!newQuantity){
+        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'please provide quantity'})
+      }
+      //for no quantity
+
       //for negative quantity
       if(newQuantity<0){
         newQuantity=1
