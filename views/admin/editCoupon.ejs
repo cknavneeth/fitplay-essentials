@@ -244,9 +244,16 @@ form.addEventListener('submit',async (e) => {
     errors.push('Maximum discount must not be less than the discount amount for percentage discounts.');
   }
 
-  // If there are validation errors, display them and prevent form submission
+  if(discountType==='percentage'&&discountAmount>=100){
+    errors.push('Discount amount must be less than zero for percentage,Think')
+  }
+  if(discountType==='percentage'&&maxDiscount>=minPurchaseAmount){
+    errors.push('Maximum discount must be less than minpurchase amount.Ok')
+  }
+
+  
   if (errors.length > 0) {
-    e.preventDefault();  // Prevent form submission immediately
+    e.preventDefault();  
     errors.forEach((error) => {
       const errorElement = document.createElement('div');
       errorElement.textContent = error;
@@ -260,7 +267,7 @@ form.addEventListener('submit',async (e) => {
 
 
 
-    e.preventDefault(); // Prevent form submission to handle it manually
+    e.preventDefault(); 
   const confirmEdit = await Swal.fire({
     title: 'Are you sure?',
     text: "Do you want to save these changes?",
@@ -272,7 +279,7 @@ form.addEventListener('submit',async (e) => {
   });
 
   if (confirmEdit.isConfirmed) {
-    // Show success SweetAlert after confirmation
+   
     Swal.fire({
       title: 'Edited Successfully!',
       text: 'Your changes have been saved.',

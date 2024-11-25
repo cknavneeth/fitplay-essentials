@@ -21,7 +21,7 @@
   <input type="date" id="expirationDate" name="expirationDate" required>
 
   <label for="maxDiscount">Maximum Discount (for percentage discounts):</label>
-  <input type="number" id="maxDiscount" name="maxDiscount" disabled>
+  <input type="number" id="maxDiscount" min="1" name="maxDiscount" disabled>
 
   <label for="usageLimit">Total Usage Limit:</label>
   <input type="number" id="usageLimit" name="usageLimit">
@@ -139,8 +139,14 @@ document.getElementById('couponForm').addEventListener('submit', function (e) {
 
   // Validate discount type and related fields
   if (!discountType) errors.push('Discount Type is required.');
-  if (discountType === 'percentage' && (isNaN(maxDiscount) || maxDiscount <= 0||maxDiscount>=100)) {
-    errors.push('Please enter a valid maximum discount that is applicable');
+  if (discountType === 'percentage' && (isNaN(maxDiscount) || maxDiscount <= 0)) {
+    errors.push('Please enter a valid discount amount and maximum discount that is applicable.');
+  }
+  if(discountType==='percentage'&&discountAmount>=100){
+    errors.push('Discount amount must be less than hundred,Think about it')
+  }
+  if(discountType==='percentage'&&maxDiscount>=minPurchaseAmount){
+    errors.push('Maximum discount is now greater than minimum purchase amount,impossible.')
   }
   if (discountAmount <= 0 || isNaN(discountAmount)) {
     errors.push('Discount Amount must be greater than 0.');

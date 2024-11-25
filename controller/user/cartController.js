@@ -627,14 +627,23 @@ exports.getmyOrders = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId);
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
+    const skip = (page - 1) * limit;
+    const totalDocuments = await Order.countDocuments({user:userId});
+    const totalPages = Math.ceil(totalDocuments / limit);
+
     const orders = await Order.find({ user: userId }).populate(
       "items.productId"
-    );
+    )
+    .skip(skip)
+    .limit(limit)
 
 
 
      const ordersWithAddress = orders.map(order => {
-      // Check if order has an address object and safely build the full address
+     
       const fullAddress = order.address ? 
         `${order.address.name}, ${order.address.city}, ${order.address.state}, ${order.address.
           pincode}` : 
@@ -642,7 +651,13 @@ exports.getmyOrders = async (req, res) => {
       
       return { ...order.toObject(), fullAddress, items: order.items };
     });
-    res.render("user/myOrders", { user ,orders:ordersWithAddress});
+    res.render("user/myOrders", { 
+      user ,
+      orders:ordersWithAddress,
+      currentPage: page,
+      totalPages,
+      limit,
+    });
   } catch (error) {
     console.error(error);
   }

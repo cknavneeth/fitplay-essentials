@@ -58,6 +58,31 @@
   padding: 6px 12px;
 }
 
+/*for quantity input field*/
+.quantity-input {
+  width: 70px; 
+  text-align: center;
+  padding: 5px;
+  font-size: 14px; 
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .quantity-input {
+    width: 40px; 
+    font-size: 12px; 
+  }
+}
+
+@media (max-width: 480px) {
+  .quantity-input {
+    width: 35px; 
+    font-size: 10px; 
+  }
+}
+
+
 </style>
 <body>
   <!-- Page item Area -->
@@ -105,20 +130,39 @@
                       ><%= item.productId.productName %></a
                     >
                   </td>
+
+
+
                   <td>
                     <div class="cp_quntty">
+                      <button
+                        class="decrement-btn"
+                        onclick="updateQuantity('<%= item._id %>', 'decrement',' <%= item.productId.sizes.find(size => size.size === item.size).stock %>')"
+                      >
+                        -
+                      </button>
                       <input
                         name="quantity"
-                        min="1"
-                        max="<%= item.productId.sizes.find(size => size.size === item.size).stock %>"
+                        class="quantity-input"
+                        data-product-id="<%= item._id %>"
                         value="<%= item.quantity %>"
                         size="2"
                         type="number"
-                        onchange="updateQuantity('<%= item._id %>', this.value, this.max)"
-                      
+                        readonly
+                        
                       />
+                      <button
+                        class="increment-btn"
+                        onclick="updateQuantity('<%= item._id %>', 'increment',' <%= item.productId.sizes.find(size => size.size === item.size).stock %>')"
+                      >
+                        +
+                      </button>
                     </div>
                   </td>
+                  
+
+
+
                   <td><p class="cp_price" id="cartTotal">Rs <%=Math.round( item.price) %></p></td>
                   <td><p class="cpp_total" id="cartTotal">Rs <%= item.totalPrice.toFixed(0)%></p></td>
                   <td>
@@ -246,57 +290,70 @@
 
 
 
-    async function updateQuantity(productId, newQuantity, maxStock) {
-    let couponCode =  document.getElementById("couponCodeDisplay").textContent;
-    // Validate if the quantity exceeds available stock
-    if (parseInt(newQuantity) > parseInt(maxStock)) {
-        Swal.fire({
-            icon: "error",
-            title: "Quantity Exceeded",
-            text: `Only ${maxStock} items are available for this product.`,
-            confirmButtonText: "OK",
-        });
+async function updateQuantity(productId, action, maxStock) {
+  const inputElement = document.querySelector(`input[name="quantity"][data-product-id="${productId}"]`);
+  let currentQuantity = parseInt(inputElement.value);
 
-       
-        document.querySelector(
-            `input[name="quantity"][data-product-id="${productId}"]`
-        ).value = maxStock;
-
-        return; 
+  if (action === "increment") {
+    if (currentQuantity >= maxStock) {
+      Swal.fire({
+        icon: "error",
+        title: "Quantity Exceeded",
+        text: `Only ${maxStock} items are available for this product.`,
+        confirmButtonText: "OK",
+      });
+      return;
     }
-
-    try {
-        
-        const response = await axios.patch("http://localhost:3000/updateQuantity", {
-            newQuantity,
-            productId,
-        });
-
-       
-        const { cartTotal, grandTotal, couponCode, discountAmount } = response.data;
-
-       
-        document.getElementById("subtotal").textContent = `Rs ${cartTotal.toFixed(0)}`;
-        document.getElementById("grandTotal").textContent = `Rs ${grandTotal.toFixed(0)}`;
-
-        
-        if (couponCode) {
-          document.getElementById("couponCodeDisplay").textContent  = `Coupon Code: ${couponCode}`;
-            document.getElementById("discount").textContent = `Discount: Rs ${discountAmount.toFixed(0)}`;
-        } else {
-            document.getElementById("couponCodeDisplay").textContent = 'Coupon Code: ';
-            document.getElementById("discount").textContent = 'Discount: ';
-        }
-
-    } catch (error) {
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: error?.response?.data?.error || "Something went wrong",
-            confirmButtonText: "OK",
-        });
+    currentQuantity++;
+  } else if (action === "decrement") {
+    if (currentQuantity <= 1) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Quantity",
+        text: "Quantity cannot be less than 1.",
+        confirmButtonText: "OK",
+      });
+      return;
     }
+    currentQuantity--;
+  }
+
+  inputElement.value = currentQuantity;
+
+  
+  try {
+    const response = await axios.patch("http://localhost:3000/updateQuantity", {
+      newQuantity: currentQuantity,
+      productId,
+    });
+
+    const { cartTotal, grandTotal, couponCode, discountAmount } = response.data;
+
+  
+    document.getElementById("subtotal").textContent = `Rs ${cartTotal.toFixed(0)}`;
+    document.getElementById("grandTotal").textContent = `Rs ${grandTotal.toFixed(0)}`;
+
+    if (couponCode) {
+      document.getElementById("couponCodeDisplay").textContent = `Coupon Code: ${couponCode}`;
+      document.getElementById("discount").textContent = `Discount: Rs ${discountAmount.toFixed(0)}`;
+    } else {
+      document.getElementById("couponCodeDisplay").textContent = "Coupon Code: ";
+      document.getElementById("discount").textContent = "Discount: ";
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error?.response?.data?.error || "Something went wrong",
+      confirmButtonText: "OK",
+    });
+
+    inputElement.value = action === "increment" ? currentQuantity - 1 : currentQuantity + 1;
+  }
 }
+
+
+
 
 
 

@@ -145,14 +145,7 @@
     object-fit: cover;
 }
 
-/* .image-underline {
-    width: 100%;
-    height: 2px;
-    background-color: #ccc;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-} */
+
 
 /* Custom button size */
 .btn-sm {
@@ -189,6 +182,40 @@ td .btn {
     background-color: #f9f9f9;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
+
+  .pagination-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #f8f9fa; /* Light background */
+    border-top: 1px solid #dee2e6;
+}
+
+.pagination-link {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.pagination-link:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.pagination-link.active {
+    background: #007bff;
+    color: #fff;
+    font-weight: bold;
+    pointer-events: none;
+}
+
 
 
 
@@ -292,6 +319,22 @@ td .btn {
                                             <% } %>
                                         </td>
                                         
+                                    
+                                        <!--order details-->
+                                        <td>
+                                            <button 
+                                            type="button" 
+                                            class="btn btn-info btn-sm view-details-btn" 
+                                            data-order-id="<%= order._id %>" 
+                                            data-order-items='<%= JSON.stringify(order.items) %>' 
+                                            data-order-total="<%= order.grandTotal %>" 
+                                            data-order-address="<%= order.fullAddress %>" 
+                                            onclick="showOrderDetails(this)"
+                                        >
+                                            View Details
+                                        </button>
+                                        
+                                        </td>
                                         
                                     </tr>
                                     
@@ -312,39 +355,60 @@ td .btn {
                 <!--for madal-->
                 <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                      <div class="modal-content">
-                        <!-- Modal Header with Green Success Icon -->
-                        <div class="modal-header" style="background-color: #e9f7ef;">
-                          <h5 class="modal-title" id="orderDetailsModalLabel" style="font-weight: bold; color: #28a745;">
-                            <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>Order Placed Successfully
-                          </h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header" style="background-color: #e9f7ef;">
+                                <h5 class="modal-title" id="orderDetailsModalLabel" style="font-weight: bold; color: #28a745;">
+                                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>Order Details
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                
+                            <!-- Modal Body -->
+                            <div class="modal-body" style="font-family: Arial, sans-serif;">
+                                <p><strong>Order ID:</strong> <span id="orderId" style="color: #333;"></span></p>
+                                <p><strong>Address:</strong> <span id="orderAddress" style="color: #555;"></span></p>
+                                <p><strong>Items:</strong></p>
+                                <div id="orderItems" style="margin-bottom: 15px; padding-left: 15px; color: #555; font-size: 14px;">
+                                    <!-- Item details will be inserted here dynamically -->
+                                </div>
+                                <p><strong>Total Amount:</strong> ₹<span id="orderTotal" style="font-size: 18px; font-weight: bold; color: #333;"></span></p>
+                            </div>
+                
+                            <!-- Modal Footer -->
+                            <div class="modal-footer" style="background-color: #f8f9fa;">
+                                <button type="button" class="btn btn-primary" onclick="continueShopping()">Continue Shopping</button>
+                            </div>
                         </div>
-                  
-                        <!-- Modal Body with Order Details -->
-                        <div class="modal-body"  class="order-detail-box" style="font-family: Arial, sans-serif;">
-                          <p><strong>Order ID:</strong> <span id="orderId" style="color: #333;"></span></p>
-                          
-                          <p><strong>Items:</strong></p>
-                          <div id="orderItems" style="margin-bottom: 15px; padding-left: 15px; color: #555; font-size: 14px;">
-                            <!-- Item details will be inserted here dynamically -->
-                          </div>
-                  
-                          <p><strong>Total Amount:</strong> Rs <span id="orderTotal" style="font-size: 18px; font-weight: bold; color: #333;"></span></p>
-                        </div>
-                  
-                        <!-- Modal Footer with Continue Shopping Button -->
-                        <div class="modal-footer" style="background-color: #f8f9fa;">
-                          <button type="button" class="btn btn-primary" onclick="continueShopping()">Continue Shopping</button>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                  
+                </div>
+                
                   
                 <!--for modal-->
+
+                <!--for pagination-->
+                <nav class="pagination-nav">
+                    <% if (currentPage > 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" class="pagination-link">Previous</a>
+                    <% } %>
+                
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <a href="?page=<%= i %>&limit=<%= limit %>" 
+                           class="pagination-link <%= currentPage === i ? 'active' : '' %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
+                
+                    <% if (currentPage < totalPages) { %>
+                        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" class="pagination-link">Next</a>
+                    <% } %>
+                </nav>
+                
+                  
+                
+                <!--for pagination-->
             </div>
         </div>
     </div>
@@ -603,6 +667,64 @@ setTimeout(() => {
             })
         })
     })
+</script>
+
+
+
+<!--for view detailed page-->
+<script>
+function showOrderDetails(button) {
+    const orderId = button.getAttribute("data-order-id");
+    const orderItems = JSON.parse(button.getAttribute("data-order-items"));
+    const orderTotal = button.getAttribute("data-order-total");
+    const userAddress = button.getAttribute("data-order-address"); // User's address
+
+    // Populate modal fields
+    document.getElementById("orderId").textContent = orderId;
+
+    // Populate order items
+    const orderItemsContainer = document.getElementById("orderItems");
+    orderItemsContainer.innerHTML = ""; // Clear previous items
+
+    orderItems.forEach(item => {
+        const itemElement = document.createElement("div");
+        itemElement.style.display = "flex";
+        itemElement.style.alignItems = "center";
+        itemElement.style.marginBottom = "10px";
+
+        // Create image element
+        const imgElement = document.createElement("img");
+        imgElement.src = `/uploads/product-images/${item.productId.productImage}`;
+        imgElement.alt = item.productName;
+        imgElement.style.width = "50px";
+        imgElement.style.height = "50px";
+        imgElement.style.marginRight = "10px";
+        imgElement.style.borderRadius = "5px";
+
+        // Create text element
+        const textElement = document.createElement("span");
+        textElement.textContent = `${item.productName} - ₹${item.totalPrice} (${item.quantity} pcs)`;
+
+        itemElement.appendChild(imgElement);
+        itemElement.appendChild(textElement);
+        orderItemsContainer.appendChild(itemElement);
+    });
+
+    // Set user address
+    document.getElementById("orderAddress").textContent = userAddress;
+
+    // Set total amount
+    document.getElementById("orderTotal").textContent = orderTotal;
+
+    
+    const orderDetailsModal = new bootstrap.Modal(document.getElementById("orderDetailsModal"));
+    orderDetailsModal.show();
+}
+
+function continueShopping() {
+    window.location.href = "/shop"; 
+}
+
 </script>
 
 </body>

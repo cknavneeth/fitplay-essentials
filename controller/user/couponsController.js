@@ -22,7 +22,7 @@ exports.applyCoupon = async (req, res) => {
         const userId = req.user.id;
         const user = await User.findById(userId);
 
-        const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
+        const coupon = await Coupon.findOne({ code: {$regex:new RegExp(couponCode,'i')}, isActive: true ,});
         if (!coupon) {
             return res.status(400).json({ success: false, error: 'Invalid coupon' });
         }

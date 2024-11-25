@@ -11,8 +11,22 @@ const { error } = require('console')
 
 exports.getCoupons=async(req,res)=>{
     try {
+        const page=req.query.page||1
+        const limit=req.query.limit||5
+        const skip=(page-1)*limit
+        const totalDocuments=await Coupon.countDocuments()
+        const totalPages=Math.ceil(totalDocuments/limit)
         const coupons=await Coupon.find().sort({_id:-1})
-        res.render('admin/coupon',{coupons})
+        .skip(skip)
+        .limit(limit)
+        res.render('admin/coupon',
+            {
+                coupons,
+                totalPages,
+                totalDocuments,
+                currentPage: page,
+                limit
+            })
     } catch (error) {
         console.error(error)
     }

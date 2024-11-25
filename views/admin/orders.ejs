@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-w76AIdkXhUtnBtFSfI25U6+wRmmRp7BkqkBY9K3sENI8o2eWpNh/sdZ9fN5K7Mgt" crossorigin="anonymous">
+
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
@@ -242,6 +244,51 @@
                         <button type="button" class="btn btn-secondary" disabled>Returned</button>
                     <% } %>
                 </td>
+
+
+
+                <td>
+                    <button
+    type="button"
+    class="btn btn-info"
+    data-order-id="<%= order._id %>"
+    data-order-items='<%= JSON.stringify(order.items) %>'
+    data-order-total="<%= order.totalAmount %>"
+    data-order-address="<%= order.address ? `${order.address.name}, ${order.address.locality},${order.address.mobile}, ${order.address.city}, ${order.address.state}, ${order.address.pincode},${order.address.address_type}` : 'N/A' %>"
+    data-user-name="<%= order.user ? order.user.username : 'Guest' %>"
+    data-user-email="<%= order.user ? order.user.email : 'N/A' %>"
+    onclick="showAdminOrderDetails(this)">
+    View Details
+</button>
+                </td>
+
+                <!--modal for order details-->
+                <!-- Order Details Modal -->
+                <div class="modal fade" id="adminOrderDetailsModal" tabindex="-1" aria-labelledby="adminOrderDetailsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="adminOrderDetailsModalLabel">Order Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Order ID:</strong> <span id="adminOrderId"></span></p>
+                                <p><strong>User Name:</strong> <span id="adminUserName"></span></p>
+                                <p><strong>User Email:</strong> <span id="adminUserEmail"></span></p>
+                                <p><strong>Address:</strong> <span id="adminOrderAddress"></span></p>
+                                <div><strong>Items:</strong></div>
+                                <div id="adminOrderItems" style="margin-bottom: 15px;"></div>
+                                <p><strong>Total Amount:</strong> ₹<span id="adminOrderTotal"></span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <!--moda for order details-->
                 
             </tr>
         <% }) %>
@@ -274,6 +321,8 @@
         <% } %>
     </ul>
 </nav>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF6YcRd3MDZzPSmRI/a3P60oARtOwbxCUCZ1zsOgani" crossorigin="anonymous"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -434,6 +483,62 @@
 
         })
     }
+</script>
+
+
+<script>
+    function showAdminOrderDetails(button) {
+    const orderId = button.getAttribute("data-order-id");
+    const orderItems = JSON.parse(button.getAttribute("data-order-items"));
+    const orderTotal = button.getAttribute("data-order-total");
+    const userAddress = button.getAttribute("data-order-address");
+    const userName = button.getAttribute("data-user-name");
+    const userEmail = button.getAttribute("data-user-email");
+
+    // Populate modal fields
+    document.getElementById("adminOrderId").textContent = orderId;
+    document.getElementById("adminUserName").textContent = userName;
+    document.getElementById("adminUserEmail").textContent = userEmail;
+
+    // Populate order items
+    const adminOrderItemsContainer = document.getElementById("adminOrderItems");
+    adminOrderItemsContainer.innerHTML = ""; // Clear previous items
+
+    orderItems.forEach(item => {
+        const itemElement = document.createElement("div");
+        itemElement.style.display = "flex";
+        itemElement.style.alignItems = "center";
+        itemElement.style.marginBottom = "10px";
+
+        // Create image element
+        const imgElement = document.createElement("img");
+        imgElement.src = `/uploads/product-images/${item.productId.productImage}`;
+        imgElement.alt = item.productName;
+        imgElement.style.width = "50px";
+        imgElement.style.height = "50px";
+        imgElement.style.marginRight = "10px";
+        imgElement.style.borderRadius = "5px";
+
+        // Create text element
+        const textElement = document.createElement("span");
+        textElement.textContent = `${item.productName} - ₹${item.totalPrice} (${item.quantity} pcs)`;
+
+        itemElement.appendChild(imgElement);
+        itemElement.appendChild(textElement);
+        adminOrderItemsContainer.appendChild(itemElement);
+    });
+
+    // Set user address
+    document.getElementById("adminOrderAddress").textContent = userAddress;
+
+    // Set total amount
+    document.getElementById("adminOrderTotal").textContent = orderTotal;
+
+    // Show modal
+    const adminOrderDetailsModal = new bootstrap.Modal(document.getElementById("adminOrderDetailsModal"));
+    adminOrderDetailsModal.show();
+}
+
 </script>
 
 

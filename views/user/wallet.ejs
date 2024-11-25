@@ -380,6 +380,62 @@
         color: #ffffff;
     }
 
+    /* Pagination Container */
+.pagination-nav {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: center; /* Center align */
+    gap: 10px; /* Space between elements */
+    margin: 20px 0;
+    padding: 10px 0;
+}
+
+/* Pagination Links */
+.pagination-link {
+    display: inline-block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #007bff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+/* Active Page Styling */
+.pagination-link.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+/* Hover Effect */
+.pagination-link:hover {
+    background-color: #f0f0f0;
+    color: #0056b3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .pagination-link {
+        font-size: 0.8em; /* Smaller text size */
+        padding: 8px 12px; /* Adjust padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-nav {
+        flex-direction: column; /* Stack links vertically */
+        align-items: center; /* Center align vertically stacked links */
+    }
+    .pagination-link {
+        width: 100%; /* Full width for better tap targets */
+        text-align: center;
+    }
+}
+
+
   </style>
  </head>
  <body class="wallet-page">
@@ -407,15 +463,15 @@
                     <p class="description">GiftCard top-ups and Refunds</p>
 
                     <div class="actions">
-                        <button type="submit" name="action" value="quick_checkout" class="action">
+                        <button type="button" name="action" value="quick_checkout" class="action">
                             <img alt="Quick Checkout" height="40" src="https://storage.googleapis.com/a1aa/image/bSXxAnnfJen9OkHMuXIabO6xoZhXbcqle4bEMcheZTvPlOedC.jpg" width="40" />
                             <p>Quick Checkout</p>
                         </button>
-                        <button type="submit" name="action" value="consolidated_money" class="action">
+                        <button type="button" name="action" value="consolidated_money" class="action">
                             <img alt="Consolidated Money" height="40" src="https://storage.googleapis.com/a1aa/image/kKfCG8deIYqXJkOCHqHggDmb5efoa7YKMRkv4frPJmKMKd8dC.jpg" width="40" />
                             <p>Consolidated Money</p>
                         </button>
-                        <button type="submit" name="action" value="instant_refund" class="action">
+                        <button type="button" name="action" value="instant_refund" class="action">
                             <img alt="Instant Refund" height="40" src="https://storage.googleapis.com/a1aa/image/DT4H3XvfOeif0oKY8zSim1Sr6XiujMnLzgFqWJ9thNplSHfOB.jpg" width="40" />
                             <p>Instant Refund</p>
                         </button>
@@ -476,6 +532,25 @@
                     <li>Any amount added to Gift Card upon return of an item will follow the respective policy.</li>
                 </ul>
             </div>
+
+            <!--for pagination-->
+            <nav class="pagination-nav">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" class="pagination-link">Previous</a>
+                <% } %>
+        
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>&limit=<%= limit %>" 
+                       class="pagination-link <%= currentPage === i ? 'active' : '' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+        
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" class="pagination-link">Next</a>
+                <% } %>
+            </nav>
+            <!--for pagination-->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

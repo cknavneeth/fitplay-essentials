@@ -249,7 +249,48 @@ form button[type="submit"]:hover {
       <% }) %>
     </tbody>
   </table>
-  <button type="submit" class="refresh-btn">Refresh Coupon List</button>
+  <button type="submit" class="refresh-btn" style="width: 28%;">Refresh Coupon List</button>
+
+
+  <!--pagination venam ivde-->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <!-- Previous Button -->
+        <% if (currentPage > 1) { %>
+            <li class="page-item">
+                <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        <% } else { %>
+            <li class="page-item disabled">
+                <span class="page-link" aria-label="Previous">&laquo;</span>
+            </li>
+        <% } %>
+
+        <!-- Page Numbers -->
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+            </li>
+        <% } %>
+
+        <!-- Next Button -->
+        <% if (currentPage < totalPages) { %>
+            <li class="page-item">
+                <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        <% } else { %>
+            <li class="page-item disabled">
+                <span class="page-link" aria-label="Next">&raquo;</span>
+            </li>
+        <% } %>
+    </ul>
+</nav>
+
+
 </form>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
@@ -362,6 +403,7 @@ form button[type="submit"]:hover {
   }
 
   .refresh-btn {
+    width: 28%;
     display: block;
     margin: 20px auto;
     padding: 10px 30px;
