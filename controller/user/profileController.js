@@ -120,7 +120,6 @@ exports.savingAddress=async(req,res)=>{
             address_type
         });
         await user.save();
-        // res.status(statusCodes.OK).json({error:'address added successfully'})
         res.redirect('/address')
         
     } catch (error) {

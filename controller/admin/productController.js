@@ -119,6 +119,9 @@ exports.getAllProducts=async(req,res)=>{
 exports.addProductOffer=async(req,res)=>{
     try {
         const{productId,percentage}=req.body
+        if(percentage>100){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'percentage must be less than 100'})
+        }
         const findProduct=await Product.findOne({_id:productId})
         findProduct.salePrice=findProduct.salePrice-Math.floor(findProduct.regularPrice*(percentage/100))
         findProduct.productOffer=parseInt(percentage)

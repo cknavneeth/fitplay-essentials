@@ -7,25 +7,7 @@ const crypto = require("crypto");
 const { User, addressSchema } = require("../../models/userModel.js"); 
 
 
-// exports.getWishlist=async(req,res)=>{
-//     try {
-//         const userId=req.user.id
-//         const user=await User.findById(userId)
 
-//         const wishlist=await Wishlist.findOne({userId}).populate({
-//             path:'items.productId',
-//             model:'Product',
-//             select: 'productImage name stock price'
-//         })
-//         console.log("Wishlist populated with products:", wishlist);
-//         res.render('user/wishlist',{user, wishlist: wishlist || { items: [] }})
-
-//     } catch (error) {
-
-//         console.error(error)
-
-//     }
-// } 
 exports.getWishlist = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -87,15 +69,6 @@ exports.addtoWishlist=async(req,res)=>{
         if(!wishlist){
             wishlist=new Wishlist({userId,items:[]})
         }
-
-        // let isProductInWishlist=wishlist.items.some(item=>{
-        //     return item.productId.toString()==productId
-        // })
-        // let isProductInWishlist = wishlist.items.some(item => {
-        //     return item.productId.equals(productId); 
-        // });
-
-        
 
        const existingProduct=wishlist.items.find(item=>item.productId.equals(productId)&&item.size==size)
        if(existingProduct){

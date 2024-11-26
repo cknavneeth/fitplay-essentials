@@ -36,14 +36,7 @@ exports.getOrderPage = async (req, res) => {
 
 
 
-// exports.getOrderPage=async(req,res)=>{
-//     try {
-//         const orders=await Order.find().populate('user').populate('items.productId')
-//         res.render('admin/orders',{orders})
-//     } catch (error) {
-//         console.error('error fetching orders',error)
-//     }
-// }
+
 
 exports.cancelOrderAdmin=async(req,res)=>{
     try {
@@ -54,9 +47,6 @@ exports.cancelOrderAdmin=async(req,res)=>{
         }
 
 
-        ///wallet 
-       
-        //wallet
         res.json({success:true,error:'Order cancelled ayitund'})
     } catch (error) {
         console.error(error)

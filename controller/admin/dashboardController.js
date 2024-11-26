@@ -175,12 +175,12 @@ exports.getDashboard = async (req, res) => {
 
         const report = await getSalesReport(filter, startDate, endDate);
 
-        //for top selloing category and products
+        
         const topSellingCategories = await getTopSellingCategories();
         const topSellingProducts = await getTopSellingProducts();
-        //for top selling category and products
+        
 
-        console.log('Report:', report); // Debug log
+        // console.log('Report:', report);
 
         res.render('admin/dashboard', {
             report: report || {

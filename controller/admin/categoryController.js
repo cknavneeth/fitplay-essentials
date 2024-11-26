@@ -133,6 +133,10 @@ exports.addCategory = async (req, res) => {
     try {
       const { categoryId, percentage } = req.body;
       const category = await Category.findById(categoryId);
+
+      if(percentage>100){
+        return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'percentage should be less than 100'})
+      }
   
       if (!category) {
         return res.status(statusCodes.BAD_REQUEST).json({ success: false, error: "Category not found" });

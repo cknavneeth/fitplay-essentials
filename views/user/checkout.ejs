@@ -366,7 +366,7 @@ async function placeOrder(event) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             if (paymentMethod === 'razorpay') {
-                // Call backend to create Razorpay order
+                
                 try {
                     console.log('ivde keruvo')
                     const response = await fetch('/order', {
@@ -379,7 +379,7 @@ async function placeOrder(event) {
                     const data = await response.json();
                     
                     if (data.order_id) {
-                        // Proceed with Razorpay payment
+                        
                         const razorpayOptions = {
                             key: data.key_id,
                             amount: data.amount,
@@ -419,7 +419,7 @@ async function placeOrder(event) {
                                         }).then(() => {
                                             document.getElementById('orderId').textContent = paymentData.orderId;
       document.getElementById('orderItems').innerHTML = paymentData.items
-        .map(item => `<div>${item.productName} (x${item.quantity}) - RS${item.totalPrice}</div>`)
+        .map(item => `<div> ${item.productName} (x${item.quantity}) - RS${item.totalPrice}</div>`)
         .join('');
       document.getElementById('orderTotal').textContent = paymentData.grandTotal 
 

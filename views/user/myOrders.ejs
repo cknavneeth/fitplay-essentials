@@ -219,6 +219,8 @@ td .btn {
 
 
 
+
+
     </style>
     
 </head>
@@ -300,14 +302,17 @@ td .btn {
                                             <% if (order.orderStatus === 'Delivered') { %>
                                                 <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Return Product</button>
                                                 <a href="/invoice/<%= order._id %>" class="btn btn-danger btn-sm ml-2">Download Invoice</a>
+                                            <% } else if (order.paymentStatus === 'Completed') { %>
+                                                <button type="button" class="btn btn-primary cancel-btn" data-order-id="<%= order._id %>">Cancel</button>
+                                                <a href="/invoice/<%= order._id %>" class="btn btn-danger btn-sm ml-2">Download Invoice</a>
                                             <% } else if (order.orderStatus === 'Processing' && order.paymentStatus === 'Failed') { %>
-                                                <button type="button" class="pay-again-btn" 
-        data-order-id="<%= order._id %>" 
-        data-address="<%= order.fullAddress %>" 
-        data-user-id="<%= order.user._id %>"
-        data-grand-total="<%= order.grandTotal %>">
-    Pay Again
-</button>
+                                                <button type="button" class="pay-again-btn"
+                                                    data-order-id="<%= order._id %>"
+                                                    data-address="<%= order.fullAddress %>"
+                                                    data-user-id="<%= order.user._id %>"
+                                                    data-grand-total="<%= order.grandTotal %>">
+                                                    Pay Again
+                                                </button>
                                             <% } else if (order.orderStatus === 'Pending' || order.orderStatus === 'Processing') { %>
                                                 <button type="button" class="btn btn-primary cancel-btn" data-order-id="<%= order._id %>">Cancel</button>
                                             <% } else if (order.orderStatus === 'Cancelled') { %>
@@ -318,6 +323,8 @@ td .btn {
                                                 <span>N/A</span>
                                             <% } %>
                                         </td>
+                                        
+                                        
                                         
                                     
                                         <!--order details-->

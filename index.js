@@ -134,14 +134,6 @@ app.post(
     try {
       const razorpaySignature = req.body.razorpaySignature;
 
-      //for failed saved orders
-      //for failed saved orders
-    
-     
-
-      //for failed saved orders
-      //for failed saved orders
-      //for failed savede orders
 
       if (!razorpaySignature) {
         console.log("No Razorpay signature found in headers");
@@ -164,9 +156,11 @@ app.post(
         if(!order){
           return res.status(400).json({error:"Order not found"});
         }else{
+          
+
           order.paymentStatus = "Completed";
           await order.save()
-
+          
           const handleQuantity=order.items.map(async(item)=>{
             const product=await Product.findById(item.productId)
             if(product){
@@ -178,6 +172,7 @@ app.post(
             }
           })
           await Promise.all(handleQuantity)
+          // await Cart.findByIdAndDelete(cart._id);
           
           return res.status(200).json({error:"Payment Success",success:true})
         }

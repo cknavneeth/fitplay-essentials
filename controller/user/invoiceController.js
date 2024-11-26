@@ -17,7 +17,7 @@ exports.getInvoice = async (req, res) => {
         }
         const invoicePath = path.join(invoiceDir, `${orderId}.pdf`);
 
-        generateInvoice(order, invoicePath);
+        await generateInvoice(order, invoicePath);
 
         res.download(invoicePath, `Invoice_${orderId}.pdf`, (err) => {
             if (err) {

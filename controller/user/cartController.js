@@ -15,12 +15,7 @@ exports.getCartPage = async (req, res) => {
     const user = await User.findById(userId);
 
     const cart = await Cart.findOne({ userId }).populate("items.productId");
-    console.log("cart:", cart);
-
-    // if(!cart||cart.items.length==0){
-    //       return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Cart is empty'})
-    // }
-
+    
     const cartEmpty = !cart || cart.items.length == 0;
     if (cartEmpty) {
       return res.render("user/cart", {
@@ -34,14 +29,13 @@ exports.getCartPage = async (req, res) => {
       });
     }
 
-    // const grandTotal=cartTotal-discountAmount
     const cartTotal = cart.items.reduce(
       (total, item) => total + item.totalPrice,
       0
     );
     const discountAmount = cart.discountAmount || 0;
     const couponCode = cart.couponCode || "";
-    // const grandTotal = cartTotal - discountAmount;
+    
 
     console.log("babloo", cart.items);
     res.render("user/cart", {
@@ -721,68 +715,7 @@ exports.cancelOrder = async (req, res) => {
   }
 };
 
-// exports.returnProduct=async(req,res)=>{
-//     try {
-//         const userId=req.user.id
-//         const user=await User.findById(userId)
 
-//         const orderId=req.params.orderId
-
-//         const order=await Order.findById(orderId)
-
-//         if(!order){
-//             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'order not found'})
-//         }
-
-//         if(order.orderStatus!=='Delivered'){
-//             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Only delivered items can returned'})
-//         }
-
-//         order.returnRequest = true;
-
-//        order.orderStatus='Returned'
-
-//        if(order.paymentMethod==='COD'&&order.paymentStatus==='Pending'){
-//         order.paymentStatus='Completed'
-//        }
-
-// //for wallet
-//        const wallet=await Wallet.findOne({userId})
-//        if(!wallet){
-//         return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'Wallet not found '})
-//        }
-
-//        wallet.balance+=order.totalAmount
-
-//        wallet.transaction.push({
-//         transactionType:'credit',
-//         amount:order.totalAmount,
-//         status:'completed'
-//     })
-
-//        await wallet.save()
-
-//        for(let item of order.items){
-//         const product=await Product.findById(item.productId)
-
-//         if(product){
-//             const sizeStock=product.sizes.find(s=>s.size===item.size)
-
-//             if(sizeStock){
-//                 sizeStock.stock+=item.quantity
-//             }
-//             await product.save()
-//         }
-//        }
-
-//        await order.save()
-
-// return res.status(statusCodes.OK).json({success:true,error:'product removed successfully'})
-
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
 
 exports.returnProduct = async (req, res) => {
   try {
