@@ -439,118 +439,115 @@
   </style>
  </head>
  <body class="wallet-page">
-    <div class="container2">
-        <div class="sidebar2">
-            <div class="profile">
-                <h2><%= user.username %></h2> <!-- Dynamic name from user -->
-                <p><%= user.email%></p>  <!-- Dynamic phone number from user -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Section -->
+            <div class="col-md-3 col-sm-12">
+                <div class="sidebar2">
+                    <div class="profile">
+                        <h2><%= user.username %></h2> <!-- Dynamic name from user -->
+                        <p><%= user.email %></p> <!-- Dynamic phone number from user -->
+                    </div>
+                    <ul>
+                        <li><a href="#">Orders &amp; Returns</a></li>
+                        <li><a href="/myOrders">My Profile</a></li>
+                        <li class="active"><a href="/wallet">Wallet <span>₹ <%= wallet.balance %></span></a></li>
+                        <li><a href="#">Sporty Rewards</a></li>
+                        <li><a href="/address">Address</a></li>
+                        <li><a href="#">Logout</a></li>
+                    </ul>
+                </div>
             </div>
-            <ul>
-                <li><a href="#">Orders &amp; Returns</a></li>
-                <li><a href="/myOrders">My Profile</a></li>
-                <li class="active"><a href="/wallet">Wallet <span>₹ <%= wallet.balance %></span></a></li> 
-                <li><a href="#">Sporty Rewards</a></li>
-                <li><a href="/address">Address</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </div>
 
-        <div class="content">
-            <form action="/wallet" method="post">
-                <div class="balance">
-                    <h3>Cash Balance</h3>
-                    <p class="amount">₹ <%= wallet.balance %></p> 
-                    <p class="description">GiftCard top-ups and Refunds</p>
+            <!-- Content Section -->
+            <div class="col-md-9 col-sm-12">
+                <div class="content">
+                    <!-- Balance Section -->
+                    <form action="/wallet" method="post">
+                        <div class="balance">
+                            <h3>Cash Balance</h3>
+                            <p class="amount">₹ <%= wallet.balance %></p>
+                            <p class="description">GiftCard top-ups and Refunds</p>
 
-                    <div class="actions">
-                        <button type="button" name="action" value="quick_checkout" class="action">
-                            <img alt="Quick Checkout" height="40" src="https://storage.googleapis.com/a1aa/image/bSXxAnnfJen9OkHMuXIabO6xoZhXbcqle4bEMcheZTvPlOedC.jpg" width="40" />
-                            <p>Quick Checkout</p>
-                        </button>
-                        <button type="button" name="action" value="consolidated_money" class="action">
-                            <img alt="Consolidated Money" height="40" src="https://storage.googleapis.com/a1aa/image/kKfCG8deIYqXJkOCHqHggDmb5efoa7YKMRkv4frPJmKMKd8dC.jpg" width="40" />
-                            <p>Consolidated Money</p>
-                        </button>
-                        <button type="button" name="action" value="instant_refund" class="action">
-                            <img alt="Instant Refund" height="40" src="https://storage.googleapis.com/a1aa/image/DT4H3XvfOeif0oKY8zSim1Sr6XiujMnLzgFqWJ9thNplSHfOB.jpg" width="40" />
-                            <p>Instant Refund</p>
-                        </button>
+                            <div class="actions row">
+                                <div class="col-md-4 col-sm-12">
+                                    <button type="button" name="action" value="quick_checkout" class="action">
+                                        <img alt="Quick Checkout" src="https://storage.googleapis.com/a1aa/image/bSXxAnnfJen9OkHMuXIabO6xoZhXbcqle4bEMcheZTvPlOedC.jpg" />
+                                        <p>Quick Checkout</p>
+                                    </button>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <button type="button" name="action" value="consolidated_money" class="action">
+                                        <img alt="Consolidated Money" src="https://storage.googleapis.com/a1aa/image/kKfCG8deIYqXJkOCHqHggDmb5efoa7YKMRkv4frPJmKMKd8dC.jpg" />
+                                        <p>Consolidated Money</p>
+                                    </button>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <button type="button" name="action" value="instant_refund" class="action">
+                                        <img alt="Instant Refund" src="https://storage.googleapis.com/a1aa/image/DT4H3XvfOeif0oKY8zSim1Sr6XiujMnLzgFqWJ9thNplSHfOB.jpg" />
+                                        <p>Instant Refund</p>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="add-money-to-wallet mt-3">
+                                <button type="button" onclick="showAddFundsModal()">ADD MONEY TO WALLET</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Transactions Section -->
+                    <div class="transactions">
+                        <h3>Transactions</h3>
+                        <% if (wallet.transaction && wallet.transaction.length > 0) { %>
+                            <ul class="transaction-list">
+                                <% wallet.transaction.forEach(transaction => { %>
+                                    <li class="transaction-item <%= transaction.transactionType %>">
+                                        <span class="transaction-date">
+                                            <%= transaction.date ? new Date(transaction.date).toLocaleDateString() : 'Date not available' %>
+                                        </span>
+                                        <span class="transaction-description">
+                                            <% if (transaction.transactionType === 'credit') { %>
+                                                Money Added
+                                            <% } else if (transaction.transactionType === 'debit') { %>
+                                                Money Debited
+                                            <% } else { %>
+                                                Unknown Transaction
+                                            <% } %>
+                                        </span>
+                                        <span class="transaction-amount">
+                                            <%= transaction.transactionType === 'credit' ? '+' : '-' %>₹ <%= transaction.amount %>
+                                        </span>
+                                        <span class="transaction-status"><%= transaction.status %></span>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <div class="no-transactions">
+                                <img alt="No Transactions" src="https://storage.googleapis.com/a1aa/image/wSfIN9SbtjWgP6eFwU2AmH7GKbyuckWevQtE0UiCyt3fkOedC.jpg" />
+                                <p>No transactions yet!<br />Add a gift card for faster checkout.</p>
+                            </div>
+                        <% } %>
                     </div>
 
-                    <div class="add-money-to-wallet">
-                        <button type="button" onclick="showAddFundsModal()">ADD MONEY TO WALLET</button>
+                    <!-- Notes Section -->
+                    <div class="note">
+                        <h4>Please Note</h4>
+                        <ul>
+                            <li>The Amount added in the Wallet cannot be transferred to any other user's Wallet or Bank Account.</li>
+                            <li>The amount in the Wallet cannot be withdrawn in the form of cash.</li>
+                            <li>The amount in Wallet can be utilized only to purchase products online and in-store.</li>
+                            <li>Any amount added to the wallet through Gift Card has an expiry of 1 year from the date of purchase.</li>
+                            <li>Any amount added to Gift Card upon return of an item will follow the respective policy.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pagination Section -->
+                    <div class="pagination-nav">
+                        <!-- Pagination links here -->
                     </div>
                 </div>
-            </form>
-
-            <!-- Transaction Section -->
-            <div class="transactions">
-                <h3>Transactions</h3>
-                <% if (wallet.transaction && wallet.transaction.length > 0) { %>
-                    <ul class="transaction-list">
-                        <% wallet.transaction.forEach(transaction => { %>
-                            <li class="transaction-item <%= transaction.transactionType %>">
-                                <span class="transaction-date">
-                                    <%= transaction.date ? new Date(transaction.date).toLocaleDateString() : 'Date not available' %>
-                                </span>
-                                <span class="transaction-description">
-                                    <% if (transaction.transactionType === 'credit') { %>
-                                        Money Added
-                                    <% } else if (transaction.transactionType === 'debit') { %>
-                                        Money Debited
-                                    <% } else { %>
-                                        Unknown Transaction
-                                    <% } %>
-                                </span>
-                                <span class="transaction-amount">
-                                    <%= transaction.transactionType === 'credit' ? '+' : '-' %>₹ <%= transaction.amount %>
-                                </span>
-                                <span class="transaction-status"><%= transaction.status %></span>
-                            </li>
-                        <% }) %>
-                    </ul>
-                <% } else { %>
-                    <div class="no-transactions">
-                        <img alt="No Transactions" height="100" src="https://storage.googleapis.com/a1aa/image/wSfIN9SbtjWgP6eFwU2AmH7GKbyuckWevQtE0UiCyt3fkOedC.jpg" width="100" />
-                        <p>No transactions yet!<br />Add a gift card for faster checkout.</p>
-                    </div>
-                <% } %>
             </div>
-            
-            
-            
-            
-
-            <!-- Notes Section -->
-            <div class="note">
-                <h4>Please Note</h4>
-                <ul>
-                    <li>The Amount added in the Wallet cannot be transferred to any other user's Wallet or Bank Account.</li>
-                    <li>The amount in the Wallet cannot be withdrawn in the form of cash.</li>
-                    <li>The amount in Wallet can be utilized only to purchase products online and in-store.</li>
-                    <li>Any amount added to the wallet through Gift Card has an expiry of 1 year from the date of purchase.</li>
-                    <li>Any amount added to Gift Card upon return of an item will follow the respective policy.</li>
-                </ul>
-            </div>
-
-            <!--for pagination-->
-            <nav class="pagination-nav">
-                <% if (currentPage > 1) { %>
-                    <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" class="pagination-link">Previous</a>
-                <% } %>
-        
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                    <a href="?page=<%= i %>&limit=<%= limit %>" 
-                       class="pagination-link <%= currentPage === i ? 'active' : '' %>">
-                        <%= i %>
-                    </a>
-                <% } %>
-        
-                <% if (currentPage < totalPages) { %>
-                    <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" class="pagination-link">Next</a>
-                <% } %>
-            </nav>
-            <!--for pagination-->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -5,6 +5,7 @@ const profileController = require("../controller/user/profileController");
 const cartController=require('../controller/user/cartController')
 const {verifyUser}=require('../middleware/authMiddlware')
 const {userLoggedIn}=require('../middleware/authMiddlware')
+// const {protected}=require('../middleware/authMiddleware')
 const passport=require('passport')
 const jwt = require('jsonwebtoken');
 const wishlistController=require('../controller/user/wishlistController')
@@ -36,7 +37,7 @@ router.post("/resend-otp", userController.resendOtp);
 
 router.post("/login", userController.loginRedirect);
 
-router.get("/index",verifyUser,userController.indexPage);
+router.get("/index",userController.indexPage);
 
 router.get('/shop',verifyUser,userController.shopPage)
 

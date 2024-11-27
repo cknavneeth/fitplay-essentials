@@ -248,13 +248,25 @@ exports.indexPage = async (req, res) => {
   try {
     const products = await Product.find({ isBlocked: false });
 
-    // const userId=req.user.id
-    // const user=await User.findById(userId)
-    const userId = req.user ? req.user.id : null;
-
+    //for decode
     let user = null;
-    if (userId) {
-      user = await User.findById(userId);
+
+    
+    const token = req.cookies.token;
+    if (token) {
+      try {
+        const decode = jwt.verify(token, process.env.USER_SECRET_KEY);
+        console.log("User verified:", decode);
+        req.user = decode;
+
+        const userId = req.user ? req.user.id : null;
+        if (userId) {
+          user = await User.findById(userId);
+        }
+      } catch (err) {
+        console.error("Token verification failed:", err);
+        req.user = null; 
+      }
     }
 
     const breadcrumbs = [{ name: "Home", url: "/" }];

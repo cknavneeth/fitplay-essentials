@@ -302,7 +302,7 @@ td .btn {
                                             <% if (order.orderStatus === 'Delivered') { %>
                                                 <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Return Product</button>
                                                 <a href="/invoice/<%= order._id %>" class="btn btn-danger btn-sm ml-2">Download Invoice</a>
-                                            <% } else if (order.paymentStatus === 'Completed') { %>
+                                            <% } else if (order.paymentStatus === 'Completed'&&order.orderStatus!=='Cancelled') { %>
                                                 <button type="button" class="btn btn-primary cancel-btn" data-order-id="<%= order._id %>">Cancel</button>
                                                 <a href="/invoice/<%= order._id %>" class="btn btn-danger btn-sm ml-2">Download Invoice</a>
                                             <% } else if (order.orderStatus === 'Processing' && order.paymentStatus === 'Failed') { %>

@@ -682,11 +682,13 @@ exports.cancelOrder = async (req, res) => {
         return res.json({ success: false, error: "wallet not found" });
       }
 
-      wallet.balance += updateOrder.totalAmount;
+
+
+      wallet.balance += Math.round(updateOrder.grandTotal)
 
       wallet.transaction.push({
         transactionType: "credit",
-        amount: updateOrder.totalAmount,
+        amount: updateOrder.grandTotal,
         status: "completed",
       });
 
