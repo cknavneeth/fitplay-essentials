@@ -177,56 +177,64 @@ p {
   </head>
   <body>
     <div id="container" class="container">
-      <div class="form-wrapper align-items-center row justify-content-center">
-        <div class="form sign-in col-md-8 col-lg-6">
-          <h2 class="text-center">Welcome Back</h2>
-          <form action="/login" method="post" onsubmit="return userLogin(event)" class="p-3">
-            <div class="input-group mb-3">
-              <i class="bx bxs-user me-2"></i>
+      <div class="form-wrapper align-items-center">
+        <div class="form sign-in">
+          <h2>Welcome Back</h2>
+          <form action="/login" method="post" onsubmit="return userLogin(event)">
+            <div class="input-group">
+              <i class="bx bxs-user"></i>
               <input
                 type="text"
                 placeholder="Username"
                 name="username"
                 id="username"
                 required
-                class="form-control"
               />
             </div>
-            <div class="input-group mb-3 position-relative">
-              <i class="bx bxs-lock-alt me-2"></i>
+            <div class="input-group">
+              <i class="bx bxs-lock-alt"></i>
               <input
                 type="password"
                 placeholder="Password"
                 name="password"
                 id="password"
                 required
-                class="form-control"
               />
-              <i
-                class="bi bi-eye toggle-password"
-                id="toggle-password"
-                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"
-              ></i>
+              <i class="bi bi-eye toggle-password" id="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);"></i>
             </div>
-  
+
+           
+
+
+            
+
+
             <% if (typeof error !== 'undefined') { %>
-            <p class="text-center text-danger"><%= error %></p>
+            <p style="color: red"><%= error %></p>
             <% } %>
-  
-            <div class="d-grid mb-3">
-              <button type="submit" class="btn btn-primary">Login</button>
-            </div>
+            <button type="submit">Login</button>
+
+         
+
+
           </form>
-  
-          <p class="text-center">
-            <a href="/forgot-password" class="d-block">
-              <b>Forgot password?</b>
-            </a>
+          <!-- <p>
+            <b>Forgot password?</b>
           </p>
-  
-          <p class="text-center mt-3">
+          <p> -->
+            <p>
+              <a href="/forgot-password">
+                <b>Forgot password?</b>
+              </a>
+            </p>
+            
             <span>Don't have an account?</span>
-            <a href="/signup" class="pointer">Sign up here</a>
+            <!-- <b onclick="togglePage('/signup class="pointer">Sign up here</b> -->
+            <a href="/signup"class="pointer">Sign up here</a>
+
+           
+
+
           </p>
         </div>
       </div>

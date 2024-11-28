@@ -156,6 +156,35 @@ app.post(
         if(!order){
           return res.status(400).json({error:"Order not found"});
         }else{
+
+          //checking quantity in repayment
+          const outofstock=[]
+          const handleOutofstock=order.items.map(async(item)=>{
+            const product=await Product.findById(item.productId)
+            if(product){
+              const sizeStock=product.sizes.find((s)=>s.size===item.size)
+              if(!sizeStock||sizeStock.stock<item.quantity){
+                outofstock.push({
+                  productId:item.productId,
+                  productName:item.productName,
+                  productImage:item.productId.productImage,
+                  size:item.size
+                })
+
+              }
+            }
+          })
+          await Promise.all(handleOutofstock)
+          if (outofstock.length > 0) {
+            return res.status(400).json({
+                success: false,
+                error: "Some products are out of stock. Please try again later after stock fills.",
+                outofstock,
+            });
+        }
+
+
+          //checking quantity in repayment
           
 
           order.paymentStatus = "Completed";
@@ -186,6 +215,35 @@ app.post(
       }
 
       //failed orders
+
+      //checking quantity for normal orders
+      
+      const cart2 = await Cart.findOne({ userId:req.body.userId})
+      const outofstock=[]
+      const handleOutofstock=cart2.items.map(async(item)=>{
+        const product=await Product.findById(item.productId)
+        if(product){
+          const sizeStock=product.sizes.find((s)=>s.size===item.size)
+          if(!sizeStock||sizeStock.stock<item.quantity){
+            outofstock.push({
+              productId:item.productId,
+              productName:item.productName,
+              productImage:item.productId.productImage,
+              size:item.size
+            })
+
+          }
+        }
+      })
+      await Promise.all(handleOutofstock)
+      if (outofstock.length > 0) {
+        return res.status(400).json({
+            success: false,
+            error: "Some products are out of stock. Please try again later after stock fills.",
+            outofstock,
+        });
+    }
+      //checking quantity for normal orders
 
       // Get the raw body as a string
       const rawBody = req.body;

@@ -5,6 +5,7 @@
 	<title>
 	 Profile Page
 	</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 	<style>
@@ -163,6 +164,18 @@ body {
     margin-left: 0; /* Reset the previous left margin */
 }
 
+
+#copyButton {
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+#copy-success {
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+
 	</style>
    </head>
    <body>
@@ -246,6 +259,30 @@ body {
 	   <small id="email-error" class="error-message"></small>
 	  </div>
 
+	  <div class="form-group">
+		<label for="referel">Referral Code</label>
+		<div class="input-group">
+		  <input
+			id="referel"
+			name="referel"
+			type="text"
+			value="<%= user.referalCode %>"
+			class="form-control"
+			readonly
+		  />
+		  <button
+			class="btn btn-primary"
+			type="button"
+			id="copyButton"
+			onclick="copyReferralCode()"
+		  >
+			Copy
+		  </button>
+		</div>
+		<small id="copy-success" class="text-success d-none">Copied to clipboard!</small>
+	  </div>
+	  
+
      <%if(!user.isGoogleUser){%>
 	  <div class="form-group">
 	   <label for="mobile-number">
@@ -274,19 +311,7 @@ body {
 	   <input id="confirmPassword" name="confirmPassword" type="text" />
 	   <small id="confirm-password-error" class="error-message"></small>
 	  </div>
-	  <!-- <div class="form-group">
-	   <label>
-		Gender
-	   </label>
-	   <div class="gender-options">
-		<button class="active">
-		 Male
-		</button>
-		<button>
-		 Female
-		</button>
-	   </div>
-	  </div> -->
+	  
 	  <div class="form-group">
 	   <label>
 		Fill some sporty stuff in your inbox
@@ -361,78 +386,7 @@ body {
 	}
 });
 
-// function validateForm() {
-//     let isValid = true;
-//     console.log('asthafarullah')
-	
-    
-//     const name = document.getElementById('first-name').value.trim();
-//     const email = document.getElementById('email').value.trim();
-//     const currentPassword = document.getElementById('password').value.trim();
-//     const newPassword = document.getElementById('newPassword').value.trim();
-//     const confirmPassword = document.getElementById('confirmPassword').value.trim();
-	
 
-// 	console.log("Name:", name);
-//     console.log("Email:", email);
-//     console.log("Current Password:", currentPassword);
-//     console.log("New Password:", newPassword);
-//     console.log("Confirm Password:", confirmPassword);
-
-    
-//     document.getElementById('name-error').innerText = '';
-//     document.getElementById('email-error').innerText = '';
-//     document.getElementById('password-error').innerText = '';
-//     document.getElementById('new-password-error').innerText = '';
-//     document.getElementById('confirm-password-error').innerText = '';
-
-	
-// 	const phonePattern = /^(?!.*(\d)\1{4})[0-9]{10}$/;
-//         const namePattern = /^[A-Za-z\s]+$/;
-//         const pincodePattern = /^[0-9]+$/;
-
-
-    
-//     if (name === '') {
-//         document.getElementById('name-error').innerText = 'Name is required';
-//         isValid = false;
-//     }else if(!namePattern.test(name)){
-// 		document.getElementById('name-error').innerText='Not a proper name'
-// 	}
-
-    
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!email.match(emailRegex)) {
-//         document.getElementById('email-error').innerText = 'Invalid email format';
-//         isValid = false;
-//     }
-
-    
-//     if (currentPassword === '') {
-//         document.getElementById('password-error').innerText = 'Current password is required';
-//         isValid = false;
-//     }
-
-    
-//     if (newPassword !== '' || confirmPassword !== '') {
-//         if (newPassword !== confirmPassword) {
-//             document.getElementById('confirm-password-error').innerText = 'Passwords do not match';
-//             isValid = false;
-//         }
-//     }
-// 	else if (newPassword.length < 6) {
-//          document.getElementById('new-password-error').innerText='Password must be 6 characters!'
-//           isValid=false
-//         } else if (!/[A-Z]/.test(newPassword)) {
-//           document.getElementById('new-password-error').innerText='Atleast include One uppercase letter!'
-//           isValid=false
-//         } else if (!/[0-9]/.test(newPassword)) {
-//           document.getElementById('new-password-error').innerText="Atleast include one number! "
-//           isValid=false
-//         }
-
-//     return isValid; 
-// }
 function validateForm() {
     let isValid = true;
 
@@ -499,6 +453,34 @@ function validateForm() {
 
 
    </script>
+
+
+
+<script>
+	function copyReferralCode() {
+	  const referralInput = document.getElementById("referel");
+	  const copySuccessMessage = document.getElementById("copy-success");
+  
+	  // Select the referral code value
+	  referralInput.select();
+	  referralInput.setSelectionRange(0, 99999); // For mobile devices
+  
+	  // Copy the text to the clipboard
+	  navigator.clipboard
+		.writeText(referralInput.value)
+		.then(() => {
+		  // Show success message
+		  copySuccessMessage.classList.remove("d-none");
+		  setTimeout(() => {
+			copySuccessMessage.classList.add("d-none");
+		  }, 2000); // Hide after 2 seconds
+		})
+		.catch((err) => {
+		  console.error("Failed to copy: ", err);
+		});
+	}
+  </script>
+  
    </body>
 
 		<%- include("../../views/layout/user/footer") %>

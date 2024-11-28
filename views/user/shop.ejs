@@ -6,81 +6,89 @@
 		<head>
 			<style>
 		
+		.filter-and-sort-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  background-color: #f9f9f9;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+}
+
 .filter-section {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        background-color: #f9f9f9;
-        padding: 10px 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        overflow: hidden;
-        flex-wrap: wrap;
-        width: 100%;
-    }
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  width: 100%;
+}
 
-    .filter-section h3 {
-        font-size: 1rem;
-        margin-right: 10px;
-        white-space: nowrap;
-    }
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
-    .filter-group {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
+.filter-group label {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
 
-    .filter-group label {
-        font-size: 0.85rem;
-        white-space: nowrap;
-    }
+.filter-group select,
+.filter-group input {
+  font-size: 0.85rem;
+  padding: 5px;
+}
 
-    .filter-group select,
-    .filter-group input {
-        font-size: 0.85rem;
-        padding: 5px;
-    }
+.price-inputs {
+  display: flex;
+  gap: 5px;
+}
 
-    .price-inputs {
-        display: flex;
-        gap: 5px;
-    }
+.small-input {
+  width: 70px;
+}
 
-    .small-input {
-        width: 70px;
-    }
+.apply-btn {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-    .apply-btn {
-        padding: 6px 10px;
-        font-size: 0.85rem;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+/* Responsive Styling */
+@media (max-width: 768px) {
+  .filter-and-sort-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .filter-group {
+    width: 100%;
+  }
+  .price-inputs {
+    width: 100%;
+  }
+  .small-input {
+    width: 48%;
+  }
+  .apply-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
 
-    /* Responsive styling */
-    @media (max-width: 768px) {
-        .filter-section {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .filter-group {
-            width: 100%;
-        }
-        .price-inputs {
-            width: 100%;
-        }
-        .small-input {
-            width: 48%;
-        }
-        .apply-btn {
-            width: 100%;
-            text-align: center;
-        }
-    }
 
 
 
@@ -112,72 +120,66 @@
 		<div class="shop_page_area">
 			<div class="container">
 				<div class="shop_bar_tp fix">
-					<div class="row">
-						<div class="col-sm-6 col-xs-12 short_by_area"> 
-
-
-
-							<div class="filter-section">
-								<h3>Filter By</h3>
-								<div class="filter-group">
-									<label for="category">Category</label>
-									<select id="category">
-										<option value="">All Categories</option>
-										<% categories.forEach(category => { %>
-											<option value="<%= category._id %>"><%= category.name %></option>
-										<% }) %>
-									</select>
-								</div>
-								<div class="filter-group">
-									<label for="price-range">Price Range</label>
-									<div class="price-inputs">
-										<input type="number" id="min-price" placeholder="Min" class="small-input">
-										<input type="number" id="max-price" placeholder="Max" class="small-input">
-									</div>
-								</div>
-								<div class="filter-group">
-									<label for="rating">Rating</label>
-									<select id="rating">
-										<option value="">All Ratings</option>
-										<option value="5">5 stars</option>
-										<option value="4">4 stars & up</option>
-										<option value="3">3 stars & up</option>
-										<option value="2">2 stars & up</option>
-										<option value="1">1 star & up</option>
-									</select>
-								</div>
-								<button class="apply-btn" onclick="applyFilters()">Apply</button>
+					<div class="filter-and-sort-section">
+						<div class="filter-section">
+						  <h3>Filter & Sort</h3>
+						  <!-- Filter Section -->
+						  <div class="filter-group">
+							<label for="category">Category</label>
+							<select id="category">
+							  <option value="">All Categories</option>
+							  <% categories.forEach(category => { %>
+								<option value="<%= category._id %>"><%= category.name %></option>
+							  <% }) %>
+							</select>
+						  </div>
+						  <div class="filter-group">
+							<label for="price-range">Price Range</label>
+							<div class="price-inputs">
+							  <input type="number" id="min-price" placeholder="Min" class="small-input">
+							  <input type="number" id="max-price" placeholder="Max" class="small-input">
 							</div>
-
-
-
-
+						  </div>
+						  <div class="filter-group">
+							<label for="rating">Rating</label>
+							<select id="rating">
+							  <option value="">All Ratings</option>
+							  <option value="5">5 stars</option>
+							  <option value="4">4 stars & up</option>
+							  <option value="3">3 stars & up</option>
+							  <option value="2">2 stars & up</option>
+							  <option value="1">1 star & up</option>
+							</select>
+						  </div>
+					  
+						  <!-- Sort Section -->
+						  <div class="filter-group">
+							<label for="sort-select">Sort By</label>
+							<select class="sort-select" id="sort-select">
+							  <option value="popularity">Popularity</option>
+							  <option value="priceLowToHigh">Price: Low to High</option>
+							  <option value="priceHighToLow">Price: High to Low</option>
+							  <option value="averageRating">Average Ratings</option>
+							  <option value="newArrivals">New Arrivals</option>
+							  <option value="nameAsc">A-Z</option>
+							  <option value="nameDesc">Z-A</option>
+							</select>
+						  </div>
+						  <div class="filter-group">
+							<label for="show-select">Show</label>
+							<select class="show-select">
+							  <option>8</option>
+							  <option>12</option>
+							  <option>30</option>
+							  <option>ALL</option>
+							</select>
+						  </div>
+					  
+						  <!-- Apply Button -->
+						  <button class="apply-btn" onclick="applyFilters()">Apply</button>
 						</div>
-				
-						<div class="col-sm-6 col-xs-12 show_area">
-							<div class="show_inner">
-								<label>Sort By:</label>
-								<select class="sort-select" id="sort-select">
-									<option value="popularity">Popularity</option>
-									<option value="priceLowToHigh">Price: Low to High</option>
-									<option value="priceHighToLow">Price: High to Low</option>
-									<option value="averageRating">Average Ratings</option>
-									<option value="newArrivals">New Arrivals</option>
-									<option value="nameAsc">A-Z</option>
-									<option value="nameDesc">Z-A</option>
-								</select>
-							</div>
-							<div class="show_inner">
-								<label>Show:</label>
-								<select class="show-select">
-									<option>8</option>
-									<option>12</option>
-									<option>30</option>
-									<option>ALL</option>
-								</select>
-							</div>
-						</div>
-					</div>
+					  </div>
+					  
 				</div>
 					
 				<div class="shop_details text-center">
