@@ -146,80 +146,81 @@
   </head>
   <body>
     <div id="container" class="container">
-      <div class="form-wrapper align-items-center">
-        <div class="form sign-up">
-          <h2>Join with us</h2>
-          <form
-            id="signupForm"
-            action="/signup"
-            method="post"
-            
-          >
-            <div class="input-group">
-              <i class="bx bxs-user"></i>
+      <div class="form-wrapper align-items-center row justify-content-center">
+        <div class="form sign-up col-md-8 col-lg-6">
+          <h2 class="text-center">Join with us</h2>
+          <form id="signupForm" action="/signup" method="post" class="p-3">
+            <div class="input-group mb-3">
+              <i class="bx bxs-user me-2"></i>
               <input
                 type="text"
                 placeholder="Username"
                 name="username"
                 id="username"
+                class="form-control"
               />
-             
               <span class="error-message" id="usernameError" style="color: red"></span>
             </div>
-            <div class="input-group">
-              <i class="bx bx-mail-send"></i>
-              <input type="email" placeholder="Email" name="email" id="email" />
-              
+  
+            <div class="input-group mb-3">
+              <i class="bx bx-mail-send me-2"></i>
+              <input
+                type="email"
+                placeholder="Email"
+                name="email"
+                id="email"
+                class="form-control"
+              />
               <span class="error-message" id="emailError" style="color: red"></span>
             </div>
-            <div class="input-group">
-              <i class="bx bxs-lock-alt"></i>
+  
+            <div class="input-group mb-3">
+              <i class="bx bxs-lock-alt me-2"></i>
               <input
                 type="password"
                 placeholder="Password"
                 name="password"
                 id="password"
+                class="form-control"
               />
-             
               <span class="error-message" id="passwordError" style="color: red"></span>
             </div>
-            <div class="input-group">
-              <i class="bx bxs-lock-alt"></i>
+  
+            <div class="input-group mb-3">
+              <i class="bx bxs-lock-alt me-2"></i>
               <input
                 type="password"
                 placeholder="Confirm password"
                 name="password2"
                 id="password2"
+                class="form-control"
               />
-              
               <span class="error-message" id="password2Error" style="color: red"></span>
             </div>
-
-
+  
             <% if (typeof error !== 'undefined') { %>
-            <p style="color: red" id="error"><%= error %></p>
-            <% } %>
-
-            <button type="submit">Sign up</button>
-            <div class="social-btns">
-              <a
-                href="/auth/google"
-                type="button"
-                class="btn btn-outline-danger"
-              >
+            <p style="color: red" id="error" class="text-center"><%= error %></p>
+            <% } %>
+  
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-primary">Sign up</button>
+            </div>
+  
+            <div class="social-btns text-center">
+              <a href="/auth/google" class="btn btn-outline-danger d-flex align-items-center justify-content-center">
                 <img
                   src="/img/google-logo.png"
                   alt="Google Logo"
                   style="width: 24px; height: 24px"
+                  class="me-2"
                 />
                 Continue With Google
               </a>
-                        
             </div>
           </form>
-          <p>
+  
+          <p class="text-center mt-3">
             <span>Already have an account?</span>
-            
             <a href="/login" class="pointer"> Sign in here</a>
           </p>
         </div>

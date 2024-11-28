@@ -703,8 +703,8 @@ exports.updateQuantity = async (req, res) => {
       const { referralCode } = req.body;
 
      
-      const user = await User.findOne({ referalCode: referralCode });
-      if (!user) {
+      const refferedUser = await User.findOne({ referalCode: referralCode });
+      if (!refferedUser) {
           return res.status(400).json({ success: false, error: 'Invalid referral code' });
       }
 
@@ -743,10 +743,10 @@ exports.updateQuantity = async (req, res) => {
       });
       await currentUserWallet.save();
 
-      let userWallet = await Wallet.findOne({ userId: user._id });
+      let userWallet = await Wallet.findOne({ userId:refferedUser._id });
       if (!userWallet) {
           userWallet = new Wallet({
-              userId: user._id,
+              userId: refferedUser._id,
               balance: 0,
               transaction: []
           });
@@ -760,6 +760,9 @@ exports.updateQuantity = async (req, res) => {
           status: 'completed',
       });
       await userWallet.save();
+
+      console.log('cuurent user wallet',currentUserWallet)
+      console.log('refer cheytha user',userWallet)
 
       
       return res.status(200).json({ success: true, message: 'Referral amount added to wallet' });
