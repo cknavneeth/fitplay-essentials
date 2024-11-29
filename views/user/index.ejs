@@ -151,11 +151,11 @@
 																					<img class="pic-2" src="/uploads/re-image/<%= product.productImage[1] %>" alt="product image 2">
 																			<% } %>
 											</a>
-											<ul class="social">
+											<!-- <ul class="social">
 												<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
 												<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
 												<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-											</ul>
+											</ul> -->
 											<!-- <span class="product-new-label">Sale</span> -->
 											<% if (product.isOnSale) { %>
 												<span class="product-new-label">Sale</span>
@@ -463,313 +463,40 @@
 						</div>
 					</div>
 				</div>
-
+		
 				<div class="row text-center">		
-					
-					
-
-
-					<!-- <div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/1.jpg" alt="product image">
-									<img class="pic-2" src="img/product/2.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">Sale</span>
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
-						</div>
-					</div>End Col	 -->
 					<% products.forEach(product => { %>
 						<div class="col-lg-3 col-md-4 col-sm-6">
 							<div class="product-grid">
 								<div class="product-image">
-									<a href="/products/details/<%=product._id%>">
-										<!-- <img class="pic-1" src="img/product/1.jpg" alt="product image">
-										<img class="pic-2" src="img/product/2.jpg" alt="product image"> -->
-										<img class="pic-1" src="/uploads/re-image/<%= product.productImage[0] %>" alt="product image 1">
-																	<% if (product.productImage[1]) { %>
-																			<img class="pic-2" src="/uploads/re-image/<%= product.productImage[1] %>" alt="product image 2">
-																	<% } %>
+									<a href="/productDetails/<%= product._id %>">
+										<img class="pic-1" src="/uploads/re-image/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+										<% if (product.productImage[1]) { %>
+											<img class="pic-2" src="/uploads/re-image/<%= product.productImage[1] %>" alt="<%= product.productName %> (alternate)">
+										<% } %>
 									</a>
-									<ul class="social">
-										<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-										<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-										<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-									</ul>
-									<!-- <span class="product-new-label">Sale</span> -->
 									<% if (product.isOnSale) { %>
 										<span class="product-new-label">Sale</span>
-								<% } %>
+									<% } %>
 								</div>
-								<ul class="rating">
-									<li class="fa fa-star"></li>
-									<li class="fa fa-star"></li>
-									<li class="fa fa-star"></li>
-									<li class="fa fa-star"></li>
-									<li class="fa fa-star"></li>
-								</ul>
 								<div class="product-content">
-									<h3 class="title"><a href="/products/details/<%= product._id %>"><%= product.productName %></a></h3>
+									<h3 class="title">
+										<a href="/productDetails/<%= product._id %>"><%= product.productName %></a>
+									</h3>
 									<div class="price">Rs<%= product.salePrice %>
 										<% if (product.regularPrice) { %>
-												<span>Rs<%= product.regularPrice %></span>
+											<span>Rs<%= product.regularPrice %></span>
 										<% } %>
-								</div>
+									</div>
 									<a class="add-to-cart" href="#">+ Add To Cart</a>
 								</div>
 							</div>
-						</div><!-- End Col -->	
-						
-						<!-- End Col -->
-						<% }) %>
-
-
-
-
-
-					
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/3.jpg" alt="product image">
-									<img class="pic-2" src="img/product/4.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">-20%</span>				
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
 						</div>
-					</div><!-- End Col -->	
-							
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/5.jpg" alt="product image">
-									<img class="pic-2" src="img/product/6.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">Sale</span>
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star disable"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
-						</div>
-					</div><!-- End Col -->	
-
-					
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/7.jpg" alt="product image">
-									<img class="pic-2" src="img/product/8.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">New</span>
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
-						</div>
-					</div><!-- End Col -->			
-					
-					
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/5.jpg" alt="product image">
-									<img class="pic-2" src="img/product/6.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">Sale</span>
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
-						</div>
-					</div><!-- End Col -->			
-					
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/1.jpg" alt="product image">
-									<img class="pic-2" src="img/product/2.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">-30%</span>
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
-						</div>
-					</div><!-- End Col -->		
-					
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/7.jpg" alt="product image">
-									<img class="pic-2" src="img/product/8.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">Sale</span>
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
-						</div>
-					</div><!-- End Col -->	
-
-					
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-grid">
-							<div class="product-image">
-								<a href="#">
-									<img class="pic-1" src="img/product/3.jpg" alt="product image">
-									<img class="pic-2" src="img/product/4.jpg" alt="product image">
-								</a>
-								<ul class="social">
-									<li><a href="#" data-tip="Quick View"><i class="ti-zoom-in"></i></a></li>
-									<li><a href="#" data-tip="Add to Wishlist"><i class="ti-bag"></i></a></li>
-									<li><a href="#" data-tip="Add to Cart"><i class="ti-shopping-cart"></i></a></li>
-								</ul>
-								<span class="product-new-label">-50%</span>
-							</div>
-							<ul class="rating">
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-								<li class="fa fa-star"></li>
-							</ul>
-							<div class="product-content">
-								<h3 class="title"><a href="#">Product Title</a></h3>
-								<div class="price">$16.00
-									<span>$20.00</span>
-								</div>
-								<a class="add-to-cart" href="#">+ Add To Cart</a>
-							</div>
-						</div>
-					</div><!-- End Col -->			
+					<% }) %>
 				</div>
 			</div>
 		</section>
+		
 		<!-- End Featured Products Area -->
 
 		<!-- Testimonials Area -->

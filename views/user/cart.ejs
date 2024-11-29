@@ -330,7 +330,7 @@ async function updateQuantity(productId, action, maxStock) {
 
   
   try {
-    const response = await axios.patch("http://localhost:3000/updateQuantity", {
+    const response = await axios.patch("/updateQuantity", {
       newQuantity: currentQuantity,
       productId,
     });
@@ -375,7 +375,7 @@ async function removeCoupon(){
         Swal.showLoading();
       }
     });
-    const response=await axios.patch('http://localhost:3000/removeCoupon')
+    const response=await axios.patch('/removeCoupon')
 
     console.log("Response data:", response.data);
 

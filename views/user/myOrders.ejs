@@ -102,6 +102,7 @@
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            padding: 10px;
         }
         .dashboard .content .table-container table {
             width: 100%;
@@ -302,17 +303,15 @@ td .btn {
     cursor: pointer;
     font-size: 12px;
     padding: 8px 10px;
-    margin: 2px;
+    right: 20px;
 }
-
-
 
     </style>
     
 </head>
 <body>
     <div class="dashboard">
-    <div class="container">
+    <div style="margin-right: 20rem;" class="container">
         <div class="sidebar">
             <h2><%= user.username %></h2>
             <p><%= user.email %></p> <!-- Replace with the actual field for phone number -->
@@ -417,12 +416,13 @@ td .btn {
                                         <td>
                                             <button 
                                             type="button" 
-                                            class="btn btn-info btn-sm view-details-btn" 
+                                            class="btn btn-info" 
                                             data-order-id="<%= order._id %>" 
                                             data-order-items='<%= JSON.stringify(order.items) %>' 
                                             data-order-total="<%= order.grandTotal %>" 
                                             data-order-address="<%= order.fullAddress %>" 
                                             onclick="showOrderDetails(this)"
+                                            
                                         >
                                         Details
                                         </button>
@@ -705,26 +705,14 @@ td .btn {
                                             text: paymentData.message,
                                             confirmButtonText: 'View Order'
                                         })
-                                        .then(() => {
-                                        // Update modal content
-                                        document.getElementById('orderId').textContent = paymentData.orderId;
-      document.getElementById('orderItems').innerHTML = paymentData.items
-        .map(item => `<div>${item.productName} (x${item.quantity}) - RS${item.totalPrice}</div>`)
-        .join('');
-      document.getElementById('orderTotal').textContent = paymentData.grandTotal 
-
-      console.log("About to show the modal");
-
-// Show the modal with a slight delay to ensure SweetAlert completes
-setTimeout(() => {
-    console.log("Showing the modal now");
-    $('#orderDetailsModal').modal('show');
-}, 300); 
-
-                            })
-                            .then(()=>{
-                                location.reload()
-                            })
+//                                                                    
+                            .then(() => {
+            // Reload the page with a delay to allow modal display
+            setTimeout(() => {
+                console.log("Reloading page after payment success");
+                location.reload();
+            }, 1000); // Delay before reload (2 seconds)
+        });
                                         
                                     }else {
                                     

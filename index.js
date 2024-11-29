@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 3000;
 // console.log(PORT)
 
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(process.env.MONGO_URI_AWS, {
     //    useNewUrlParser:true,
     //    useUnifiedTopology:true
   })
