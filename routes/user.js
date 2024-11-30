@@ -20,7 +20,7 @@ const {User}=require('../models/userModel')
 console.log("hello")
 router.get("/",(req, res) => {
   // res.render("user/signup", { error: null });
-  res.redirect("/index");
+  res.redirect(301,"/index");
 });
 router.get("/login",userLoggedIn,(req, res) => {
   res.render("user/login", { error: null });
