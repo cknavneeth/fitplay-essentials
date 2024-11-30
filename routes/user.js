@@ -49,7 +49,7 @@ router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']
 }));
 
-router.get('/auth/google/callback', 
+router.get('https://fitplay.navaneethck.online/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/signup',failureFlash:true}),
     (req, res) => {
       const user = req.user;
