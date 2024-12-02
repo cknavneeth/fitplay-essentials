@@ -136,9 +136,14 @@
 						  <div class="filter-group">
 							<label for="price-range">Price Range</label>
 							<div class="price-inputs">
-							  <input type="number" id="min-price" placeholder="Min" min="1" class="small-input">
-							  <input type="number" id="max-price" placeholder="Max" min="1" class="small-input">
+								<input type="number" id="min-price" placeholder="Min" class="small-input" min="0" step="0.01">
+								<span id="min-price-error" class="error-message"></span> <!-- Error message for min-price -->
+							
+								<input type="number" id="max-price" placeholder="Max" class="small-input" min="0" step="0.01">
+								<span id="max-price-error" class="error-message"></span> <!-- Error message for max-price -->
 							</div>
+							
+							
 						  </div>
 						  <div class="filter-group">
 							<label for="rating">Rating</label>
@@ -306,6 +311,40 @@
 
   window.location.href = `/shop${query}`;
 }
+
+		</script>
+
+
+
+		<script>
+			document.getElementById('min-price').addEventListener('input', validatePrices);
+document.getElementById('max-price').addEventListener('input', validatePrices);
+
+function validatePrices() {
+    const minPrice = parseFloat(document.getElementById('min-price').value);
+    const maxPrice = parseFloat(document.getElementById('max-price').value);
+
+    // Clear any previous error messages
+    document.getElementById('min-price-error').textContent = '';
+    document.getElementById('max-price-error').textContent = '';
+
+    // Prevent negative values
+    if (minPrice < 0) {
+        document.getElementById('min-price').value = '';
+        document.getElementById('min-price-error').textContent = 'Min price cannot be negative.';
+    }
+
+    if (maxPrice < 0) {
+        document.getElementById('max-price').value = '';
+        document.getElementById('max-price-error').textContent = 'Max price cannot be negative.';
+    }
+
+    // Ensure max-price is greater than min-price
+    if (minPrice >= maxPrice && maxPrice !== 0) {
+        document.getElementById('max-price-error').textContent = 'Max price must be greater than Min price.';
+    }
+}
+
 
 		</script>
 

@@ -176,11 +176,47 @@ body {
 }
 
 
+
+.toggle-button {
+    display: none; /* Hide by default */
+    background-color: #3b5998;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none; /* Hide sidebar by default on small screens */
+        position: fixed; /* Position it fixed to keep it in view */
+        top: 50%; /* Center vertically */
+        left: 50%; /* Center horizontally */
+        transform: translate(-50%, -50%); /* Adjust position to truly center */
+        width: 250px; /* Maintain width */
+        height: auto; /* Allow height to be dynamic */
+        z-index: 1000; /* Ensure it appears above other elements */
+    }
+
+    .sidebar.active {
+        display: block; /* Show sidebar when active */
+    }
+
+    .toggle-button {
+        display: block; /* Show toggle button on small screens */
+    }
+}
+
+
 	</style>
    </head>
    <body>
 	<div class="profile-page">
 	<div class="container1">
+
+		<button class="toggle-button" onclick="toggleSidebar()">☰</button>
+		
 	 <div class="sidebar">
 	  <div class="profile-header">
 	   <h2>
@@ -481,6 +517,14 @@ function validateForm() {
 	}
   </script>
   
+
+
+  <script>
+	function toggleSidebar() {
+		const sidebar = document.querySelector('.sidebar');
+		sidebar.classList.toggle('active');
+	}
+	</script>
    </body>
 
 		<%- include("../../views/layout/user/footer") %>
