@@ -17,6 +17,7 @@ const Order=require('../models/orderModel')
 const Cart=require('../models/cartModel')
 const {User}=require('../models/userModel')
 
+
 console.log("hello")
 router.get("/",(req, res) => {
   // res.render("user/signup", { error: null });
@@ -49,9 +50,13 @@ router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']
 }));
 
+
+function generateReferralCode() {
+  return crypto.randomBytes(4).toString('hex'); // Generates an 8-character code
+}
 router.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/signup',failureFlash:true}),
-    (req, res) => {
+    async(req, res) => {
       const user = req.user;
       if (user && user.isBlocked) {
         console.log('blocked user accessing home')
@@ -71,7 +76,8 @@ router.get('/auth/google/callback',
         maxAge: 30 * 24 * 60 * 60 * 1000, 
         secure: process.env.NODE_ENV === 'production', 
       });
-        
+
+      //generating referel code for google user
         res.redirect('/index');
     }
 );

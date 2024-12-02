@@ -88,6 +88,10 @@ exports.addWallet=async(req,res)=>{
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'invalid amount'})
         }
 
+        if(amount>100){
+            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'invalid amount'})
+        }
+
         let wallet=await Wallet.findOne({userId})
 
         if(!wallet){

@@ -3,6 +3,8 @@ const GoogleStrategy=require("passport-google-oauth20").Strategy
 // const User = require('../../models/userModel.js');
 const path = require('path');
 const {User} = require(path.resolve(__dirname, '../models/userModel.js'));
+
+
 // const { User } = require("../../models/userModel.js"); 
 require('dotenv').config()
 
@@ -33,11 +35,14 @@ async (accessToken, refreshToken, profile, done) => {
             
             return done(null, user);
         } else {
+            
+            
             user = new User({
                 name: profile.displayName,
                 email: profile.emails[0].value,  
                 googleId: profile.id,
-                status:'active'
+                status:'active',
+                
             });
             await user.save();
             return done(null, user);
@@ -47,11 +52,11 @@ async (accessToken, refreshToken, profile, done) => {
     }
 }));
 
-passport.serializeUser((user,done)=>{
-  
-    
+
+passport.serializeUser((user,done)=>{ 
    done(null,user.id)
 })
+
 
 passport.deserializeUser((id,done)=>{
     User.findById(id)
@@ -61,8 +66,9 @@ passport.deserializeUser((id,done)=>{
     .catch(err=>{
         done(err,null)
     })
-
 })
+
+
 module.exports=passport
 
 
