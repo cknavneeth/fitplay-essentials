@@ -1,6 +1,6 @@
 const mongoose=require("mongoose")
 const bcrypt=require("bcryptjs")
-const { v4: uuidv4 } = require('uuid');
+
 
 
 
@@ -55,7 +55,6 @@ const userSchema=new mongoose.Schema({
     // referralBonusReceived: { type: Boolean, default: false } ,
     referalCode: {
       type: String,
-      default: () => uuidv4(),
     },
     appliedReferalCode:{
       type:Boolean,
