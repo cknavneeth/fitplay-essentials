@@ -3,6 +3,7 @@
 
 
 <link rel="stylesheet" href="/stylesheet/magiczoom.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <div id="page_item_area">
   <div class="container">
     <div class="row">
@@ -223,33 +224,49 @@
     
     <style>
    
-    .thumbnail_images {
-      display: flex;
-      margin-top: 10px;
-    }
-    
-    .thumbnail {
-      width: 60px;
-      height: 60px;
-      margin-right: 10px;
-      cursor: pointer;
-      border: 2px solid #ddd;
-      padding: 3px;
-    }
-    
-    .thumbnail:hover {
-      border-color: #333;
-    }
-    
-    .pd_img img {
-      max-width: 100%;
-      height: auto;
-    }
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .container, .row {
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .thumbnail_images {
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .thumbnail {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    padding: 3px;
+  }
+
+  .thumbnail:hover {
+    border-color: #333;
+  }
+
+  .pd_img img {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+
+
 
     </style>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="/hover-extended-magnify/extm.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  
 	
 
     <script>
@@ -316,10 +333,20 @@ function changeMainImage(imageUrl) {
     .then((data)=>{
       if(data.success){
         Swal.fire({
-          icon:'success',
-          title:'added to cart',
-          text:'product added to cart',
-          confirmButtonText:'continue shopping'
+          toast: true,
+    icon: 'success', // Ensure the icon type is valid
+    title: 'Added to cart successfully',
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true, 
+    background: 'white', // Custom background color
+    iconColor: 'green', // Custom icon color
+    customClass: {
+        popup: 'custom-toast', // Optional: add custom styles
+    }
+
+          
         })
       }else if (data.error === 'Quantity exceeds available stock') {
             Swal.fire({
@@ -440,11 +467,18 @@ console.log(salePrice)
    .then(data=>{
     if(data.success){
       Swal.fire({
-            icon: 'success',
-            title: 'Added to Wishlist!',
-            text: data.message || 'The product has been successfully added to your wishlist.',
-            showConfirmButton: true,
-            confirmButtonText: 'Okay',
+        toast: true,
+    icon: 'success', // Ensure the icon type is valid
+    title: data.message||'Added to wishlist successfully',
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true, 
+    background: 'white', // Custom background color
+    iconColor: 'green', // Custom icon color
+    customClass: {
+        popup: 'custom-toast', // Optional: add custom styles
+    }
         });
     }else{
       Swal.fire({

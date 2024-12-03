@@ -43,6 +43,7 @@ async (accessToken, refreshToken, profile, done) => {
                 googleId: profile.id,
                 status:'active',
                 
+                
             });
             await user.save();
             return done(null, user);

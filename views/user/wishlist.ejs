@@ -73,9 +73,8 @@
 		
 					<div class="col-sm-6 text-right">
 						<ul class="p_items">
-							<li><a href="#">home</a></li>
-							<li><a href="#">category</a></li>
-							<li><span>Wishlist</span></li>
+							<li><a href="#">product Details</a></li>
+							<li><span>wishlist</span></li>
 						</ul>                    
 					</div>    
 				</div>
@@ -102,7 +101,7 @@
 							</thead>
 							<tbody>
 								<% wishlist.items.forEach((item, index) => { %>
-								  <tr>
+								  <tr  data-product-id="<%= item.productId._id %>" data-size="<%= item.size %>">
 									<td><span class="cart-number"><%= index + 1 %></span></td>
 									
 									<!-- Correct Image Placement -->
@@ -156,7 +155,7 @@
 									  
 									  <td>
 										<button type="button" 
-												onclick="removeFromWishlist('<%= item.productId._id %>')" 
+												onclick="removeFromWishlist('<%= item.productId._id %>','<%= item.size %>')" 
 												class="btn btn-link cp_remove" 
 												title="Remove from Wishlist">
 											<i class="fa fa-trash"></i> Remove
@@ -207,10 +206,18 @@
     .then((data)=>{
       if(data.success){
         Swal.fire({
-          icon:'success',
-          title:'added to cart',
-          text:'product added to cart',
-          confirmButtonText:'continue shopping'
+			toast: true,
+    icon: 'success', // Ensure the icon type is valid
+    title: data.message||'Added to wishlist successfully',
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true, 
+    background: 'white', // Custom background color
+    iconColor: 'green', // Custom icon color
+    customClass: {
+        popup: 'custom-toast', // Optional: add custom styles
+    }
         })
       }else if (data.error === 'Quantity exceeds available stock') {
             Swal.fire({
@@ -243,34 +250,38 @@
 		</script>
 
 		<script>
-			// async function removeFromWishlist(productId){
-			// 	try {
-			// 		await fetch(`/wishlist/remove/${productId}`,{method:'DELETE'})
-			// 		.then(()=>{
-			// 			location.reload()
-			// 		})
-					
-			// 	} catch (error) {
-			// 		console.error(error)
-			// 	}
-			// }
-			async function removeFromWishlist(productId) {
+			
+			async function removeFromWishlist(productId, size) {
+    console.log('removeFromWishlist called with:', { productId, size }); // Debug log
     try {
-        const response = await fetch(`/wishlist/remove/${productId}`, { method: 'DELETE' });
+        const response = await fetch('/wishlist/remove', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId, size }),
+        });
 
-        // Check if the response is successful
         if (response.ok) {
-            // If successful, reload the page or update the UI
-            location.reload();  // Reload the page
+            console.log('Response OK. Removing row...');
+            const row = document.querySelector(
+                `tr[data-product-id="${productId}"][data-size="${size}"]`
+            );
+            if (row) {
+                console.log('Row found:', row);
+                row.remove();
+            } else {
+                console.error(`Row not found for productId: ${productId}, size: ${size}`);
+            }
         } else {
-            // If the response was not successful, log the error message
             const result = await response.json();
-            console.error(result.error);  // Show the error message from the backend
+            console.error('Backend error:', result.error);
         }
     } catch (error) {
         console.error('Error while removing from wishlist:', error);
     }
 }
+
 
 		</script>
 		

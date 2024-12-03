@@ -51,9 +51,7 @@ router.get('/auth/google', passport.authenticate('google', {
 }));
 
 
-function generateReferralCode() {
-  return crypto.randomBytes(4).toString('hex'); // Generates an 8-character code
-}
+
 router.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/signup',failureFlash:true}),
     async(req, res) => {
@@ -66,6 +64,8 @@ router.get('/auth/google/callback',
         return res.redirect('/signup?error=blocked');
       }
       
+
+
       const token = jwt.sign({ id: user._id }, process.env.USER_SECRET_KEY, {
         expiresIn: '12d', 
       });
@@ -136,7 +136,7 @@ router.get('/wishlist',verifyUser,wishlistController.getWishlist)
 
 router.post('/wishlist/:productId',verifyUser,wishlistController.addtoWishlist)
 
-router.delete('/wishlist/remove/:productId',verifyUser,wishlistController.removefromWishlist)
+router.delete('/wishlist/remove',verifyUser,wishlistController.removefromWishlist)
 
 router.post('/applyCoupon',verifyUser,couponsController.applyCoupon)
 

@@ -81,6 +81,14 @@ app.use((req, res, next) => {
   next();
 });
 
+
+// Catch-all route for 404 errors
+
+
+
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -378,217 +386,12 @@ app.post(
 
 
 
-
-
-
-
-
-
-// app.post(
-//   "/paymentCapture",
-//   express.raw({ type: "application/json" }),
-//   async (req, res) => {
-//     try {
-//       const razorpaySignature = req.body.razorpaySignature;
-
-//       if (!razorpaySignature) {
-//         console.log("No Razorpay signature found in headers");
-//         return res.status(400).json({ error: "No signature provided" });
-//       }
-
-//       // Get the raw body as a string
-//       const rawBody = req.body;
-//       console.log(rawBody, "ASDF<<<>>>");
-//       // Debug logs
-//       console.log("Received webhook payload:", rawBody);
-//       console.log("Received signature:", razorpaySignature);
-
-//       // Calculate expected signature
-//       const expectedSignature = crypto
-//       .createHmac("sha256", process.env.RAZORPAY_SECRET)
-//       .update(req.body.razorpayOrderId + "|" + req.body.razorpayPaymentId)
-//       .digest("hex");
-
-//       console.log("Calculated signature:", expectedSignature);
-
-//       // Verify signature
-//       if (expectedSignature === razorpaySignature) {
-//         // Parse the webhook payload
-//         console.log('lalluuu',razorpaySignature)
-//         if(req.body.paymentStatus==='failed'){
-//           console.log('payment failed')
-//         }else{
-//         const paymentData = req.body;
-
-//         const items = [];
-//         const cart = await Cart.findOne({ userId: req.body.userId }).populate(
-//           "items.productId"
-//         );
-//         console.log(cart,"<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>");
-//         for (let i = 0; i < cart.items.length; i++) {
-//           const item = {
-//             productId: cart.items[i].productId._id,
-//             productName: cart.items[i].productId.productName,
-//             image: cart.items[i].productId.productImage[0],
-//             quantity: cart.items[i].quantity,
-//             price: cart.items[i].price,
-//             totalPrice: cart.items[i].totalPrice,
-//             size: cart.items[i].size,
-//           };
-//           items.push(item);
-//         }
-//         console.log(items);
-//         const user = await User.findById(req.body.userId);
-//         const addressIndex = user.addresses.findIndex(
-//           (address) => address._id.toString() == req.body.address
-//         );
-//         if (addressIndex == -1) console.log("Address not found");
-//         const address = user.addresses[addressIndex];
-
-//         console.log(req.body);
-//         const productOffer = req.body.productOffer || 0;
-//         const grandTotal = req.body.grandTotal || req.body.totalAmount; 
-//         const discount = req.body.discount || 0;
-
-
-
-
-
-
-//         const newOrder = new Order({
-//           user: req.body.userId,
-//           oid: paymentData.razorpayOrderId,
-//           paymentId: paymentData.razorpayPaymentId,
-//           items,
-//           address,
-//           paymentMethod: "razorpay",
-//           paymentStatus: "Completed",
-//           totalAmount: req.body.totalAmount,
-//           orderDate: new Date(),
-
-//           productOffer,
-//           grandTotal,
-//           discount
-//         });
-
-//         const savedOrder = await newOrder.save();
-
-//         //for quantity
-       
-
-//         const handleQuantity=newOrder.items.map(async(item)=>{
-//           const product=await Product.findById(item.productId)
-//           if(product){
-//             const sizeStock=product.sizes.find(s=>s.size===item.size)
-//             if(sizeStock){
-//               sizeStock.stock-=item.quantity
-//             }
-//             await product.save()
-//           }
-//         })
-//         await Promise.all(handleQuantity)
-
-//         //for quantity
-//         console.log("Order saved successfully:", savedOrder);
-
-//         await Cart.findByIdAndDelete(cart._id);
-
-//         return res.json({
-//           status: "ok",
-//           message: "Payment verified successfully",
-//           orderId: paymentData.razorpayOrderId, //
-//           items: savedOrder.items,   // Array of ordered items
-//           grandTotal: savedOrder.grandTotal || savedOrder.totalAmount,
-//         });
-//       }
-//       } else {
-//         // console.log("Signature verification failed");
-//         // return res.status(400).json({
-//         //   status: "error",
-//         //   error: "Invalid signature",
-//         // });
-//         console.log('Signature verification failed');
-    
-
-//       }
-//     } catch (error) {
-//       console.error("Payment verification error:", error);
-      
-//       const paymentData = req.body;
-    
-//       const items = [];
-//       const cart = await Cart.findOne({ userId: req.body.userId }).populate("items.productId");
-//       console.log(cart, "<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>");
-      
-//       for (let i = 0; i < cart.items.length; i++) {
-//           const item = {
-//               productId: cart.items[i].productId._id,
-//               productName: cart.items[i].productId.productName,
-//               image: cart.items[i].productId.productImage[0],
-//               quantity: cart.items[i].quantity,
-//               price: cart.items[i].price,
-//               totalPrice: cart.items[i].totalPrice,
-//               size: cart.items[i].size,
-//           };
-//           items.push(item);
-//       }
-      
-//       console.log(items);
-//       const user = await User.findById(req.body.userId);
-//       const addressIndex = user.addresses.findIndex((address) => address._id.toString() == req.body.address);
-//       if (addressIndex == -1) console.log("Address not found");
-//       const address = user.addresses[addressIndex];
-  
-//       console.log(req.body);
-//       const productOffer = req.body.productOffer || 0;
-//       const grandTotal = req.body.grandTotal || req.body.totalAmount; 
-//       const discount = req.body.discount || 0;
-  
-//       const newOrder = new Order({
-//           user: req.body.userId,
-//           oid: paymentData.razorpayOrderId,
-//           paymentId: paymentData.razorpayPaymentId,
-//           items,
-//           address,
-//           paymentMethod: "razorpay",
-//           paymentStatus: "failed",
-//           totalAmount: req.body.totalAmount,
-//           orderDate: new Date(),
-//           productOffer,
-//           grandTotal,
-//           discount
-//       });
-  
-//       // Save the new order regardless of payment success
-//       const savedOrder = await newOrder.save();
-  
-//       return res.json({
-//           success: false,
-//           message: "Payment failed successfully",
-//           orderId: savedOrder.oid, // Use savedOrder.oid to get the order ID
-//           items: savedOrder.items,   // Array of ordered items
-//           grandTotal: savedOrder.grandTotal || savedOrder.totalAmount,
-//       });
-
-
-
-
-
-
-
-//       // return res.status(500).json({
-//       //   status: "error",
-//       //   error: "Internal server error",
-//       // });
-//     }
-//   }
-// );
-
-
-
    
 
 // //everything for razorpay
+app.use((req, res, next) => {
+  res.status(404).render('user/404'); 
+});
 
 app.listen(PORT, function () {
   console.log("it is running");

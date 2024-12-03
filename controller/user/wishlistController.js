@@ -95,7 +95,7 @@ exports.addtoWishlist=async(req,res)=>{
 
 exports.removefromWishlist=async(req,res)=>{
     try {
-        const productId=req.params.productId
+        const{productId,size}=req.body
         const userId=req.user.id
         const user=await User.findById(userId)
         if(!user){
@@ -109,7 +109,7 @@ exports.removefromWishlist=async(req,res)=>{
         }
 
         initialwishlistCount=wishlist.items.length
-        wishlist.items=wishlist.items.filter(item=>item.productId.toString()!==productId)
+        wishlist.items=wishlist.items.filter(item=>item.productId.toString()!==productId||item.size!==size)
         if(initialwishlistCount==wishlist.items.length){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'equal count'})
         }

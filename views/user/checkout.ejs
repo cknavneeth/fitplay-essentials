@@ -22,6 +22,57 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
 
+
+  .stylish-button {
+  display: inline-block; /* Makes the button inline */
+  padding: 12px 24px; /* Adjust padding for a larger clickable area */
+  font-size: 16px; /* Default font size */
+  font-weight: bold; /* Makes text stand out */
+  color: rgb(255, 255, 255); /* Button text color */
+  background-color: #007bff; /* Button background color */
+  border: none; /* Removes border */
+  border-radius: 8px; /* Rounded corners */
+  text-align: center; /* Center align text */
+  text-decoration: none; /* Removes any link styling */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: all 0.3s ease; /* Smooth transitions for hover and focus */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+.stylish-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Adds a lifting effect */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhances shadow on hover */
+}
+
+.stylish-button:active {
+  background-color: #004494; /* Even darker blue on active state */
+  transform: translateY(0); /* Resets lifting effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Returns to original shadow */
+}
+
+.stylish-button:focus {
+  outline: 3px solid #80bdff; /* Adds an outline for accessibility */
+  outline-offset: 2px; /* Spaces the outline from the button */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .stylish-button {
+    font-size: 14px; /* Smaller font size for tablets */
+    padding: 10px 20px; /* Adjust padding */
+    width: 100%; /* Full-width for smaller screens */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .stylish-button {
+    font-size: 12px; /* Further reduced font size for mobiles */
+    padding: 8px 16px; /* Compact padding */
+  }
+}
+
+
 </style>
 	<body>	
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -34,8 +85,7 @@
 					</div>        
 					<div class="col-sm-6 text-right">
 						<ul class="p_items">
-							<li><a href="/">Home</a></li>
-							<li><a href="/shop">Category</a></li>
+							<li><a href="/cart">cart</a></li>
 							<li><span>Checkout</span></li>
 						</ul>                    
 					</div>    
@@ -170,7 +220,8 @@
 							
 							<!-- Place Order Button -->
 							<div class="qc-button">
-								<button id="proceedToPayment" type="submit" class="btn border-btn" onclick="placeOrder(event)">Place Order</button>
+								<button id="proceedToPayment" type="submit" class="btn border-btn stylish-button" onclick="placeOrder(event)">Place Order</button>
+
 							</div>
 							
 						</form>

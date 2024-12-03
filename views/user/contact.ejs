@@ -295,28 +295,30 @@ body {
 	   <small id="email-error" class="error-message"></small>
 	  </div>
 
-	  <div class="form-group">
-		<label for="referel">Referral Code</label>
-		<div class="input-group">
-		  <input
-			id="referel"
-			name="referel"
-			type="text"
-			value="<%= user.referalCode %>"
-			class="form-control"
-			readonly
-		  />
-		  <button
-			class="btn btn-primary"
-			type="button"
-			id="copyButton"
-			onclick="copyReferralCode()"
-		  >
-			Copy
-		  </button>
+	  <% if (!user.isGoogleUser) { %> <!-- Show only for normal users -->
+		<div class="form-group">
+			<label for="referel">Referral Code</label>
+			<div class="input-group">
+				<input
+					id="referel"
+					name="referel"
+					type="text"
+					value="<%= user.referalCode %>"
+					class="form-control"
+					readonly
+				/>
+				<button
+					class="btn btn-primary"
+					type="button"
+					id="copyButton"
+					onclick="copyReferralCode()"
+				>
+					Copy
+				</button>
+			</div>
+			<small id="copy-success" class="text-success d-none">Copied to clipboard!</small>
 		</div>
-		<small id="copy-success" class="text-success d-none">Copied to clipboard!</small>
-	  </div>
+		<% } %>
 	  
 
      <%if(!user.isGoogleUser){%>

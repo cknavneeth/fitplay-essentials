@@ -82,6 +82,43 @@
   }
 }
 
+.button-style {
+  display: inline-block; /* Makes the link behave like a button */
+  padding: 10px 20px; /* Padding for smaller screens */
+  font-size: 16px; /* Base font size */
+  color: white; /* Button text color */
+  background-color: #007bff; /* Button background color */
+  border: none; /* Removes border */
+  border-radius: 5px; /* Rounded corners */
+  text-align: center; /* Center align text */
+  text-decoration: none; /* Removes underline */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+  width: auto; /* Default width */
+  max-width: 100%; /* Ensures it doesn't overflow the container */
+  box-sizing: border-box; /* Includes padding in width */
+}
+
+.button-style:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .button-style {
+    font-size: 14px; /* Smaller font size for medium screens */
+    padding: 8px 16px; /* Adjust padding */
+    width: 100%; /* Full-width for smaller screens */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .button-style {
+    font-size: 12px; /* Even smaller font size for narrow screens */
+    padding: 6px 12px; /* Further adjust padding */
+  }
+}
+
 
 </style>
 <body>
@@ -114,7 +151,7 @@
               </thead>
               <tbody>
                 <% cart.items.forEach((item, index) => { %>
-                <tr>
+                <tr data-item-id="<%= item._id %>">
                   <td><span class="cp_no"><%= index + 1 %></span></td>
                   <td>
                     <a href="#" class="cp_img">
@@ -231,7 +268,8 @@
             <h4>
               <span>Grand Total</span><span id="grandTotal">Rs <%= grandTotal.toFixed(0) %></span>
             </h4>
-            <a href="/checkout" class="btn border-btn">Proceed to Checkout</a>
+            <a href="/checkout" class="btn border-btn button-style">Proceed to Checkout</a>
+
           </div>
         </div>
       </div>
@@ -270,14 +308,33 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    async function removeFromCart(itemId) {
-      try {
-        await fetch(`/cart/remove/${itemId}`, { method: "DELETE" });
-        location.reload();
-      } catch (error) {
-        console.error(error);
+  async function removeFromCart(itemId) {
+  try {
+    const response = await fetch(`/cart/remove/${itemId}`, { method: "DELETE" });
+
+    if (response.ok) {
+      const data = await response.json(); // Get the updated cart data
+
+      // Find the row corresponding to the item
+      const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
+      if (row) {
+        row.remove(); // Remove the row from the cart
+      } else {
+        console.error('Row not found for itemId:', itemId);
       }
+
+      // Update the subtotal, discount, and grand total in the DOM
+      document.getElementById('subtotal').textContent = `Rs${data.cart.subTotal.toFixed(2)}`;
+      document.getElementById('discount').textContent = `Discount: Rs${data.cart.discount.toFixed(2)}`;
+      document.getElementById('grandTotal').textContent = `Rs${data.cart.grandTotal.toFixed(2)}`;
+    } else {
+      console.error('Failed to remove item from cart');
     }
+  } catch (error) {
+    console.error('Error removing from cart:', error);
+  }
+}
+
   </script>
 
 
