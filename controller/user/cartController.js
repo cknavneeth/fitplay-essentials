@@ -633,6 +633,7 @@ exports.getmyOrders = async (req, res) => {
     )
     .skip(skip)
     .limit(limit)
+    .sort({_id:-1})
 
 
 

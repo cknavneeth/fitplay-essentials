@@ -6,6 +6,10 @@ const jwt = require("jsonwebtoken");
 const statusCodes = require("../../config/keys.js");
 const crypto = require("crypto");
 const { User } = require("../../models/userModel.js"); 
+const mongoose = require("mongoose");
+
+
+
 
 
 
@@ -35,46 +39,6 @@ exports.getWallet = async (req, res) => {
 };
 
 
-
-// exports.getWallet = async (req, res) => {
-//     try {
-//         const userId = req.user.id;
-//         const user = await User.findById(userId);
-
-
-//         const page = parseInt(req.query.page) || 1;
-//         const limit =  5;
-//         const skip = (page - 1) * limit;
-
-//         let wallet = {  
-//             balance: 0,
-//             transaction: []
-//         };
-
-//         let totalTransactions = 0;
-//         let transactions = [];
-
-//         const foundWallet = await Wallet.findOne({ userId });
-//         if (foundWallet) {
-//             wallet = foundWallet;  
-//             totalTransactions=wallet.transaction.length
-//             transactions=wallet.transaction.slice(skip,skip+limit)
-//         }
-
-//         const totalPages = Math.ceil(totalTransactions / limit);
-
-//         res.render('user/wallet', {
-//             user,
-//             // wallet,
-//             wallet: { ...wallet, transaction: transactions },
-//             currentPage: page,
-//             totalPages,
-//             limit,
-//         });
-//     } catch (error) {
-//         console.error(error);
-//     }
-// };
 
 
 exports.addWallet=async(req,res)=>{

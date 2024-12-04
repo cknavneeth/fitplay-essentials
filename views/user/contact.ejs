@@ -219,6 +219,7 @@ body {
 		
 	 <div class="sidebar">
 	  <div class="profile-header">
+
 	   <h2>
 		
 		 <%=user.username%>
@@ -291,11 +292,11 @@ body {
 	   <label for="last-name">
 		Email
 	   </label>
-	   <input id="email" name="email"  type="email" value="<%=user.email%>"/>
+	   <input id="email" name="email"  type="email" value="<%=user.email%>" disabled/>
 	   <small id="email-error" class="error-message"></small>
 	  </div>
 
-	  <% if (!user.isGoogleUser) { %> <!-- Show only for normal users -->
+	  <% if (!user.isGoogleUser) { %>
 		<div class="form-group">
 			<label for="referel">Referral Code</label>
 			<div class="input-group">
