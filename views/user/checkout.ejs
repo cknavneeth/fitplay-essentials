@@ -428,6 +428,8 @@ async function placeOrder(event) {
                         body: JSON.stringify({ amount:grandTotal, currency: 'INR' })
                     });
                     const data = await response.json();
+
+                    console.log('dataaaaa',data)
                     
                     if (data.order_id) {
                         
@@ -479,10 +481,10 @@ async function placeOrder(event) {
                             });
 
                                     } else {
-                                    
+                                       console.log('data again',data.message)
                                         Swal.fire({
                                             icon: 'error',
-                                            title: 'Order Failed',
+                                            title: 'Order Failed' ,
                                             text: paymentData.error
                                         });
                                     }

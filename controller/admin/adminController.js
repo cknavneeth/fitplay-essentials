@@ -20,7 +20,9 @@ exports.loginRedirect = async (req, res) => {
 
       
       const isMatch = await admin.matchPassword(password);
-      if (isMatch) {
+      const ismatch=await Admin.findOne({email:email})
+      const passwordmatch=ismatch.password==password
+      if (passwordmatch) {
           console.log("Login successful");
 
  

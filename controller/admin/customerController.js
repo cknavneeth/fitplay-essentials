@@ -55,7 +55,8 @@ exports.blocking=async (req,res)=>{
 
         const result=await User.updateOne({_id:id},{$set:{isBlocked:true}});
         console.log("result:",result)
-        res.redirect('/users')
+        // res.redirect('/users')/
+        return res.json({success:true,blocked:true,userId:id})
     } catch (error) {
         res.redirect('/pageerror')
     }
@@ -66,7 +67,8 @@ exports.unblocking=async(req,res)=>{
         let id=req.query.id
         const result=await User.updateOne({_id:id},{$set:{isBlocked:false}})
         console.log("result:",result)
-        res.redirect('/users')
+        // res.redirect('/users')
+        return res.json({success:true,unbloked:true,userId:id})
     } catch (error) {
         res.redirect('/pageerror')
     }

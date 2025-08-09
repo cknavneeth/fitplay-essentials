@@ -116,6 +116,7 @@ exports.updateStatus=async(req,res)=>{
 
 
 exports.returnRequest=async(req,res)=>{
+
     try {
         const orderId=req.params.orderId
         const {action}=req.body
@@ -132,10 +133,22 @@ exports.returnRequest=async(req,res)=>{
 
         order.returnRequest=false
 
-        const wallet=await Wallet.findOne({userId:order.user})
+        let wallet=await Wallet.findOne({userId:order.user})
+    
+        if(!wallet){
+            wallet=new Wallet({
+                userId:order.user,
+                balance:0,
+                transaction:[]
 
-        if(wallet){
-            wallet.balance+=order.grandTotal
+            })
+        }
+
+
+        console.log('here is the wallet',wallet)
+
+        
+            wallet.balance=Number(wallet.balance)+Number(order.grandTotal)
 
             wallet.transaction.push({
                 transactionType:'credit',
@@ -143,7 +156,8 @@ exports.returnRequest=async(req,res)=>{
                 status:'completed'
             })
             await wallet.save()
-        }
+        
+        
 
         for(const item of order.items){
             const product=await Product.findById(item.productId)

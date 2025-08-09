@@ -16,7 +16,7 @@ const invoiceController=require('../controller/user/invoiceController')
 const Order=require('../models/orderModel')
 const Cart=require('../models/cartModel')
 const {User}=require('../models/userModel')
-
+const paymentController=require('../controller/user/paymentController')
 
 console.log("hello")
 router.get("/",(req, res) => {
@@ -254,6 +254,10 @@ router.post('/forOrders',async(req,res)=>{
     console.error(error)
   }
 })
+
+
+router.post('/order',verifyUser,paymentController.createOrder)
+router.post('/paymentCapture',verifyUser,paymentController.paymentCapture)
 
 
 

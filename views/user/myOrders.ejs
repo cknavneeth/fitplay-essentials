@@ -435,8 +435,7 @@ td .btn {
         </div>
 
         <script>
-            // Add this at the top of your script
-            const userId = '<%= user._id %>'; // Assuming user object is passed to the template
+            const userId = '<%= user._id %>'; 
         </script>
 
         <div class="content">
@@ -496,7 +495,7 @@ td .btn {
                                             <% if (order.orderStatus === 'Delivered') { %>
                                                 <button type="button" class="btn btn-primary return-btn" data-order-id="<%= order._id %>">Return</button>
                                                 <a href="/invoice/<%= order._id %>" class="btn btn-danger btn-sm ml-2"> Invoice</a>
-                                            <% } else if (order.paymentStatus === 'Completed'&&order.orderStatus!=='Cancelled') { %>
+                                            <% } else if (order.paymentStatus === 'Completed'&&order.orderStatus!=='Cancelled'&&order.orderStatus!=='Returned') { %>
                                                 <button type="button" class="btn btn-primary cancel-btn" data-order-id="<%= order._id %>">Cancel</button>
                                                 <a href="/invoice/<%= order._id %>" class="btn btn-danger btn-sm ml-2"> Invoice</a>
                                             <% } else if (order.orderStatus === 'Processing' && order.paymentStatus === 'Failed') { %>
