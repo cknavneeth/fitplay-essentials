@@ -63,7 +63,11 @@ exports.addProducts=async(req,res)=>{
        await newProduct.save()
        return res.redirect('/addProducts')
     }else{
-        return res.status(statusCodes.BAD_REQUEST).json("product already exist,please try with another name!")
+        // return res.status(statusCodes.BAD_REQUEST).json("product already exist,please try with another name!")
+        return res.render('admin/addProduct',{
+            error:'product already exist,please try with another name',
+            product:products
+        })
     }
     } catch (error) {
         console.error("Error occured",error)
@@ -174,8 +178,10 @@ exports.unblockProduct=async(req,res)=>{
 exports.getEditProduct=async(req,res)=>{
     try {
         let id=req.query.id
-        const product=await Product.findOne({_id:id})
+        const product=await Product.findOne({_id:id}).populate("category")
         const category=await Category.find({})
+
+        console.log('edit product',product)
         res.render('admin/editProduct',{
             product:product,
             cat:category
@@ -209,6 +215,10 @@ exports.editProduct = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ error: "This product already exists!" });
         }
+
+
+
+
         const sizes = Object.entries(data.sizes).map(([size, stock]) => ({
             size: size.toUpperCase(),
             stock: parseInt(stock, 10), 
@@ -229,6 +239,19 @@ exports.editProduct = async (req, res) => {
             for (let i = 0; i < req.files.length; i++) {
                 images.push(req.files[i].filename);
             }
+
+            const product=await Product.findById(id)
+            if(!product){
+                return res.status(400).json({error:'There is no product'})
+            }
+            const productImageLength=product.productImage.length
+
+            const totalimageLength=images.length+productImageLength
+            if(totalimageLength>4){
+                return res.status(400).json({error:'Maximum 4 Images are allowed'})
+            }
+
+
             await Product.findByIdAndUpdate(id, {
                 $set: updateFields,
                 $push: { productImage: { $each: images } }

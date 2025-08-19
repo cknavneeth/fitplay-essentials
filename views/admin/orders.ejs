@@ -411,6 +411,20 @@
                             
                             if(data.success){
                                 Swal.fire('updated','Order status has been updated','success')
+                                const row = document.querySelector(`.cancel-btn[data-order-id="${orderId}"]`);
+
+                  if (newStatus === 'Cancelled' && row) {
+            // Replace the cancel button with a disabled "Cancelled" button
+                   row.outerHTML = `<button type="button" class="btn btn-secondary" disabled>Cancelled</button>`;
+                    }
+
+        // Also disable the dropdown if it's cancelled
+        const dropdown = document.querySelector(`.status-dropdown[data-order-id="${orderId}"]`);
+        if (dropdown && newStatus === 'Cancelled') {
+            dropdown.disabled = true;
+        }
+ 
+
                             }else{
                                 Swal.fire('Failed','Order status updating failed','failed')
                             }
@@ -553,3 +567,5 @@
 
 
 <%- include('../../views/layout/admin/footer') %>
+
+

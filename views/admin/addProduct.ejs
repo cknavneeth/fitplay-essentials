@@ -120,6 +120,15 @@ h2.content-title {
 
 </style>
    <section class="content-main">
+
+    <% if (error) { %>
+  <div class="alert alert-danger">
+    <%= error %>
+  </div>
+<% } %>
+
+
+
        <div class="row">
            <div class="col-9">
                <div class="content-header">
@@ -554,8 +563,6 @@ function validateForm() {
                   element.innerText = '';
               });
               const errorMessage = document.getElementById('errorMessage');
-  
-  
           }
 
 </script>

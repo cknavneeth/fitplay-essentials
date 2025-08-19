@@ -58,8 +58,11 @@ module.exports.paymentCapture = async (req, res) => {
       return res.status(400).json({ error: "No signature provided" });
     }
 
-    const cart = await Cart.findOne({ userId: req.body.userId }).populate("items.productId");
-    if (!req.body.retry && (!cart || cart.items.length === 0)) {
+    const cart = await Cart.findOne({ userId: req.user.id }).populate("items.productId");
+    if(!cart){
+      console.log('bro cart illa')
+    }
+    if (!cart || !cart.items || cart.items.length === 0) {
       return res.status(400).json({
         success: false,
         error: "Your cart is empty! Add this product to the cart from the shop.",
@@ -161,6 +164,7 @@ module.exports.paymentCapture = async (req, res) => {
     await redis.del(`payment_modal_lock:${userId}`)
 
     res.json({
+      success:true,
       status: "ok",
       message: "Payment verified successfully",
       orderId: req.body.razorpayOrderId,

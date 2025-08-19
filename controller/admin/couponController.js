@@ -70,6 +70,10 @@ exports.addCoupon=async(req,res)=>{
            return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'discountamount and minpurchases are must be greater than 0'})
         }
 
+        if(minPurchaseAmount<discountAmount){
+            return res.status(status.BAD_REQUEST).json({success:false,error:'Discount amount must be lesser than minimum purchase amount'})
+        }
+
         const currentDate=new Date()
         if(new Date(expirationDate)<=currentDate){
             return res.status(statusCodes.BAD_REQUEST).json({success:false,error:'expiration date must be in future'})

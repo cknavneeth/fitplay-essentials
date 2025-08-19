@@ -157,6 +157,10 @@ document.getElementById('couponForm').addEventListener('submit', function (e) {
     errors.push('Minimum Purchase Amount must be greater than 0.');
   }
 
+  if(discountType=='fixed'&&discountAmount>minPurchaseAmount){
+    errors.push('Discount amount must be less than minimum purchase amount')
+  }
+
   // Validate expiration date
   const today = new Date();
   const expDate = new Date(expirationDate);

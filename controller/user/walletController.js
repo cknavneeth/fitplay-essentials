@@ -28,6 +28,8 @@ exports.getWallet = async (req, res) => {
             wallet = foundWallet;
         }
 
+        
+
         res.render('user/wallet', {
             user,
             wallet, 
@@ -84,3 +86,5 @@ exports.addWallet=async(req,res)=>{
         console.error(error)
     }
 }
+
+
